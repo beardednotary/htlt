@@ -8,11 +8,19 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "bundleIdentifier": "com.beardednotary.htlt",
-      "supportsTablet": false
+      "bundleIdentifier": "com.dahvio.htlt",
+      "supportsTablet": true,
+      "infoPlist": {
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ]
+      }
     },
     "android": {
-      "package": "com.beardednotary.htlt",
+      "package": "com.dahvio.htlt",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
