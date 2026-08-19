@@ -4,6 +4,7 @@ import {
   disabled as disabledModifier,
   fixedSize,
   lineLimit,
+  padding,
 } from '@expo/ui/swift-ui/modifiers';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -34,7 +35,14 @@ export function HeaderButton({
   prominent?: boolean;
   disabled?: boolean;
 }) {
-  const modifiers = [fixedSize({ horizontal: true }), lineLimit(1)];
+  // The glass container iOS draws behind a bar button is sized from the Host's
+  // reported width, which lands on the label's exact ideal width. Without a little
+  // slack a longer word like "Cancel" sits flush against the capsule edge.
+  const modifiers = [
+    fixedSize({ horizontal: true }),
+    lineLimit(1),
+    padding({ horizontal: 4 }),
+  ];
   if (prominent) modifiers.push(bold());
   if (disabled) modifiers.push(disabledModifier(true));
 
