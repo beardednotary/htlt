@@ -55,3 +55,22 @@ export function seasonDatesLine(season: Season): string {
     .map((w) => `${w.label}  ${formatShortDate(w.opensOn)} – ${formatShortDate(w.closesOn)}`)
     .join('\n');
 }
+
+function toUTC(iso: ISODate): number {
+  const [year, month, day] = iso.split('-').map(Number);
+  return Date.UTC(year, (month ?? 1) - 1, day ?? 1);
+}
+
+/** Whole days from today to the given date. Negative once it has passed. */
+export function daysUntil(iso: ISODate, today: ISODate = todayISO()): number {
+  return Math.round((toUTC(iso) - toUTC(today)) / 86_400_000);
+}
+
+/** "in 18 days", "tomorrow", "today", "3 days ago" — the way a person says it. */
+export function relativeDays(days: number): string {
+  if (days === 0) return 'today';
+  if (days === 1) return 'tomorrow';
+  if (days === -1) return 'yesterday';
+  if (days > 1) return `in ${days} days`;
+  return `${Math.abs(days)} days ago`;
+}

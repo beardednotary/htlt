@@ -1,13 +1,75 @@
-import { ContentUnavailableView, Host } from '@expo/ui/swift-ui';
+import { ContentUnavailableView, HStack, Host, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
+import { font, foregroundStyle, listStyle } from '@expo/ui/swift-ui/modifiers';
+import { useMemo } from 'react';
+
+import { useStore } from '../../src/data/store';
+import { summarizeToday, type TodayItem } from '../../src/model/today';
+
+function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
+  return (
+    <VStack alignment="leading" spacing={2}>
+      <Text modifiers={[font({ textStyle: 'body' })]}>{item.title}</Text>
+      <Text
+        modifiers={[
+          font({ textStyle: 'subheadline' }),
+          tint === 'warning'
+            ? foregroundStyle('orange')
+            : foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+        ]}>
+        {item.detail}
+      </Text>
+    </VStack>
+  );
+}
 
 export default function TodayScreen() {
+  const { data } = useStore();
+  const { comingUp, attention } = useMemo(() => summarizeToday(data), [data]);
+
+  if (comingUp.length === 0 && attention.length === 0) {
+    return (
+      <Host style={{ flex: 1 }}>
+        <ContentUnavailableView
+          title="Nothing Coming Up"
+          systemImage="calendar.badge.plus"
+          description="Add a season and this screen fills in with openers, deadlines and anything about to expire."
+        />
+      </Host>
+    );
+  }
+
   return (
     <Host style={{ flex: 1 }}>
-      <ContentUnavailableView
-        title="Nothing Coming Up"
-        systemImage="calendar.badge.plus"
-        description="Add a season and this screen fills in with openers, deadlines and anything about to expire."
-      />
+      <List modifiers={[listStyle('insetGrouped')]}>
+        {attention.length > 0 ? (
+          <Section title="Needs Attention">
+            {attention.map((item) => (
+              <Row key={item.id} item={item} tint="warning" />
+            ))}
+          </Section>
+        ) : null}
+
+        {comingUp.length > 0 ? (
+          <Section title="Coming Up">
+            {comingUp.map((item) => (
+              <Row key={item.id} item={item} />
+            ))}
+          </Section>
+        ) : null}
+
+        <Section>
+          <HStack>
+            <Text
+              modifiers={[
+                font({ textStyle: 'footnote' }),
+                foregroundStyle({ type: 'hierarchical', style: 'tertiary' }),
+              ]}>
+              Dates come from what you entered. Verify them with the issuing agency.
+            </Text>
+            <Spacer />
+          </HStack>
+        </Section>
+      </List>
     </Host>
   );
 }
