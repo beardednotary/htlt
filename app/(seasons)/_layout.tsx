@@ -15,6 +15,15 @@ export default function SeasonsLayout() {
       />
       <Stack.Screen name="[id]/index" options={{ headerLargeTitle: false }} />
       <Stack.Screen
+        name="[id]/credentials"
+        options={{
+          title: 'License or Tag',
+          presentation: 'formSheet',
+          headerLargeTitle: false,
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
         name="[id]/dates"
         options={{
           title: 'Add Dates',

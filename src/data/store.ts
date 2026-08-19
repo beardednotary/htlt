@@ -3,11 +3,12 @@ import { useSyncExternalStore } from 'react';
 import type {
   Activity,
   Catch,
-  Credential,
   DocumentRef,
   DrawApplication,
   Gear,
   Harvest,
+  Credential,
+  CredentialKind,
   ID,
   ISODate,
   MethodOfTake,
@@ -183,6 +184,70 @@ export function removeSeasonWindow(seasonId: ID, windowId: ID) {
     seasons: data.seasons.map((season) =>
       season.id === seasonId
         ? { ...season, windows: season.windows.filter((w) => w.id !== windowId) }
+        : season
+    ),
+  }));
+}
+
+/**
+ * Credentials belong to a person, so there is always at least one — the owner of the
+ * phone. They can rename themselves in Family; nothing here should make them do it first.
+ */
+export function primaryPersonId(): ID {
+  const existing = state.data.people[0];
+  if (existing) return existing.id;
+  const person: Person = {
+    id: newId('person'),
+    householdId: state.data.householdId,
+    name: 'Me',
+    accountId: null,
+  };
+  mutate((data) => ({ ...data, people: [...data.people, person] }));
+  return person.id;
+}
+
+export interface NewCredentialInput {
+  kind: CredentialKind;
+  name: string;
+  jurisdictionId: ID;
+  number?: string;
+  year?: number;
+  validUntil?: ISODate;
+}
+
+export function addCredential(input: NewCredentialInput): Credential {
+  const credential: Credential = {
+    id: newId('cred'),
+    personId: primaryPersonId(),
+    kind: input.kind,
+    name: input.name,
+    jurisdictionId: input.jurisdictionId,
+    number: input.number,
+    year: input.year,
+    validUntil: input.validUntil,
+    documentIds: [],
+  };
+  mutate((data) => ({ ...data, credentials: [...data.credentials, credential] }));
+  return credential;
+}
+
+export function linkCredential(seasonId: ID, credentialId: ID) {
+  mutate((data) => ({
+    ...data,
+    seasons: data.seasons.map((season) =>
+      season.id === seasonId && !season.credentialIds.includes(credentialId)
+        ? { ...season, credentialIds: [...season.credentialIds, credentialId] }
+        : season
+    ),
+  }));
+}
+
+export function unlinkCredential(seasonId: ID, credentialId: ID) {
+  mutate((data) => ({
+    ...data,
+    seasons: data.seasons.map((season) =>
+      season.id === seasonId
+        ? { ...season, credentialIds: season.credentialIds.filter((id) => id !== credentialId) }
         : season
     ),
   }));

@@ -1,0 +1,151 @@
+import {
+  DatePicker,
+  Form,
+  HStack,
+  Host,
+  Picker,
+  Section,
+  Spacer,
+  Text,
+  TextField,
+  VStack,
+} from '@expo/ui/swift-ui';
+import {
+  contentShape,
+  datePickerStyle,
+  font,
+  foregroundStyle,
+  onTapGesture,
+  pickerStyle,
+  shapes,
+  tag,
+} from '@expo/ui/swift-ui/modifiers';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
+
+import { jurisdictionName } from '../../../src/data/constants';
+import { addCredential, linkCredential, useStore } from '../../../src/data/store';
+import { todayISO } from '../../../src/model/derive';
+import type { CredentialKind } from '../../../src/model/types';
+import { HeaderButton } from '../../../src/ui/HeaderButton';
+
+const KINDS: { value: CredentialKind; label: string }[] = [
+  { value: 'license', label: 'License' },
+  { value: 'tag', label: 'Tag' },
+  { value: 'permit', label: 'Permit' },
+  { value: 'validation', label: 'Validation' },
+];
+
+/**
+ * Credentials are entered once and pointed at every season they cover, so this screen
+ * offers the household's existing ones before it offers a blank form.
+ */
+export default function SeasonCredentialsScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data } = useStore();
+  const router = useRouter();
+
+  const season = data.seasons.find((s) => s.id === id);
+  const available = data.credentials.filter((c) => !season?.credentialIds.includes(c.id));
+
+  const [kind, setKind] = useState<CredentialKind>('license');
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [expires, setExpires] = useState(
+    new Date(season?.year ?? new Date().getFullYear(), 11, 31)
+  );
+
+  function create() {
+    if (!season || name.trim().length === 0) return;
+    const credential = addCredential({
+      kind,
+      name: name.trim(),
+      jurisdictionId: season.jurisdictionId,
+      number: number.trim() || undefined,
+      year: season.year,
+      validUntil: todayISO(expires),
+    });
+    linkCredential(season.id, credential.id);
+    router.back();
+  }
+
+  function link(credentialId: string) {
+    if (!season) return;
+    linkCredential(season.id, credentialId);
+    router.back();
+  }
+
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
+          headerRight: () => (
+            <HeaderButton
+              label="Add"
+              onPress={create}
+              prominent
+              disabled={name.trim().length === 0}
+            />
+          ),
+        }}
+      />
+      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+        <Form>
+          <Section title="New">
+            <Picker
+              label="Kind"
+              selection={kind}
+              onSelectionChange={(value) => setKind(value as CredentialKind)}
+              modifiers={[pickerStyle('menu')]}>
+              {KINDS.map((option) => (
+                <Text key={option.value} modifiers={[tag(option.value)]}>
+                  {option.label}
+                </Text>
+              ))}
+            </Picker>
+            <TextField
+              placeholder={season ? `${jurisdictionName(season.jurisdictionId)} Hunting License` : 'Name'}
+              onTextChange={setName}
+            />
+            <TextField placeholder="Number (optional)" onTextChange={setNumber} />
+            <DatePicker
+              title="Expires"
+              selection={expires}
+              displayedComponents={['date']}
+              onDateChange={setExpires}
+              modifiers={[datePickerStyle('compact')]}
+            />
+          </Section>
+
+          {available.length > 0 ? (
+            <Section
+              title="Already Entered"
+              footer={<Text>One license can cover as many seasons as it applies to.</Text>}>
+              {available.map((credential) => (
+                <HStack
+                  key={credential.id}
+                  modifiers={[
+                    contentShape(shapes.rectangle()),
+                    onTapGesture(() => link(credential.id)),
+                  ]}>
+                  <VStack alignment="leading" spacing={2}>
+                    <Text>{credential.name}</Text>
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'footnote' }),
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}>
+                      {jurisdictionName(credential.jurisdictionId)}
+                    </Text>
+                  </VStack>
+                  <Spacer />
+                </HStack>
+              ))}
+            </Section>
+          ) : null}
+        </Form>
+      </Host>
+    </>
+  );
+}

@@ -128,6 +128,11 @@ export default function SeasonDetailScreen() {
                 </HStack>
               ))
             )}
+            <Button
+              label="Add License or Tag"
+              systemImage="plus"
+              onPress={() => router.push(`/${season.id}/credentials`)}
+            />
           </Section>
 
           <Section
