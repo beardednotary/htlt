@@ -9,6 +9,8 @@ import type {
   Gear,
   Harvest,
   ID,
+  ISODate,
+  MethodOfTake,
   Milestone,
   Person,
   RegulationRef,
@@ -148,4 +150,40 @@ export function addSeason(input: NewSeasonInput): Season {
 
 export function removeSeason(id: ID) {
   mutate((data) => ({ ...data, seasons: data.seasons.filter((s) => s.id !== id) }));
+}
+
+export interface NewWindowInput {
+  label: string;
+  method?: MethodOfTake;
+  opensOn: ISODate;
+  closesOn: ISODate;
+}
+
+/** Windows stay sorted by opening date so the season reads the way the year runs. */
+export function addSeasonWindow(seasonId: ID, input: NewWindowInput) {
+  mutate((data) => ({
+    ...data,
+    seasons: data.seasons.map((season) => {
+      if (season.id !== seasonId) return season;
+      const windows = [...season.windows, { id: newId('win'), ...input }].sort((a, b) =>
+        a.opensOn.localeCompare(b.opensOn)
+      );
+      const methods =
+        input.method && !season.methods.includes(input.method)
+          ? [...season.methods, input.method]
+          : season.methods;
+      return { ...season, windows, methods };
+    }),
+  }));
+}
+
+export function removeSeasonWindow(seasonId: ID, windowId: ID) {
+  mutate((data) => ({
+    ...data,
+    seasons: data.seasons.map((season) =>
+      season.id === seasonId
+        ? { ...season, windows: season.windows.filter((w) => w.id !== windowId) }
+        : season
+    ),
+  }));
 }

@@ -13,6 +13,16 @@ export default function SeasonsLayout() {
           sheetGrabberVisible: true,
         }}
       />
+      <Stack.Screen name="[id]/index" options={{ headerLargeTitle: false }} />
+      <Stack.Screen
+        name="[id]/dates"
+        options={{
+          title: 'Add Dates',
+          presentation: 'formSheet',
+          headerLargeTitle: false,
+          sheetGrabberVisible: true,
+        }}
+      />
     </Stack>
   );
 }

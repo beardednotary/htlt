@@ -1,17 +1,23 @@
 import {
   ContentUnavailableView,
+  HStack,
   Host,
+  Image,
   List,
   Picker,
+  Spacer,
   Text,
   VStack,
 } from '@expo/ui/swift-ui';
 import {
+  contentShape,
   font,
   foregroundStyle,
   listStyle,
+  onTapGesture,
   padding,
   pickerStyle,
+  shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
@@ -104,23 +110,36 @@ export default function SeasonsScreen() {
               </Text>
             ) : (
               seasons.map((season) => (
-                <VStack key={season.id} alignment="leading" spacing={2}>
-                  <Text modifiers={[font({ textStyle: 'body' })]}>{seasonTitle(season)}</Text>
-                  <Text
-                    modifiers={[
-                      font({ textStyle: 'subheadline' }),
-                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
-                    ]}>
-                    {seasonSubtitle(season)}
-                  </Text>
-                  <Text
-                    modifiers={[
-                      font({ textStyle: 'footnote' }),
-                      foregroundStyle({ type: 'hierarchical', style: 'tertiary' }),
-                    ]}>
-                    {seasonDatesLine(season)}
-                  </Text>
-                </VStack>
+                <HStack
+                  key={season.id}
+                  modifiers={[
+                    contentShape(shapes.rectangle()),
+                    onTapGesture(() => router.push(`/${season.id}`)),
+                  ]}>
+                  <VStack alignment="leading" spacing={2}>
+                    <Text modifiers={[font({ textStyle: 'body' })]}>{seasonTitle(season)}</Text>
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'subheadline' }),
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}>
+                      {seasonSubtitle(season)}
+                    </Text>
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'footnote' }),
+                        foregroundStyle({ type: 'hierarchical', style: 'tertiary' }),
+                      ]}>
+                      {seasonDatesLine(season)}
+                    </Text>
+                  </VStack>
+                  <Spacer />
+                  <Image
+                    systemName="chevron.right"
+                    size={13}
+                    modifiers={[foregroundStyle({ type: 'hierarchical', style: 'tertiary' })]}
+                  />
+                </HStack>
               ))
             )}
           </List>
