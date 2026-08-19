@@ -43,7 +43,16 @@
     },
     "plugins": [
       "expo-router",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-web-browser",
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Attach photos of your licenses, tags and harvests to the seasons and hunts they belong to.",
+          "cameraPermission": "Take a photo of a license, tag or harvest to keep with its record."
+        }
+      ]
     ],
     "extra": {
       "router": {},
