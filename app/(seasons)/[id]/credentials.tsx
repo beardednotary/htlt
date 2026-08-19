@@ -24,17 +24,13 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { jurisdictionName } from '../../../src/data/constants';
+import { credentialKindLabel, licenceWord } from '../../../src/data/vocabulary';
 import { addCredential, linkCredential, useStore } from '../../../src/data/store';
 import { todayISO } from '../../../src/model/derive';
 import type { CredentialKind } from '../../../src/model/types';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
 
-const KINDS: { value: CredentialKind; label: string }[] = [
-  { value: 'license', label: 'License' },
-  { value: 'tag', label: 'Tag' },
-  { value: 'permit', label: 'Permit' },
-  { value: 'validation', label: 'Validation' },
-];
+const KIND_ORDER: CredentialKind[] = ['license', 'tag', 'permit', 'validation'];
 
 /**
  * Credentials are entered once and pointed at every season they cover, so this screen
@@ -46,6 +42,7 @@ export default function SeasonCredentialsScreen() {
   const router = useRouter();
 
   const season = data.seasons.find((s) => s.id === id);
+  const jurisdictionId = season?.jurisdictionId ?? 'us-ca';
   const available = data.credentials.filter((c) => !season?.credentialIds.includes(c.id));
 
   const [kind, setKind] = useState<CredentialKind>('license');
@@ -79,6 +76,7 @@ export default function SeasonCredentialsScreen() {
     <>
       <Stack.Screen
         options={{
+          title: `${licenceWord(jurisdictionId)} or Tag`,
           headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
           headerRight: () => (
             <HeaderButton
@@ -98,14 +96,18 @@ export default function SeasonCredentialsScreen() {
               selection={kind}
               onSelectionChange={(value) => setKind(value as CredentialKind)}
               modifiers={[pickerStyle('menu')]}>
-              {KINDS.map((option) => (
-                <Text key={option.value} modifiers={[tag(option.value)]}>
-                  {option.label}
+              {KIND_ORDER.map((value) => (
+                <Text key={value} modifiers={[tag(value)]}>
+                  {credentialKindLabel(value, jurisdictionId)}
                 </Text>
               ))}
             </Picker>
             <TextField
-              placeholder={season ? `${jurisdictionName(season.jurisdictionId)} Hunting License` : 'Name'}
+              placeholder={
+                season
+                  ? `${jurisdictionName(jurisdictionId)} Hunting ${licenceWord(jurisdictionId)}`
+                  : 'Name'
+              }
               onTextChange={setName}
             />
             <TextField placeholder="Number (optional)" onTextChange={setNumber} />

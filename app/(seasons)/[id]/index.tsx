@@ -22,7 +22,7 @@ import {
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
-import { METHOD_LABELS } from '../../../src/data/constants';
+import { addCredentialLabel, credentialsSectionTitle } from '../../../src/data/vocabulary';
 import { removeSeason, useStore } from '../../../src/data/store';
 import { formatShortDate, seasonSubtitle, seasonTitle } from '../../../src/model/derive';
 
@@ -109,7 +109,7 @@ export default function SeasonDetailScreen() {
             />
           </Section>
 
-          <Section title="Licenses & Tags">
+          <Section title={credentialsSectionTitle(season.jurisdictionId)}>
             {credentials.length === 0 ? (
               <Text
                 modifiers={[foregroundStyle({ type: 'hierarchical', style: 'secondary' })]}>
@@ -129,7 +129,7 @@ export default function SeasonDetailScreen() {
               ))
             )}
             <Button
-              label="Add License or Tag"
+              label={addCredentialLabel(season.jurisdictionId)}
               systemImage="plus"
               onPress={() => router.push(`/${season.id}/credentials`)}
             />

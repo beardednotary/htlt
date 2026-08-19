@@ -73,12 +73,24 @@ export interface Person {
   notes?: string;
 }
 
+/**
+ * Never "state". Canada ships from v1 at the model level, and the vocabulary varies
+ * by jurisdiction — licence, Outdoors Card, species licence, FWID — while the
+ * underlying object does not.
+ */
+export type Country = 'US' | 'CA';
+
 export interface Jurisdiction {
   id: ID;
-  /** "California", "Federal" */
+  country: Country;
+  /** "California", "Ontario", "Federal" */
   name: string;
-  /** "CA" */
+  /** "CA" for California, "ON" for Ontario. Ambiguous across countries by design — pair it with `country`. */
   code?: string;
+  /**
+   * The issuing agency, when we are confident of it. Left empty rather than guessed:
+   * the hunter saves the official link themselves, and we never become the source of truth.
+   */
   agencyName?: string;
   agencyUrl?: string;
 }
