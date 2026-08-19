@@ -24,6 +24,15 @@ export default function SeasonsLayout() {
         }}
       />
       <Stack.Screen
+        name="[id]/regulations"
+        options={{
+          title: 'Regulation Link',
+          presentation: 'formSheet',
+          headerLargeTitle: false,
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
         name="[id]/dates"
         options={{
           title: 'Add Dates',

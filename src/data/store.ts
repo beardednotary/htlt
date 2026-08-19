@@ -252,3 +252,62 @@ export function unlinkCredential(seasonId: ID, credentialId: ID) {
     ),
   }));
 }
+
+export interface NewRegulationInput {
+  title: string;
+  url?: string;
+  notes?: string;
+}
+
+/** A bare domain is still a link; make it one rather than rejecting it. */
+function normalizeUrl(url?: string): string | undefined {
+  const trimmed = url?.trim();
+  if (!trimmed) return undefined;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+/**
+ * We store the pointer to the agency's page, the hunter's own notes, and when they
+ * last looked. We never store the regulation itself — that is the agency's job and
+ * their liability, not ours.
+ */
+export function addRegulation(seasonId: ID, input: NewRegulationInput): RegulationRef {
+  const season = state.data.seasons.find((s) => s.id === seasonId);
+  const regulation: RegulationRef = {
+    id: newId('reg'),
+    jurisdictionId: season?.jurisdictionId ?? 'us-ca',
+    title: input.title.trim(),
+    url: normalizeUrl(input.url),
+    notes: input.notes?.trim() || undefined,
+    documentIds: [],
+  };
+  mutate((data) => ({
+    ...data,
+    regulations: [...data.regulations, regulation],
+    seasons: data.seasons.map((s) =>
+      s.id === seasonId ? { ...s, regulationIds: [...s.regulationIds, regulation.id] } : s
+    ),
+  }));
+  return regulation;
+}
+
+export function markRegulationReviewed(regulationId: ID, on: ISODate) {
+  mutate((data) => ({
+    ...data,
+    regulations: data.regulations.map((regulation) =>
+      regulation.id === regulationId ? { ...regulation, lastReviewedOn: on } : regulation
+    ),
+  }));
+}
+
+export function removeRegulation(seasonId: ID, regulationId: ID) {
+  mutate((data) => ({
+    ...data,
+    regulations: data.regulations.filter((regulation) => regulation.id !== regulationId),
+    seasons: data.seasons.map((season) =>
+      season.id === seasonId
+        ? { ...season, regulationIds: season.regulationIds.filter((id) => id !== regulationId) }
+        : season
+    ),
+  }));
+}

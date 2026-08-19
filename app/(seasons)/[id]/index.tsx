@@ -8,6 +8,7 @@ import {
   List,
   Section,
   Spacer,
+  SwipeActions,
   Text,
   VStack,
 } from '@expo/ui/swift-ui';
@@ -20,11 +21,23 @@ import {
   onTapGesture,
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useState } from 'react';
 
 import { addCredentialLabel, credentialsSectionTitle } from '../../../src/data/vocabulary';
-import { removeSeason, useStore } from '../../../src/data/store';
-import { formatShortDate, seasonSubtitle, seasonTitle } from '../../../src/model/derive';
+import {
+  markRegulationReviewed,
+  removeRegulation,
+  removeSeason,
+  useStore,
+} from '../../../src/data/store';
+import {
+  formatShortDate,
+  reviewedLine,
+  seasonSubtitle,
+  seasonTitle,
+  todayISO,
+} from '../../../src/model/derive';
 
 export default function SeasonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -145,20 +158,65 @@ export default function SeasonDetailScreen() {
               </Text>
             ) : (
               regulations.map((regulation) => (
-                <VStack key={regulation.id} alignment="leading" spacing={2}>
-                  <Text>{regulation.title}</Text>
-                  {regulation.lastReviewedOn ? (
-                    <Text
-                      modifiers={[
-                        font({ textStyle: 'footnote' }),
-                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
-                      ]}>
-                      {`Last reviewed ${formatShortDate(regulation.lastReviewedOn)}`}
-                    </Text>
-                  ) : null}
-                </VStack>
+                <SwipeActions key={regulation.id}>
+                  <HStack
+                    modifiers={[
+                      contentShape(shapes.rectangle()),
+                      onTapGesture(() => {
+                        if (regulation.url) void WebBrowser.openBrowserAsync(regulation.url);
+                      }),
+                    ]}>
+                    <VStack alignment="leading" spacing={2}>
+                      <Text>{regulation.title}</Text>
+                      <Text
+                        modifiers={[
+                          font({ textStyle: 'footnote' }),
+                          foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                        ]}>
+                        {reviewedLine(regulation.lastReviewedOn)}
+                      </Text>
+                      {regulation.notes ? (
+                        <Text
+                          modifiers={[
+                            font({ textStyle: 'footnote' }),
+                            foregroundStyle({ type: 'hierarchical', style: 'tertiary' }),
+                          ]}>
+                          {regulation.notes}
+                        </Text>
+                      ) : null}
+                    </VStack>
+                    <Spacer />
+                    {regulation.url ? (
+                      <Image
+                        systemName="arrow.up.right"
+                        size={13}
+                        modifiers={[
+                          foregroundStyle({ type: 'hierarchical', style: 'tertiary' }),
+                        ]}
+                      />
+                    ) : null}
+                  </HStack>
+                  <SwipeActions.Actions edge="trailing">
+                    <Button
+                      label="Reviewed"
+                      systemImage="checkmark"
+                      onPress={() => markRegulationReviewed(regulation.id, todayISO())}
+                    />
+                    <Button
+                      label="Delete"
+                      systemImage="trash"
+                      role="destructive"
+                      onPress={() => removeRegulation(season.id, regulation.id)}
+                    />
+                  </SwipeActions.Actions>
+                </SwipeActions>
               ))
             )}
+            <Button
+              label="Add Regulation Link"
+              systemImage="plus"
+              onPress={() => router.push(`/${season.id}/regulations`)}
+            />
           </Section>
 
           <Section title="Journal">

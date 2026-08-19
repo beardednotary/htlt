@@ -14,6 +14,12 @@ export interface TodayItem {
 /** How far ahead a credential's expiry starts being something you should know about. */
 const EXPIRY_HORIZON_DAYS = 60;
 
+/** Regulations only nag once a season is close enough for them to matter. */
+const REVIEW_LOOKAHEAD_DAYS = 45;
+
+/** Agencies reissue regulations annually; half a year old is stale enough to reread. */
+const REVIEW_STALE_DAYS = 180;
+
 export interface TodaySummary {
   comingUp: TodayItem[];
   attention: TodayItem[];
@@ -67,6 +73,41 @@ export function summarizeToday(data: AppData, today: ISODate = todayISO()): Toda
         detail: days === 0 ? 'Expires today' : `Expires ${relativeDays(days)}`,
         days,
       });
+    }
+  }
+
+  for (const season of data.seasons) {
+    const regulations = data.regulations.filter((r) => season.regulationIds.includes(r.id));
+    if (regulations.length === 0) continue;
+
+    // How soon this season matters: days to the next opener, or zero if it is open now.
+    const proximity = season.windows.reduce((nearest, window) => {
+      const opens = daysUntil(window.opensOn, today);
+      const closes = daysUntil(window.closesOn, today);
+      if (opens > 0) return Math.min(nearest, opens);
+      if (closes >= 0) return 0;
+      return nearest;
+    }, Number.POSITIVE_INFINITY);
+
+    if (proximity > REVIEW_LOOKAHEAD_DAYS) continue;
+
+    for (const regulation of regulations) {
+      if (!regulation.lastReviewedOn) {
+        attention.push({
+          id: `${regulation.id}-unreviewed`,
+          title: seasonTitle(season),
+          detail: 'Regulations not reviewed',
+          days: proximity,
+        });
+      } else if (-daysUntil(regulation.lastReviewedOn, today) > REVIEW_STALE_DAYS) {
+        attention.push({
+          id: `${regulation.id}-stale`,
+          title: seasonTitle(season),
+          detail: `Regulations ${relativeDays(daysUntil(regulation.lastReviewedOn, today))
+            .replace('days ago', 'days old')}`,
+          days: proximity,
+        });
+      }
     }
   }
 

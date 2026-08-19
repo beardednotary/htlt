@@ -74,3 +74,11 @@ export function relativeDays(days: number): string {
   if (days > 1) return `in ${days} days`;
   return `${Math.abs(days)} days ago`;
 }
+
+/** "Reviewed today", "Reviewed 12 days ago", or an honest admission that nobody has. */
+export function reviewedLine(lastReviewedOn: ISODate | undefined, today: ISODate = todayISO()): string {
+  if (!lastReviewedOn) return 'Never reviewed';
+  const days = daysUntil(lastReviewedOn, today);
+  if (days === 0) return 'Reviewed today';
+  return `Reviewed ${relativeDays(days)}`;
+}
