@@ -1,6 +1,13 @@
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import { useEffect } from 'react';
+
+import { loadStore } from '../src/data/store';
 
 export default function RootLayout() {
+  useEffect(() => {
+    void loadStore();
+  }, []);
+
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="(today)">

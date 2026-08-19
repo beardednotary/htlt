@@ -1,13 +1,131 @@
-import { ContentUnavailableView, Host } from '@expo/ui/swift-ui';
+import {
+  ContentUnavailableView,
+  Host,
+  List,
+  Picker,
+  Text,
+  VStack,
+} from '@expo/ui/swift-ui';
+import {
+  font,
+  foregroundStyle,
+  listStyle,
+  padding,
+  pickerStyle,
+  tag,
+} from '@expo/ui/swift-ui/modifiers';
+import { Stack, useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
+
+import { useStore } from '../../src/data/store';
+import {
+  seasonDatesLine,
+  seasonPhase,
+  seasonSubtitle,
+  seasonTitle,
+  type SeasonPhase,
+} from '../../src/model/derive';
+import { HeaderButton } from '../../src/ui/HeaderButton';
+
+const PHASES: { value: SeasonPhase; label: string }[] = [
+  { value: 'active', label: 'Active' },
+  { value: 'upcoming', label: 'Upcoming' },
+  { value: 'past', label: 'Past' },
+];
+
+const EMPTY_PHASE_TEXT: Record<SeasonPhase, string> = {
+  active: 'Nothing open right now.',
+  upcoming: 'Nothing coming up.',
+  past: 'Nothing here yet.',
+};
 
 export default function SeasonsScreen() {
+  const { data } = useStore();
+  const router = useRouter();
+  const [phase, setPhase] = useState<SeasonPhase>('upcoming');
+
+  const seasons = useMemo(
+    () => data.seasons.filter((season) => seasonPhase(season) === phase),
+    [data.seasons, phase]
+  );
+
+  const header = (
+    <Stack.Screen
+      options={{
+        headerRight: () => (
+          <HeaderButton systemImage="plus" onPress={() => router.push('/new')} />
+        ),
+      }}
+    />
+  );
+
+  if (data.seasons.length === 0) {
+    return (
+      <>
+        {header}
+        <Host style={{ flex: 1 }}>
+          <ContentUnavailableView
+            title="No Seasons"
+            systemImage="calendar"
+            description="A season keeps its dates, tags, licenses, methods and regulations in one place."
+          />
+        </Host>
+      </>
+    );
+  }
+
   return (
-    <Host style={{ flex: 1 }}>
-      <ContentUnavailableView
-        title="No Seasons"
-        systemImage="calendar"
-        description="A season keeps its dates, tags, licenses, methods and regulations in one place."
-      />
-    </Host>
+    <>
+      {header}
+      <Host style={{ flex: 1 }}>
+        <VStack spacing={0}>
+          <Picker
+            selection={phase}
+            onSelectionChange={(value) => setPhase(value as SeasonPhase)}
+            modifiers={[
+              pickerStyle('segmented'),
+              padding({ horizontal: 16, top: 8, bottom: 4 }),
+            ]}>
+            {PHASES.map((option) => (
+              <Text key={option.value} modifiers={[tag(option.value)]}>
+                {option.label}
+              </Text>
+            ))}
+          </Picker>
+
+          <List modifiers={[listStyle('insetGrouped')]}>
+            {seasons.length === 0 ? (
+              <Text
+                modifiers={[
+                  font({ textStyle: 'subheadline' }),
+                  foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                ]}>
+                {EMPTY_PHASE_TEXT[phase]}
+              </Text>
+            ) : (
+              seasons.map((season) => (
+                <VStack key={season.id} alignment="leading" spacing={2}>
+                  <Text modifiers={[font({ textStyle: 'body' })]}>{seasonTitle(season)}</Text>
+                  <Text
+                    modifiers={[
+                      font({ textStyle: 'subheadline' }),
+                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                    ]}>
+                    {seasonSubtitle(season)}
+                  </Text>
+                  <Text
+                    modifiers={[
+                      font({ textStyle: 'footnote' }),
+                      foregroundStyle({ type: 'hierarchical', style: 'tertiary' }),
+                    ]}>
+                    {seasonDatesLine(season)}
+                  </Text>
+                </VStack>
+              ))
+            )}
+          </List>
+        </VStack>
+      </Host>
+    </>
   );
 }
