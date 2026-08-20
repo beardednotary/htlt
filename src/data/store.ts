@@ -482,7 +482,7 @@ export function renamePerson(id: ID, name: string) {
 }
 
 /**
- * Removing a person takes their credentials with them — a licence belongs to a
+ * Removing a person takes their credentials with them — a license belongs to a
  * person and means nothing without one — and detaches them from anything shared.
  * Hunts they were on survive; the day still happened.
  */

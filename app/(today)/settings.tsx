@@ -65,7 +65,7 @@ export default function SettingsScreen() {
             title="Reminders"
             footer={
               <Text>
-                Openers a week and a day out, licences 30 and 7 days before they lapse, draw
+                Openers a week and a day out, licenses 30 and 7 days before they lapse, draw
                 deadlines, and a nudge to read the regulations two weeks before the season
                 starts. All of it comes from what you have already entered.
               </Text>

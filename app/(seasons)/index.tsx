@@ -73,7 +73,7 @@ export default function SeasonsScreen() {
           <ContentUnavailableView
             title="No Seasons Yet"
             systemImage="calendar"
-            description="A season is one species, one place, one year — California Deer, 2026. Its tag, the licence that covers it, the dates it runs and the official regulations all hang off it. Tap + to start one."
+            description="A season is one species, one place, one year — California Deer, 2026. Its tag, the license that covers it, the dates it runs and the official regulations all hang off it. Tap + to start one."
           />
         </Host>
       </>

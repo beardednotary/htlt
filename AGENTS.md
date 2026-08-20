@@ -41,6 +41,17 @@ ours to design. App chrome stays Apple; the memories belong to the product.
 
 Adding is a top-right `+` with a native menu, contextual to the tab. Never a FAB.
 
+## Spelling
+
+Fixed UI copy — empty states, section footers, settings, alerts — uses **US spelling**:
+`license`, not `licence`. The U.S. is the primary market.
+
+The only place the Canadian spelling appears is `src/data/vocabulary.ts`, which picks the
+word from the record's own jurisdiction: an Ontario season reads "Licence", a California one
+reads "License". That is per-record labelling, not localization of the app's chrome. Do not
+mix the two — a screen that says "Licence" in a heading and "licenses" in its footer is a
+bug, not a nuance.
+
 ## Structure
 
 Four native tabs — **Today · Seasons · Journal · Family**. Settings lives behind a person button
