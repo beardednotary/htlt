@@ -60,6 +60,11 @@ off them.
 
 The data model is locked — see `src/model/types.ts`. Read it before adding a record type.
 
+## Pricing
+
+Free, Outdoorsman ($19.99/yr) and Family ($34.99/yr) — see `docs/pricing.md`. Gates live
+only in `src/purchases/limits.ts`. **The journal is never paywalled on any tier.**
+
 ## Product boundaries
 
 - We never become the source of truth for regulations. Store the official agency link, the user's
