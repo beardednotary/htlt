@@ -31,9 +31,15 @@ const SCHEMA_VERSION = 1;
  * by the types rather than by a query engine. If that ever stops being true, this is
  * the single place that has to change.
  */
+export interface AppSettings {
+  /** Off until asked for. We never request notification permission on first launch. */
+  remindersEnabled: boolean;
+}
+
 export interface AppData {
   schemaVersion: number;
   householdId: ID;
+  settings: AppSettings;
   people: Person[];
   credentials: Credential[];
   seasons: Season[];
@@ -52,6 +58,7 @@ function emptyData(): AppData {
   return {
     schemaVersion: SCHEMA_VERSION,
     householdId: newId('hh'),
+    settings: { remindersEnabled: false },
     people: [],
     credentials: [],
     seasons: [],
@@ -105,7 +112,13 @@ export function loadStore(): Promise<void> {
     if (raw) {
       try {
         const parsed = JSON.parse(raw) as Partial<AppData>;
-        data = { ...data, ...parsed, schemaVersion: SCHEMA_VERSION };
+        data = {
+          ...data,
+          ...parsed,
+          // Documents written before a setting existed must not arrive without it.
+          settings: { ...data.settings, ...(parsed.settings ?? {}) },
+          schemaVersion: SCHEMA_VERSION,
+        };
       } catch {
         // A corrupt document is better replaced than allowed to wedge the app.
       }
@@ -526,4 +539,8 @@ export function removeSeasonParticipant(seasonId: ID, personId: ID) {
         : season
     ),
   }));
+}
+
+export function setRemindersEnabled(enabled: boolean) {
+  mutate((data) => ({ ...data, settings: { ...data.settings, remindersEnabled: enabled } }));
 }

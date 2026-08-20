@@ -4,6 +4,15 @@ export default function TodayLayout() {
   return (
     <Stack screenOptions={{ headerLargeTitle: true }}>
       <Stack.Screen name="index" options={{ title: 'Today' }} />
+      <Stack.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          presentation: 'formSheet',
+          headerLargeTitle: false,
+          sheetGrabberVisible: true,
+        }}
+      />
     </Stack>
   );
 }

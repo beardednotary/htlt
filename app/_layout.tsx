@@ -1,12 +1,26 @@
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useEffect } from 'react';
 
-import { loadStore } from '../src/data/store';
+import { loadStore, useStore } from '../src/data/store';
+import { syncReminders } from '../src/notifications/reminders';
 
 export default function RootLayout() {
+  const { loaded, data } = useStore();
+
   useEffect(() => {
     void loadStore();
   }, []);
+
+  // The schedule is rebuilt from the records whenever they change, so a deleted
+  // season stops nagging and a new opener starts. Debounced so a burst of edits
+  // costs one rebuild rather than one per keystroke.
+  useEffect(() => {
+    if (!loaded || !data.settings.remindersEnabled) return;
+    const timer = setTimeout(() => {
+      void syncReminders(data);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [loaded, data]);
 
   return (
     <NativeTabs>
