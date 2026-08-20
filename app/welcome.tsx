@@ -68,9 +68,14 @@ export default function WelcomeScreen() {
         <View style={styles.steps}>
           {STEPS.map((step) => (
             <View key={step.title} style={styles.step}>
-              <Host matchContents style={styles.stepIcon}>
-                <SwiftUIImage systemName={step.symbol} size={26} />
-              </Host>
+              {/* The column owns the width. Host matchContents writes its measured
+                  size back to the view, so a wider symbol would otherwise shift
+                  its own row's text and break the left edge. */}
+              <View style={styles.stepIcon}>
+                <Host matchContents>
+                  <SwiftUIImage systemName={step.symbol} size={24} />
+                </Host>
+              </View>
               <View style={styles.stepText}>
                 <Text style={styles.stepTitle}>{step.title}</Text>
                 <Text style={styles.stepBody}>{step.body}</Text>
@@ -116,7 +121,7 @@ const styles = StyleSheet.create({
 
   steps: { paddingTop: 32 },
   step: { flexDirection: 'row', paddingBottom: 26 },
-  stepIcon: { width: 40, paddingTop: 2 },
+  stepIcon: { width: 44, alignItems: 'center', paddingTop: 1 },
   stepText: { flex: 1 },
   stepTitle: { fontSize: 17, fontWeight: '600', color: PlatformColor('label') },
   stepBody: {
