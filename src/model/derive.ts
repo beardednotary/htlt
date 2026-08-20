@@ -90,3 +90,32 @@ export function formatEntryDate(iso: ISODate, today: ISODate = todayISO()): stri
   const [currentYear] = today.split('-');
   return year === currentYear ? short : `${short}, ${year}`;
 }
+
+export type CredentialStatus = 'valid' | 'expiring' | 'expired' | 'undated';
+
+/** Inside this window an expiry stops being trivia and starts being a problem. */
+export const EXPIRING_SOON_DAYS = 60;
+
+export function credentialStatus(
+  validUntil: ISODate | undefined,
+  today: ISODate = todayISO()
+): CredentialStatus {
+  if (!validUntil) return 'undated';
+  const days = daysUntil(validUntil, today);
+  if (days < 0) return 'expired';
+  if (days <= EXPIRING_SOON_DAYS) return 'expiring';
+  return 'valid';
+}
+
+/** "Expires in 22 days", "Expired 50 days ago", "Valid through Dec 31". */
+export function credentialStatusLine(
+  validUntil: ISODate | undefined,
+  today: ISODate = todayISO()
+): string {
+  if (!validUntil) return 'No expiry recorded';
+  const days = daysUntil(validUntil, today);
+  if (days < 0) return `Expired ${relativeDays(days)}`;
+  if (days === 0) return 'Expires today';
+  if (days <= EXPIRING_SOON_DAYS) return `Expires ${relativeDays(days)}`;
+  return `Valid through ${formatShortDate(validUntil)}`;
+}

@@ -25,7 +25,12 @@ import { useState } from 'react';
 
 import { jurisdictionName } from '../../../../src/data/constants';
 import { credentialKindLabel, licenceWord } from '../../../../src/data/vocabulary';
-import { addCredential, linkCredential, useStore } from '../../../../src/data/store';
+import {
+  addCredential,
+  linkCredential,
+  primaryPersonId,
+  useStore,
+} from '../../../../src/data/store';
 import { todayISO } from '../../../../src/model/derive';
 import type { CredentialKind } from '../../../../src/model/types';
 import { HeaderButton } from '../../../../src/ui/HeaderButton';
@@ -45,6 +50,8 @@ export default function SeasonCredentialsScreen() {
   const jurisdictionId = season?.jurisdictionId ?? 'us-ca';
   const available = data.credentials.filter((c) => !season?.credentialIds.includes(c.id));
 
+  const people = data.people;
+  const [personId, setPersonId] = useState<string>(() => people[0]?.id ?? '');
   const [kind, setKind] = useState<CredentialKind>('license');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -58,6 +65,7 @@ export default function SeasonCredentialsScreen() {
       kind,
       name: name.trim(),
       jurisdictionId: season.jurisdictionId,
+      personId: personId || primaryPersonId(),
       number: number.trim() || undefined,
       year: season.year,
       validUntil: todayISO(expires),
@@ -91,6 +99,19 @@ export default function SeasonCredentialsScreen() {
       <Host style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section title="New">
+            {people.length > 1 ? (
+              <Picker
+                label="Whose"
+                selection={personId}
+                onSelectionChange={(value) => setPersonId(String(value))}
+                modifiers={[pickerStyle('menu')]}>
+                {people.map((person) => (
+                  <Text key={person.id} modifiers={[tag(person.id)]}>
+                    {person.name}
+                  </Text>
+                ))}
+              </Picker>
+            ) : null}
             <Picker
               label="Kind"
               selection={kind}

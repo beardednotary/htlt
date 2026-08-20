@@ -6,6 +6,7 @@ import {
   Host,
   Image,
   List,
+  Menu,
   Section,
   Spacer,
   SwipeActions,
@@ -26,9 +27,11 @@ import { useMemo, useState } from 'react';
 
 import { addCredentialLabel, credentialsSectionTitle } from '../../../../src/data/vocabulary';
 import {
+  addSeasonParticipant,
   markRegulationReviewed,
   removeRegulation,
   removeSeason,
+  removeSeasonParticipant,
   useStore,
 } from '../../../../src/data/store';
 import {
@@ -65,6 +68,8 @@ export default function SeasonDetailScreen() {
 
   const credentials = data.credentials.filter((c) => season.credentialIds.includes(c.id));
   const regulations = data.regulations.filter((r) => season.regulationIds.includes(r.id));
+  const participants = data.people.filter((person) => season.participantIds.includes(person.id));
+  const available = data.people.filter((person) => !season.participantIds.includes(person.id));
 
   function confirmDelete() {
     if (!season) return;
@@ -217,6 +222,41 @@ export default function SeasonDetailScreen() {
               systemImage="plus"
               onPress={() => router.push(`/season/${season.id}/regulations`)}
             />
+          </Section>
+
+          <Section
+            title="People"
+            footer={<Text>Who is on this season. Everyone lives in Family.</Text>}>
+            {participants.length === 0 ? (
+              <Text modifiers={[foregroundStyle({ type: 'hierarchical', style: 'secondary' })]}>
+                Nobody added yet
+              </Text>
+            ) : (
+              participants.map((person) => (
+                <SwipeActions key={person.id}>
+                  <Text>{person.name}</Text>
+                  <SwipeActions.Actions edge="trailing">
+                    <Button
+                      label="Remove"
+                      systemImage="person.badge.minus"
+                      role="destructive"
+                      onPress={() => removeSeasonParticipant(season.id, person.id)}
+                    />
+                  </SwipeActions.Actions>
+                </SwipeActions>
+              ))
+            )}
+            {available.length > 0 ? (
+              <Menu label="Add Person" systemImage="plus">
+                {available.map((person) => (
+                  <Button
+                    key={person.id}
+                    label={person.name}
+                    onPress={() => addSeasonParticipant(season.id, person.id)}
+                  />
+                ))}
+              </Menu>
+            ) : null}
           </Section>
 
           <Section title="Journal">

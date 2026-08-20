@@ -211,6 +211,8 @@ export interface NewCredentialInput {
   kind: CredentialKind;
   name: string;
   jurisdictionId: ID;
+  /** Whose it is. Defaults to the household's owner when there is only one person. */
+  personId?: ID;
   number?: string;
   year?: number;
   validUntil?: ISODate;
@@ -219,7 +221,7 @@ export interface NewCredentialInput {
 export function addCredential(input: NewCredentialInput): Credential {
   const credential: Credential = {
     id: newId('cred'),
-    personId: primaryPersonId(),
+    personId: input.personId ?? primaryPersonId(),
     kind: input.kind,
     name: input.name,
     jurisdictionId: input.jurisdictionId,
@@ -427,4 +429,101 @@ export function tagForSeason(seasonId: ID | undefined): ID | undefined {
     (credential) => season.credentialIds.includes(credential.id) && credential.kind === 'tag'
   );
   return tag?.id;
+}
+
+export interface NewPersonInput {
+  name: string;
+  birthYear?: number;
+  huntingSince?: number;
+  notes?: string;
+}
+
+/**
+ * People do not need accounts. Dad, Grandpa and a nine-year-old all exist here as
+ * records someone else maintains — that is the point of the Family tier, and it is
+ * what lets a lifetime of hunts belong to someone who will never install the app.
+ */
+export function addPerson(input: NewPersonInput): Person {
+  const person: Person = {
+    id: newId('person'),
+    householdId: state.data.householdId,
+    name: input.name.trim(),
+    accountId: null,
+    birthYear: input.birthYear,
+    huntingSince: input.huntingSince,
+    notes: input.notes?.trim() || undefined,
+  };
+  mutate((data) => ({ ...data, people: [...data.people, person] }));
+  return person;
+}
+
+export function renamePerson(id: ID, name: string) {
+  const trimmed = name.trim();
+  if (!trimmed) return;
+  mutate((data) => ({
+    ...data,
+    people: data.people.map((person) =>
+      person.id === id ? { ...person, name: trimmed } : person
+    ),
+  }));
+}
+
+/**
+ * Removing a person takes their credentials with them — a licence belongs to a
+ * person and means nothing without one — and detaches them from anything shared.
+ * Hunts they were on survive; the day still happened.
+ */
+export function removePerson(id: ID) {
+  mutate((data) => {
+    const ownedCredentialIds = data.credentials
+      .filter((credential) => credential.personId === id)
+      .map((credential) => credential.id);
+    return {
+      ...data,
+      people: data.people.filter((person) => person.id !== id),
+      credentials: data.credentials.filter((credential) => credential.personId !== id),
+      gear: data.gear.map((item) => (item.personId === id ? { ...item, personId: undefined } : item)),
+      seasons: data.seasons.map((season) => ({
+        ...season,
+        participantIds: season.participantIds.filter((participantId) => participantId !== id),
+        credentialIds: season.credentialIds.filter(
+          (credentialId) => !ownedCredentialIds.includes(credentialId)
+        ),
+      })),
+      trips: data.trips.map((trip) => ({
+        ...trip,
+        participantIds: trip.participantIds.filter((participantId) => participantId !== id),
+      })),
+      activities: data.activities.map((activity) => ({
+        ...activity,
+        participantIds: activity.participantIds.filter((participantId) => participantId !== id),
+      })),
+      milestones: data.milestones.filter((milestone) => milestone.personId !== id),
+    };
+  });
+}
+
+export function addSeasonParticipant(seasonId: ID, personId: ID) {
+  mutate((data) => ({
+    ...data,
+    seasons: data.seasons.map((season) =>
+      season.id === seasonId && !season.participantIds.includes(personId)
+        ? { ...season, participantIds: [...season.participantIds, personId] }
+        : season
+    ),
+  }));
+}
+
+export function removeSeasonParticipant(seasonId: ID, personId: ID) {
+  mutate((data) => ({
+    ...data,
+    seasons: data.seasons.map((season) =>
+      season.id === seasonId
+        ? {
+            ...season,
+            participantIds: season.participantIds.filter((id) => id !== personId),
+          }
+        : season
+    ),
+  }));
 }
