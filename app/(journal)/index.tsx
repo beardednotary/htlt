@@ -92,9 +92,9 @@ export default function JournalScreen() {
         {header}
         <Host style={{ flex: 1 }}>
           <ContentUnavailableView
-            title="No Entries"
+            title="No Entries Yet"
             systemImage="book.closed"
-            description="Log a hunt or a fishing trip. Days without a harvest are worth keeping too."
+            description="Log the days you go out and what came of them. A day with nothing taken is still worth keeping. Tap + to record a hunt or a fishing trip."
           />
         </Host>
       </>
@@ -124,7 +124,7 @@ export default function JournalScreen() {
                   font({ textStyle: 'subheadline' }),
                   foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
                 ]}>
-                Nothing logged here yet.
+                Nothing logged under this filter yet.
               </Text>
             ) : (
               entries.map((activity) => (

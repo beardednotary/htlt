@@ -71,7 +71,7 @@ export default function FamilyScreen() {
           <ContentUnavailableView
             title="No People Yet"
             systemImage="person.2"
-            description="Add the people you hunt and fish with. They don't need an account of their own."
+            description="Add the people you hunt and fish with. Nobody needs an account of their own — you hold their licences, tags and history, which is how a family's hunting history stays in one place. Tap + to add someone."
           />
         </Host>
       </>

@@ -40,9 +40,9 @@ const PHASES: { value: SeasonPhase; label: string }[] = [
 ];
 
 const EMPTY_PHASE_TEXT: Record<SeasonPhase, string> = {
-  active: 'Nothing open right now.',
-  upcoming: 'Nothing coming up.',
-  past: 'Nothing here yet.',
+  active: 'Nothing open right now. Seasons appear here once their dates arrive.',
+  upcoming: 'Nothing coming up. A season with no dates yet counts as upcoming.',
+  past: 'Nothing closed yet. Seasons move here after their last day.',
 };
 
 export default function SeasonsScreen() {
@@ -71,9 +71,9 @@ export default function SeasonsScreen() {
         {header}
         <Host style={{ flex: 1 }}>
           <ContentUnavailableView
-            title="No Seasons"
+            title="No Seasons Yet"
             systemImage="calendar"
-            description="A season keeps its dates, tags, licenses, methods and regulations in one place."
+            description="A season is one species, one place, one year — California Deer, 2026. Its tag, the licence that covers it, the dates it runs and the official regulations all hang off it. Tap + to start one."
           />
         </Host>
       </>

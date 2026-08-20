@@ -32,7 +32,7 @@ export default function TodayScreen() {
         <ContentUnavailableView
           title="Nothing Coming Up"
           systemImage="calendar.badge.plus"
-          description="Add a season and this screen fills in with openers, deadlines and anything about to expire."
+          description="Openers, application deadlines and licences about to lapse all surface here. Today is assembled from what you enter elsewhere — start with a season."
         />
       </Host>
     );
