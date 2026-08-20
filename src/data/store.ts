@@ -36,6 +36,8 @@ export interface AppSettings {
   remindersEnabled: boolean;
   /** Year → document id. A chosen recap cover beats the automatic pick. */
   recapCovers?: Record<string, ID>;
+  /** The walkthrough is shown once, then lives in Settings for whenever it is wanted. */
+  welcomeSeen?: boolean;
 }
 
 export interface AppData {
@@ -654,4 +656,8 @@ export function recapCoverUri(year: number): string | undefined {
   const id = state.data.settings.recapCovers?.[String(year)];
   if (!id) return undefined;
   return state.data.documents.find((document) => document.id === id)?.uri;
+}
+
+export function setWelcomeSeen(seen: boolean) {
+  mutate((data) => ({ ...data, settings: { ...data.settings, welcomeSeen: seen } }));
 }

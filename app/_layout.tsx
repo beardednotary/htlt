@@ -1,15 +1,28 @@
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
 import { loadStore, useStore } from '../src/data/store';
 import { syncReminders } from '../src/notifications/reminders';
+import { EntitlementsProvider } from '../src/purchases/entitlements';
 
+/**
+ * A stack above the tabs, so anything that has to appear over the whole app —
+ * the paywall, the first-run walkthrough — has somewhere to live. The tabs
+ * themselves are one screen inside it.
+ */
 export default function RootLayout() {
   const { loaded, data } = useStore();
+  const router = useRouter();
 
   useEffect(() => {
     void loadStore();
   }, []);
+
+  // Shown once, the first time the app opens with nothing in it.
+  useEffect(() => {
+    if (!loaded || data.settings.welcomeSeen) return;
+    router.push('/welcome');
+  }, [loaded, data.settings.welcomeSeen, router]);
 
   // The schedule is rebuilt from the records whenever they change, so a deleted
   // season stops nagging and a new opener starts. Debounced so a burst of edits
@@ -23,26 +36,27 @@ export default function RootLayout() {
   }, [loaded, data]);
 
   return (
-    <NativeTabs>
-      <NativeTabs.Trigger name="(today)">
-        <NativeTabs.Trigger.Label>Today</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'sun.horizon', selected: 'sun.horizon.fill' }} />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="(seasons)">
-        <NativeTabs.Trigger.Label>Seasons</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="calendar" />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="(journal)">
-        <NativeTabs.Trigger.Label>Journal</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'book.closed', selected: 'book.closed.fill' }} />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="(family)">
-        <NativeTabs.Trigger.Label>Family</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'person.2', selected: 'person.2.fill' }} />
-      </NativeTabs.Trigger>
-    </NativeTabs>
+    <EntitlementsProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="paywall"
+        options={{
+          presentation: 'formSheet',
+          sheetGrabberVisible: true,
+          sheetAllowedDetents: [0.999],
+        }}
+      />
+      <Stack.Screen
+        name="welcome"
+        options={{
+          presentation: 'formSheet',
+          sheetGrabberVisible: false,
+          gestureEnabled: false,
+          sheetAllowedDetents: [0.999],
+        }}
+      />
+      </Stack>
+    </EntitlementsProvider>
   );
 }
