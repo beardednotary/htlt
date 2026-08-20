@@ -1,4 +1,4 @@
-import type { Country, Jurisdiction, MethodOfTake } from '../model/types';
+import type { Country, FishingTechnique, Jurisdiction, MethodOfTake } from '../model/types';
 
 /**
  * Jurisdictions are a fixed list rather than user records — a hunter picks one, they
@@ -125,5 +125,31 @@ export const METHOD_ORDER: MethodOfTake[] = [
   'crossbow',
   'handgun',
   'airgun',
+  'other',
+];
+
+export const TECHNIQUE_LABELS: Record<FishingTechnique, string> = {
+  fly: 'Fly',
+  spin: 'Spin',
+  baitcasting: 'Baitcasting',
+  trolling: 'Trolling',
+  jigging: 'Jigging',
+  bottom: 'Bottom',
+  surf: 'Surf',
+  ice: 'Ice',
+  spear: 'Spear',
+  other: 'Other',
+};
+
+export const TECHNIQUE_ORDER: FishingTechnique[] = [
+  'fly',
+  'spin',
+  'baitcasting',
+  'trolling',
+  'jigging',
+  'bottom',
+  'surf',
+  'ice',
+  'spear',
   'other',
 ];

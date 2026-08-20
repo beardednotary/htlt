@@ -82,3 +82,11 @@ export function reviewedLine(lastReviewedOn: ISODate | undefined, today: ISODate
   if (days === 0) return 'Reviewed today';
   return `Reviewed ${relativeDays(days)}`;
 }
+
+/** "Aug 11" for this year, "Nov 17, 2024" once the year stops being obvious. */
+export function formatEntryDate(iso: ISODate, today: ISODate = todayISO()): string {
+  const short = formatShortDate(iso);
+  const [year] = iso.split('-');
+  const [currentYear] = today.split('-');
+  return year === currentYear ? short : `${short}, ${year}`;
+}

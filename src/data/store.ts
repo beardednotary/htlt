@@ -9,6 +9,7 @@ import type {
   Harvest,
   Credential,
   CredentialKind,
+  FishingTechnique,
   ID,
   ISODate,
   MethodOfTake,
@@ -309,5 +310,48 @@ export function removeRegulation(seasonId: ID, regulationId: ID) {
         ? { ...season, regulationIds: season.regulationIds.filter((id) => id !== regulationId) }
         : season
     ),
+  }));
+}
+
+export interface NewActivityInput {
+  pursuit: Activity['pursuit'];
+  date: ISODate;
+  seasonId?: ID;
+  locationName?: string;
+  methodOfTake?: MethodOfTake;
+  technique?: FishingTechnique;
+  notes?: string;
+}
+
+/**
+ * A day afield with nothing to show for it is still a record worth keeping, so
+ * nothing here is required beyond the date and whether you were hunting or fishing.
+ */
+export function addActivity(input: NewActivityInput): Activity {
+  const personId = primaryPersonId();
+  const activity: Activity = {
+    id: newId('act'),
+    householdId: state.data.householdId,
+    seasonId: input.seasonId,
+    pursuit: input.pursuit,
+    date: input.date,
+    locationName: input.locationName?.trim() || undefined,
+    participantIds: [personId],
+    methodOfTake: input.methodOfTake,
+    technique: input.technique,
+    gearIds: [],
+    documentIds: [],
+    notes: input.notes?.trim() || undefined,
+  };
+  mutate((data) => ({ ...data, activities: [...data.activities, activity] }));
+  return activity;
+}
+
+export function removeActivity(id: ID) {
+  mutate((data) => ({
+    ...data,
+    activities: data.activities.filter((activity) => activity.id !== id),
+    harvests: data.harvests.filter((harvest) => harvest.activityId !== id),
+    catches: data.catches.filter((entry) => entry.activityId !== id),
   }));
 }
