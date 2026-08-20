@@ -20,6 +20,7 @@ export default function SeasonsLayout() {
         }}
       />
       <Stack.Screen name="season/[id]/index" options={{ headerLargeTitle: false }} />
+      <Stack.Screen name="recap/[year]" options={{ headerLargeTitle: false }} />
       <Stack.Screen
         name="season/[id]/credentials"
         options={{

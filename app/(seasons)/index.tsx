@@ -24,6 +24,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
 import { useStore } from '../../src/data/store';
+import { yearsWithActivity } from '../../src/model/recap';
 import {
   seasonDatesLine,
   seasonPhase,
@@ -55,9 +56,17 @@ export default function SeasonsScreen() {
     [data.seasons, phase]
   );
 
+  const recapYear = yearsWithActivity(data)[0] ?? new Date().getFullYear();
+
   const header = (
     <Stack.Screen
       options={{
+        headerLeft: () => (
+          <HeaderButton
+            systemImage="chart.bar"
+            onPress={() => router.push(`/recap/${recapYear}`)}
+          />
+        ),
         headerRight: () => (
           <HeaderButton systemImage="plus" onPress={() => router.push('/new')} />
         ),
