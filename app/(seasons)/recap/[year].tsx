@@ -1,3 +1,4 @@
+import { Button, Host, Image as SwiftUIImage } from '@expo/ui/swift-ui';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
@@ -85,7 +86,7 @@ export default function RecapScreen() {
         style={styles.screen}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}>
-        <Hero recap={recap} coverUri={coverUri} />
+        <Hero recap={recap} coverUri={coverUri} onChooseCover={chooseCover} />
 
         <View style={styles.statRow}>
           <Stat value={recap.daysAfield} label="Days afield" />
@@ -147,7 +148,15 @@ export default function RecapScreen() {
   );
 }
 
-function Hero({ recap, coverUri }: { recap: YearRecap; coverUri?: string }) {
+function Hero({
+  recap,
+  coverUri,
+  onChooseCover,
+}: {
+  recap: YearRecap;
+  coverUri?: string;
+  onChooseCover: () => void;
+}) {
   return (
     <View style={styles.hero}>
       {coverUri ? (
@@ -158,12 +167,15 @@ function Hero({ recap, coverUri }: { recap: YearRecap; coverUri?: string }) {
       <View style={styles.heroScrim} />
       <Text style={styles.heroYear}>{recap.year}</Text>
       <Text style={styles.heroCaption}>
-        {recap.isEmpty
-          ? 'Nothing logged yet'
-          : coverUri
-            ? 'Your year outdoors'
-            : 'Your year outdoors  ·  Add a cover from the menu'}
+        {recap.isEmpty ? 'Nothing logged yet' : 'Your year outdoors'}
       </Text>
+
+      {/* On the image itself, because nobody finds a cover picker in a menu. */}
+      <Host matchContents style={styles.heroEdit} seedColor="#ffffff">
+        <Button onPress={onChooseCover}>
+          <SwiftUIImage systemName="photo.badge.plus" size={20} color="#ffffff" />
+        </Button>
+      </Host>
     </View>
   );
 }
@@ -270,5 +282,6 @@ const styles = StyleSheet.create({
   tallyLabel: { fontSize: 17, color: PlatformColor('label') },
   tallyCount: { fontSize: 17, color: PlatformColor('secondaryLabel') },
 
+  heroEdit: { position: 'absolute', right: 14, top: 14 },
   switcher: { alignItems: 'center', paddingTop: 40 },
 });
