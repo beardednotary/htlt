@@ -23,12 +23,12 @@ import {
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
-import { jurisdictionName } from '../../../src/data/constants';
-import { credentialKindLabel, licenceWord } from '../../../src/data/vocabulary';
-import { addCredential, linkCredential, useStore } from '../../../src/data/store';
-import { todayISO } from '../../../src/model/derive';
-import type { CredentialKind } from '../../../src/model/types';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { jurisdictionName } from '../../../../src/data/constants';
+import { credentialKindLabel, licenceWord } from '../../../../src/data/vocabulary';
+import { addCredential, linkCredential, useStore } from '../../../../src/data/store';
+import { todayISO } from '../../../../src/model/derive';
+import type { CredentialKind } from '../../../../src/model/types';
+import { HeaderButton } from '../../../../src/ui/HeaderButton';
 
 const KIND_ORDER: CredentialKind[] = ['license', 'tag', 'permit', 'validation'];
 

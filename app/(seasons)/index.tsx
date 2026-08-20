@@ -114,7 +114,7 @@ export default function SeasonsScreen() {
                   key={season.id}
                   modifiers={[
                     contentShape(shapes.rectangle()),
-                    onTapGesture(() => router.push(`/${season.id}`)),
+                    onTapGesture(() => router.push(`/season/${season.id}`)),
                   ]}>
                   <VStack alignment="leading" spacing={2}>
                     <Text modifiers={[font({ textStyle: 'body' })]}>{seasonTitle(season)}</Text>

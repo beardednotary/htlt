@@ -9,11 +9,14 @@ import {
   VStack,
 } from '@expo/ui/swift-ui';
 import {
+  contentShape,
   font,
   foregroundStyle,
   listStyle,
+  onTapGesture,
   padding,
   pickerStyle,
+  shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
@@ -125,7 +128,12 @@ export default function JournalScreen() {
               </Text>
             ) : (
               entries.map((activity) => (
-                <HStack key={activity.id}>
+                <HStack
+                  key={activity.id}
+                  modifiers={[
+                    contentShape(shapes.rectangle()),
+                    onTapGesture(() => router.push('/entry/' + activity.id)),
+                  ]}>
                   <VStack alignment="leading" spacing={2}>
                     <Text modifiers={[font({ textStyle: 'body' })]}>{titleFor(activity)}</Text>
                     <Text

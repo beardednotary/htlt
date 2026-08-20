@@ -1,5 +1,15 @@
-import { DatePicker, Form, Host, Picker, Section, Text, TextField } from '@expo/ui/swift-ui';
-import { datePickerStyle, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
+import {
+  DatePicker,
+  Form,
+  Host,
+  Picker,
+  Section,
+  Stepper,
+  Text,
+  TextField,
+  Toggle,
+} from '@expo/ui/swift-ui';
+import { datePickerStyle, keyboardType, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
@@ -9,12 +19,18 @@ import {
   TECHNIQUE_LABELS,
   TECHNIQUE_ORDER,
 } from '../../src/data/constants';
-import { addActivity, useStore } from '../../src/data/store';
+import { addActivity, addCatch, addHarvest, tagForSeason, useStore } from '../../src/data/store';
 import { seasonTitle, todayISO } from '../../src/model/derive';
-import type { FishingTechnique, MethodOfTake, Pursuit } from '../../src/model/types';
+import type { FishingTechnique, Harvest, MethodOfTake, Pursuit } from '../../src/model/types';
 import { HeaderButton } from '../../src/ui/HeaderButton';
 
 const NO_SEASON = 'none';
+
+const SEXES: { value: NonNullable<Harvest['sex']>; label: string }[] = [
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
+  { value: 'unknown', label: 'Unknown' },
+];
 
 /**
  * Logging is meant to be quick enough to do in the truck. Date and pursuit are the
@@ -41,8 +57,19 @@ export default function LogActivityScreen() {
   const [technique, setTechnique] = useState<FishingTechnique>('spin');
   const [notes, setNotes] = useState('');
 
+  const [took, setTook] = useState(false);
+  const [species, setSpecies] = useState('');
+  const [sex, setSex] = useState<NonNullable<Harvest['sex']>>('unknown');
+  const [points, setPoints] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [kept, setKept] = useState(true);
+
+  const linkedSeason = seasons.find((season) => season.id === seasonId);
+  // An unnamed harvest still has an obvious species: the one the season is for.
+  const speciesFallback = linkedSeason?.species ?? (hunting ? 'Harvest' : 'Fish');
+
   function save() {
-    addActivity({
+    const activity = addActivity({
       pursuit,
       date: todayISO(date),
       seasonId: seasonId === NO_SEASON ? undefined : seasonId,
@@ -51,6 +78,23 @@ export default function LogActivityScreen() {
       technique: hunting ? undefined : technique,
       notes,
     });
+
+    if (took) {
+      const named = species.trim() || speciesFallback;
+      if (hunting) {
+        const parsedPoints = Number.parseInt(points, 10);
+        addHarvest({
+          activityId: activity.id,
+          species: named,
+          sex,
+          points: Number.isFinite(parsedPoints) ? parsedPoints : undefined,
+          credentialId: tagForSeason(activity.seasonId),
+        });
+      } else {
+        addCatch({ activityId: activity.id, species: named, quantity, kept });
+      }
+    }
+
     router.back();
   }
 
@@ -120,6 +164,58 @@ export default function LogActivityScreen() {
                 ))}
               </Picker>
             )}
+          </Section>
+
+          <Section
+            footer={
+              <Text>
+                {hunting
+                  ? 'A day with nothing taken is still worth logging.'
+                  : 'Leave this off for a trip that skunked you.'}
+              </Text>
+            }>
+            <Toggle
+              label={hunting ? 'Harvested' : 'Caught something'}
+              isOn={took}
+              onIsOnChange={setTook}
+            />
+            {took ? (
+              <TextField
+                placeholder={hunting ? speciesFallback : 'Rainbow Trout'}
+                onTextChange={setSpecies}
+              />
+            ) : null}
+            {took && hunting ? (
+              <Picker
+                label="Sex"
+                selection={sex}
+                onSelectionChange={(value) => setSex(value as NonNullable<Harvest['sex']>)}
+                modifiers={[pickerStyle('menu')]}>
+                {SEXES.map((option) => (
+                  <Text key={option.value} modifiers={[tag(option.value)]}>
+                    {option.label}
+                  </Text>
+                ))}
+              </Picker>
+            ) : null}
+            {took && hunting ? (
+              <TextField
+                placeholder="Points (optional)"
+                onTextChange={setPoints}
+                modifiers={[keyboardType('numeric')]}
+              />
+            ) : null}
+            {took && !hunting ? (
+              <Stepper
+                label={quantity === 1 ? '1 fish' : quantity + ' fish'}
+                value={quantity}
+                min={1}
+                max={200}
+                step={1}
+                onValueChange={setQuantity}
+              />
+            ) : null}
+            {took && !hunting ? <Toggle label="Kept" isOn={kept} onIsOnChange={setKept} /> : null}
           </Section>
 
           <Section title="Notes">

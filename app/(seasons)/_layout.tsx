@@ -13,9 +13,9 @@ export default function SeasonsLayout() {
           sheetGrabberVisible: true,
         }}
       />
-      <Stack.Screen name="[id]/index" options={{ headerLargeTitle: false }} />
+      <Stack.Screen name="season/[id]/index" options={{ headerLargeTitle: false }} />
       <Stack.Screen
-        name="[id]/credentials"
+        name="season/[id]/credentials"
         options={{
           title: 'License or Tag',
           presentation: 'formSheet',
@@ -24,7 +24,7 @@ export default function SeasonsLayout() {
         }}
       />
       <Stack.Screen
-        name="[id]/regulations"
+        name="season/[id]/regulations"
         options={{
           title: 'Regulation Link',
           presentation: 'formSheet',
@@ -33,7 +33,7 @@ export default function SeasonsLayout() {
         }}
       />
       <Stack.Screen
-        name="[id]/dates"
+        name="season/[id]/dates"
         options={{
           title: 'Add Dates',
           presentation: 'formSheet',

@@ -3,11 +3,11 @@ import { datePickerStyle, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
-import { METHOD_LABELS, METHOD_ORDER } from '../../../src/data/constants';
-import { addSeasonWindow, useStore } from '../../../src/data/store';
-import { todayISO } from '../../../src/model/derive';
-import type { MethodOfTake } from '../../../src/model/types';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { METHOD_LABELS, METHOD_ORDER } from '../../../../src/data/constants';
+import { addSeasonWindow, useStore } from '../../../../src/data/store';
+import { todayISO } from '../../../../src/model/derive';
+import type { MethodOfTake } from '../../../../src/model/types';
+import { HeaderButton } from '../../../../src/ui/HeaderButton';
 
 /** A season can have several dated windows — archery, then general, then youth. */
 export default function SeasonDatesScreen() {

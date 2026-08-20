@@ -7,9 +7,9 @@ import {
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
-import { JURISDICTIONS } from '../../../src/data/constants';
-import { addRegulation, useStore } from '../../../src/data/store';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { JURISDICTIONS } from '../../../../src/data/constants';
+import { addRegulation, useStore } from '../../../../src/data/store';
+import { HeaderButton } from '../../../../src/ui/HeaderButton';
 
 /**
  * We save the pointer, not the law. The agency owns the regulations and the liability

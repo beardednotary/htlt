@@ -24,20 +24,20 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useState } from 'react';
 
-import { addCredentialLabel, credentialsSectionTitle } from '../../../src/data/vocabulary';
+import { addCredentialLabel, credentialsSectionTitle } from '../../../../src/data/vocabulary';
 import {
   markRegulationReviewed,
   removeRegulation,
   removeSeason,
   useStore,
-} from '../../../src/data/store';
+} from '../../../../src/data/store';
 import {
   formatShortDate,
   reviewedLine,
   seasonSubtitle,
   seasonTitle,
   todayISO,
-} from '../../../src/model/derive';
+} from '../../../../src/model/derive';
 
 export default function SeasonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -118,7 +118,7 @@ export default function SeasonDetailScreen() {
             <Button
               label="Add Dates"
               systemImage="calendar.badge.plus"
-              onPress={() => router.push(`/${season.id}/dates`)}
+              onPress={() => router.push(`/season/${season.id}/dates`)}
             />
           </Section>
 
@@ -144,7 +144,7 @@ export default function SeasonDetailScreen() {
             <Button
               label={addCredentialLabel(season.jurisdictionId)}
               systemImage="plus"
-              onPress={() => router.push(`/${season.id}/credentials`)}
+              onPress={() => router.push(`/season/${season.id}/credentials`)}
             />
           </Section>
 
@@ -215,7 +215,7 @@ export default function SeasonDetailScreen() {
             <Button
               label="Add Regulation Link"
               systemImage="plus"
-              onPress={() => router.push(`/${season.id}/regulations`)}
+              onPress={() => router.push(`/season/${season.id}/regulations`)}
             />
           </Section>
 

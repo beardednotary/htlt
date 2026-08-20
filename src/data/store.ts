@@ -355,3 +355,76 @@ export function removeActivity(id: ID) {
     catches: data.catches.filter((entry) => entry.activityId !== id),
   }));
 }
+
+export interface NewHarvestInput {
+  activityId: ID;
+  species: string;
+  sex?: Harvest['sex'];
+  points?: number;
+  /** The tag it was taken on, when the season has one linked. */
+  credentialId?: ID;
+  gearId?: ID;
+  notes?: string;
+}
+
+export function addHarvest(input: NewHarvestInput): Harvest {
+  const harvest: Harvest = {
+    id: newId('harvest'),
+    activityId: input.activityId,
+    species: input.species.trim(),
+    sex: input.sex,
+    points: input.points,
+    credentialId: input.credentialId,
+    gearId: input.gearId,
+    documentIds: [],
+    notes: input.notes?.trim() || undefined,
+  };
+  mutate((data) => ({ ...data, harvests: [...data.harvests, harvest] }));
+  return harvest;
+}
+
+export function removeHarvest(id: ID) {
+  mutate((data) => ({ ...data, harvests: data.harvests.filter((h) => h.id !== id) }));
+}
+
+export interface NewCatchInput {
+  activityId: ID;
+  species: string;
+  quantity: number;
+  kept: boolean;
+  lengthIn?: number;
+  weightLb?: number;
+  notes?: string;
+}
+
+export function addCatch(input: NewCatchInput): Catch {
+  const entry: Catch = {
+    id: newId('catch'),
+    activityId: input.activityId,
+    species: input.species.trim(),
+    quantity: Math.max(1, Math.round(input.quantity)),
+    kept: input.kept,
+    lengthIn: input.lengthIn,
+    weightLb: input.weightLb,
+    gearIds: [],
+    documentIds: [],
+    notes: input.notes?.trim() || undefined,
+  };
+  mutate((data) => ({ ...data, catches: [...data.catches, entry] }));
+  return entry;
+}
+
+export function removeCatch(id: ID) {
+  mutate((data) => ({ ...data, catches: data.catches.filter((c) => c.id !== id) }));
+}
+
+/** The tag a harvest would most plausibly have been taken on for this season. */
+export function tagForSeason(seasonId: ID | undefined): ID | undefined {
+  if (!seasonId) return undefined;
+  const season = state.data.seasons.find((s) => s.id === seasonId);
+  if (!season) return undefined;
+  const tag = state.data.credentials.find(
+    (credential) => season.credentialIds.includes(credential.id) && credential.kind === 'tag'
+  );
+  return tag?.id;
+}
