@@ -5,6 +5,8 @@ import {
   HStack,
   Host,
   List,
+  Menu,
+  RNHostView,
   Section,
   Spacer,
   SwipeActions,
@@ -21,11 +23,15 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
+import { Image as RNImage } from 'react-native';
 
 import { METHOD_LABELS, TECHNIQUE_LABELS } from '../../../../src/data/constants';
+import { captureWithCamera, deletePhotoFile, pickFromLibrary } from '../../../../src/data/photos';
 import {
+  addPhotoToActivity,
   removeActivity,
   removeCatch,
+  removeDocument,
   removeHarvest,
   useStore,
 } from '../../../../src/data/store';
@@ -49,6 +55,11 @@ export default function JournalEntryScreen() {
     () => data.catches.filter((entry) => entry.activityId === id),
     [data.catches, id]
   );
+  const photos = useMemo(() => {
+    const owner = data.activities.find((entry) => entry.id === id);
+    if (!owner) return [];
+    return data.documents.filter((document) => owner.documentIds.includes(document.id));
+  }, [data.documents, data.activities, id]);
 
   if (!activity) {
     return (
@@ -209,6 +220,59 @@ export default function JournalEntryScreen() {
               systemImage="plus"
               onPress={() => router.push('/entry/' + activity.id + '/take')}
             />
+          </Section>
+
+          <Section title="Photos">
+            {photos.length === 0 ? (
+              <Text modifiers={[foregroundStyle({ type: 'hierarchical', style: 'secondary' })]}>
+                No photos yet
+              </Text>
+            ) : (
+              photos.map((photo) => (
+                <SwipeActions key={photo.id}>
+                  <HStack>
+                    <RNHostView matchContents>
+                      <RNImage
+                        source={{ uri: photo.uri }}
+                        style={{ width: 56, height: 56, borderRadius: 8 }}
+                      />
+                    </RNHostView>
+                    <Spacer />
+                  </HStack>
+                  <SwipeActions.Actions edge="trailing">
+                    <Button
+                      label="Delete"
+                      systemImage="trash"
+                      role="destructive"
+                      onPress={() => {
+                        removeDocument(photo.id);
+                        void deletePhotoFile(photo.uri);
+                      }}
+                    />
+                  </SwipeActions.Actions>
+                </SwipeActions>
+              ))
+            )}
+            <Menu label="Add Photo" systemImage="camera">
+              <Button
+                label="Take Photo"
+                systemImage="camera"
+                onPress={() => {
+                  void captureWithCamera().then((picked) => {
+                    if (picked && activity) addPhotoToActivity(activity.id, picked);
+                  });
+                }}
+              />
+              <Button
+                label="Choose Photo"
+                systemImage="photo.on.rectangle"
+                onPress={() => {
+                  void pickFromLibrary().then((picked) => {
+                    if (picked && activity) addPhotoToActivity(activity.id, picked);
+                  });
+                }}
+              />
+            </Menu>
           </Section>
 
           {activity.notes ? (

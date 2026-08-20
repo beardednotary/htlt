@@ -544,3 +544,82 @@ export function removeSeasonParticipant(seasonId: ID, personId: ID) {
 export function setRemindersEnabled(enabled: boolean) {
   mutate((data) => ({ ...data, settings: { ...data.settings, remindersEnabled: enabled } }));
 }
+
+export interface NewPhotoInput {
+  uri: string;
+  fileName?: string;
+  caption?: string;
+}
+
+/** Photos attach to whatever they are of — the day, or the animal taken on it. */
+export function addPhotoToActivity(activityId: ID, input: NewPhotoInput): DocumentRef {
+  const document: DocumentRef = {
+    id: newId('doc'),
+    householdId: state.data.householdId,
+    kind: 'photo',
+    uri: input.uri,
+    fileName: input.fileName,
+    capturedAt: new Date().toISOString(),
+    caption: input.caption,
+  };
+  mutate((data) => ({
+    ...data,
+    documents: [...data.documents, document],
+    activities: data.activities.map((activity) =>
+      activity.id === activityId
+        ? { ...activity, documentIds: [...activity.documentIds, document.id] }
+        : activity
+    ),
+  }));
+  return document;
+}
+
+export function addPhotoToHarvest(harvestId: ID, input: NewPhotoInput): DocumentRef {
+  const document: DocumentRef = {
+    id: newId('doc'),
+    householdId: state.data.householdId,
+    kind: 'photo',
+    uri: input.uri,
+    fileName: input.fileName,
+    capturedAt: new Date().toISOString(),
+    caption: input.caption,
+  };
+  mutate((data) => ({
+    ...data,
+    documents: [...data.documents, document],
+    harvests: data.harvests.map((harvest) =>
+      harvest.id === harvestId
+        ? { ...harvest, documentIds: [...harvest.documentIds, document.id] }
+        : harvest
+    ),
+  }));
+  return document;
+}
+
+/** Detaches from everything that referenced it, so no record points at a ghost. */
+export function removeDocument(id: ID) {
+  mutate((data) => ({
+    ...data,
+    documents: data.documents.filter((document) => document.id !== id),
+    activities: data.activities.map((activity) => ({
+      ...activity,
+      documentIds: activity.documentIds.filter((documentId) => documentId !== id),
+    })),
+    harvests: data.harvests.map((harvest) => ({
+      ...harvest,
+      documentIds: harvest.documentIds.filter((documentId) => documentId !== id),
+    })),
+    catches: data.catches.map((entry) => ({
+      ...entry,
+      documentIds: entry.documentIds.filter((documentId) => documentId !== id),
+    })),
+    credentials: data.credentials.map((credential) => ({
+      ...credential,
+      documentIds: credential.documentIds.filter((documentId) => documentId !== id),
+    })),
+    regulations: data.regulations.map((regulation) => ({
+      ...regulation,
+      documentIds: regulation.documentIds.filter((documentId) => documentId !== id),
+    })),
+  }));
+}
