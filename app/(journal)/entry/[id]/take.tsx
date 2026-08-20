@@ -3,6 +3,7 @@ import { keyboardType, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
+import { HUNTING_SPECIES } from '../../../../src/data/constants';
 import { addCatch, addHarvest, tagForSeason, useStore } from '../../../../src/data/store';
 import type { Harvest } from '../../../../src/model/types';
 import { HeaderButton } from '../../../../src/ui/HeaderButton';
@@ -24,16 +25,23 @@ export default function AddTakeScreen() {
   const hunting = activity?.pursuit !== 'fishing';
 
   const [species, setSpecies] = useState('');
+  const [customSpecies, setCustomSpecies] = useState('');
   const [sex, setSex] = useState<NonNullable<Harvest['sex']>>('unknown');
   const [points, setPoints] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [kept, setKept] = useState(true);
 
-  const fallback = season?.species ?? (hunting ? 'Harvest' : 'Fish');
+  const fallback = season?.species ?? (hunting ? 'Deer' : 'Fish');
+  const speciesChoices = season?.species
+    ? [season.species, ...HUNTING_SPECIES.filter((name) => name !== season.species)]
+    : [...HUNTING_SPECIES];
+  const chosenSpecies = species || fallback;
+  const needsCustomSpecies = hunting && chosenSpecies === 'Other';
 
   function save() {
     if (!activity) return;
-    const named = species.trim() || fallback;
+    const picked = hunting ? chosenSpecies : species.trim();
+    const named = (picked === 'Other' ? customSpecies.trim() : picked) || fallback;
     if (hunting) {
       const parsedPoints = Number.parseInt(points, 10);
       addHarvest({
@@ -61,11 +69,31 @@ export default function AddTakeScreen() {
       <Host style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
-            footer={<Text>Left blank, this is recorded as {fallback}.</Text>}>
-            <TextField
-              placeholder={hunting ? fallback : 'Rainbow Trout'}
-              onTextChange={setSpecies}
-            />
+            footer={
+              <Text>
+                {hunting
+                  ? 'Seeded from the season this entry belongs to.'
+                  : 'Left blank, this is recorded as ' + fallback + '.'}
+              </Text>
+            }>
+            {hunting ? (
+              <Picker
+                label="Species"
+                selection={chosenSpecies}
+                onSelectionChange={(value) => setSpecies(String(value))}
+                modifiers={[pickerStyle('menu')]}>
+                {speciesChoices.map((name) => (
+                  <Text key={name} modifiers={[tag(name)]}>
+                    {name}
+                  </Text>
+                ))}
+              </Picker>
+            ) : (
+              <TextField placeholder="Species — Rainbow Trout" onTextChange={setSpecies} />
+            )}
+            {needsCustomSpecies ? (
+              <TextField placeholder="Which species" onTextChange={setCustomSpecies} />
+            ) : null}
           </Section>
 
           {hunting ? (

@@ -14,6 +14,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
 import {
+  HUNTING_SPECIES,
   METHOD_LABELS,
   METHOD_ORDER,
   TECHNIQUE_LABELS,
@@ -59,14 +60,23 @@ export default function LogActivityScreen() {
 
   const [took, setTook] = useState(false);
   const [species, setSpecies] = useState('');
+  const [customSpecies, setCustomSpecies] = useState('');
   const [sex, setSex] = useState<NonNullable<Harvest['sex']>>('unknown');
   const [points, setPoints] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [kept, setKept] = useState(true);
 
   const linkedSeason = seasons.find((season) => season.id === seasonId);
-  // An unnamed harvest still has an obvious species: the one the season is for.
-  const speciesFallback = linkedSeason?.species ?? (hunting ? 'Harvest' : 'Fish');
+  // A harvest on a Deer season is a deer. Asking again invites a typo.
+  const speciesFallback = linkedSeason?.species ?? (hunting ? 'Deer' : 'Fish');
+  const speciesChoices = useMemo(() => {
+    const list = linkedSeason?.species
+      ? [linkedSeason.species, ...HUNTING_SPECIES.filter((s) => s !== linkedSeason.species)]
+      : [...HUNTING_SPECIES];
+    return list;
+  }, [linkedSeason]);
+  const chosenSpecies = species || speciesFallback;
+  const needsCustomSpecies = hunting && chosenSpecies === 'Other';
 
   function save() {
     const activity = addActivity({
@@ -80,7 +90,9 @@ export default function LogActivityScreen() {
     });
 
     if (took) {
-      const named = species.trim() || speciesFallback;
+      const picked = hunting ? chosenSpecies : species.trim();
+      const named =
+        (picked === 'Other' ? customSpecies.trim() : picked) || speciesFallback;
       if (hunting) {
         const parsedPoints = Number.parseInt(points, 10);
         addHarvest({
@@ -179,11 +191,24 @@ export default function LogActivityScreen() {
               isOn={took}
               onIsOnChange={setTook}
             />
-            {took ? (
-              <TextField
-                placeholder={hunting ? speciesFallback : 'Rainbow Trout'}
-                onTextChange={setSpecies}
-              />
+            {took && hunting ? (
+              <Picker
+                label="Species"
+                selection={chosenSpecies}
+                onSelectionChange={(value) => setSpecies(String(value))}
+                modifiers={[pickerStyle('menu')]}>
+                {speciesChoices.map((name) => (
+                  <Text key={name} modifiers={[tag(name)]}>
+                    {name}
+                  </Text>
+                ))}
+              </Picker>
+            ) : null}
+            {took && needsCustomSpecies ? (
+              <TextField placeholder="Which species" onTextChange={setCustomSpecies} />
+            ) : null}
+            {took && !hunting ? (
+              <TextField placeholder="Species — Rainbow Trout" onTextChange={setSpecies} />
             ) : null}
             {took && hunting ? (
               <Picker

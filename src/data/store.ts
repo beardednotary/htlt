@@ -34,6 +34,8 @@ const SCHEMA_VERSION = 1;
 export interface AppSettings {
   /** Off until asked for. We never request notification permission on first launch. */
   remindersEnabled: boolean;
+  /** Year → document id. A chosen recap cover beats the automatic pick. */
+  recapCovers?: Record<string, ID>;
 }
 
 export interface AppData {
@@ -622,4 +624,34 @@ export function removeDocument(id: ID) {
       documentIds: regulation.documentIds.filter((documentId) => documentId !== id),
     })),
   }));
+}
+
+/** A standalone photo, belonging to no record — a recap cover, for instance. */
+export function addPhotoDocument(input: NewPhotoInput): DocumentRef {
+  const document: DocumentRef = {
+    id: newId('doc'),
+    householdId: state.data.householdId,
+    kind: 'photo',
+    uri: input.uri,
+    fileName: input.fileName,
+    capturedAt: new Date().toISOString(),
+    caption: input.caption,
+  };
+  mutate((data) => ({ ...data, documents: [...data.documents, document] }));
+  return document;
+}
+
+export function setRecapCover(year: number, documentId: ID | undefined) {
+  mutate((data) => {
+    const covers = { ...(data.settings.recapCovers ?? {}) };
+    if (documentId) covers[String(year)] = documentId;
+    else delete covers[String(year)];
+    return { ...data, settings: { ...data.settings, recapCovers: covers } };
+  });
+}
+
+export function recapCoverUri(year: number): string | undefined {
+  const id = state.data.settings.recapCovers?.[String(year)];
+  if (!id) return undefined;
+  return state.data.documents.find((document) => document.id === id)?.uri;
 }

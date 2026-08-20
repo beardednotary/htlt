@@ -10,11 +10,16 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { useStore } from '../../../src/data/store';
+import { pickFromLibrary } from '../../../src/data/photos';
+import {
+  addPhotoDocument,
+  setRecapCover,
+  useStore,
+} from '../../../src/data/store';
 import { summarizeYear, yearsWithActivity, type Tally, type YearRecap } from '../../../src/model/recap';
 import { shareRecap } from '../../../src/model/recapExport';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
-import { HeaderMenu } from '../../../src/ui/HeaderMenu';
+import { HeaderMenu, type HeaderMenuItem } from '../../../src/ui/HeaderMenu';
 
 /**
  * The one screen that is ours to design. Everywhere else the app wears Apple's
@@ -31,6 +36,19 @@ export default function RecapScreen() {
   const recap = useMemo(() => summarizeYear(data, current), [data, current]);
   const years = useMemo(() => yearsWithActivity(data), [data]);
 
+  // A chosen cover wins; otherwise the year picks its own photo.
+  const chosenCoverId = data.settings.recapCovers?.[String(current)];
+  const chosenCover = data.documents.find((document) => document.id === chosenCoverId);
+  const coverUri = chosenCover?.uri ?? recap.heroPhotoUri;
+
+  function chooseCover() {
+    void pickFromLibrary().then((picked) => {
+      if (!picked) return;
+      const document = addPhotoDocument(picked);
+      setRecapCover(current, document.id);
+    });
+  }
+
   return (
     <>
       <Stack.Screen
@@ -38,11 +56,27 @@ export default function RecapScreen() {
           title: String(current),
           headerLargeTitle: false,
           headerRight: () => (
-            <HeaderButton
-              systemImage="square.and.arrow.up"
-              onPress={() => {
-                void shareRecap(recap);
-              }}
+            <HeaderMenu
+              systemImage="ellipsis.circle"
+              items={[
+                {
+                  label: 'Share as PDF',
+                  systemImage: 'square.and.arrow.up',
+                  onPress: () => {
+                    void shareRecap(recap);
+                  },
+                },
+                { label: 'Choose Cover Photo', systemImage: 'photo', onPress: chooseCover },
+                ...(chosenCoverId
+                  ? ([
+                      {
+                        label: 'Use Automatic Cover',
+                        systemImage: 'wand.and.stars',
+                        onPress: () => setRecapCover(current, undefined),
+                      },
+                    ] satisfies HeaderMenuItem[])
+                  : []),
+              ]}
             />
           ),
         }}
@@ -51,7 +85,7 @@ export default function RecapScreen() {
         style={styles.screen}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}>
-        <Hero recap={recap} />
+        <Hero recap={recap} coverUri={coverUri} />
 
         <View style={styles.statRow}>
           <Stat value={recap.daysAfield} label="Days afield" />
@@ -113,18 +147,22 @@ export default function RecapScreen() {
   );
 }
 
-function Hero({ recap }: { recap: YearRecap }) {
+function Hero({ recap, coverUri }: { recap: YearRecap; coverUri?: string }) {
   return (
     <View style={styles.hero}>
-      {recap.heroPhotoUri ? (
-        <Image source={{ uri: recap.heroPhotoUri }} style={styles.heroPhoto} />
+      {coverUri ? (
+        <Image source={{ uri: coverUri }} style={styles.heroPhoto} />
       ) : (
         <View style={[styles.heroPhoto, styles.heroBlank]} />
       )}
       <View style={styles.heroScrim} />
       <Text style={styles.heroYear}>{recap.year}</Text>
       <Text style={styles.heroCaption}>
-        {recap.isEmpty ? 'Nothing logged yet' : 'Your year outdoors'}
+        {recap.isEmpty
+          ? 'Nothing logged yet'
+          : coverUri
+            ? 'Your year outdoors'
+            : 'Your year outdoors  ·  Add a cover from the menu'}
       </Text>
     </View>
   );
