@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { HUNTING_SPECIES } from '../../../../../src/data/constants';
 import { addCatch, addHarvest, tagForSeason, useStore } from '../../../../../src/data/store';
 import type { Harvest } from '../../../../../src/model/types';
+import { captureCoordinate, locationAvailable } from '../../../../../src/data/location';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
 
 const SEXES: { value: NonNullable<Harvest['sex']>; label: string }[] = [
@@ -30,6 +31,7 @@ export default function AddTakeScreen() {
   const [points, setPoints] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [kept, setKept] = useState(true);
+  const [recordWhere, setRecordWhere] = useState(false);
 
   const fallback = season?.species ?? (hunting ? 'Deer' : 'Fish');
   const speciesChoices = season?.species
@@ -38,15 +40,17 @@ export default function AddTakeScreen() {
   const chosenSpecies = species || fallback;
   const needsCustomSpecies = hunting && chosenSpecies === 'Other';
 
-  function save() {
+  async function save() {
     if (!activity) return;
     const picked = hunting ? chosenSpecies : species.trim();
     const named = (picked === 'Other' ? customSpecies.trim() : picked) || fallback;
     if (hunting) {
       const parsedPoints = Number.parseInt(points, 10);
+      const coordinate = recordWhere ? await captureCoordinate() : null;
       addHarvest({
         activityId: activity.id,
         species: named,
+        coordinate: coordinate ?? undefined,
         sex,
         points: Number.isFinite(parsedPoints) ? parsedPoints : undefined,
         credentialId: tagForSeason(activity.seasonId),
@@ -63,7 +67,7 @@ export default function AddTakeScreen() {
         options={{
           title: hunting ? 'Add Harvest' : 'Add Catch',
           headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => <HeaderButton label="Add" onPress={save} prominent />,
+          headerRight: () => <HeaderButton label="Add" onPress={() => { void save(); }} prominent />,
         }}
       />
       <Host style={{ flex: 1 }} useViewportSizeMeasurement>
@@ -114,6 +118,9 @@ export default function AddTakeScreen() {
                 onTextChange={setPoints}
                 modifiers={[keyboardType('numeric')]}
               />
+              {locationAvailable() ? (
+                <Toggle label="Record where" isOn={recordWhere} onIsOnChange={setRecordWhere} />
+              ) : null}
             </Section>
           ) : (
             <Section>

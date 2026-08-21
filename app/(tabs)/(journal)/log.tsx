@@ -23,6 +23,7 @@ import {
 import { addActivity, addCatch, addHarvest, tagForSeason, useStore } from '../../../src/data/store';
 import { seasonTitle, todayISO } from '../../../src/model/derive';
 import type { FishingTechnique, Harvest, MethodOfTake, Pursuit } from '../../../src/model/types';
+import { captureCoordinate, locationAvailable } from '../../../src/data/location';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
 
 const NO_SEASON = 'none';
@@ -65,6 +66,7 @@ export default function LogActivityScreen() {
   const [points, setPoints] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [kept, setKept] = useState(true);
+  const [recordWhere, setRecordWhere] = useState(false);
 
   const linkedSeason = seasons.find((season) => season.id === seasonId);
   // A harvest on a Deer season is a deer. Asking again invites a typo.
@@ -78,7 +80,7 @@ export default function LogActivityScreen() {
   const chosenSpecies = species || speciesFallback;
   const needsCustomSpecies = hunting && chosenSpecies === 'Other';
 
-  function save() {
+  async function save() {
     const activity = addActivity({
       pursuit,
       date: todayISO(date),
@@ -95,9 +97,11 @@ export default function LogActivityScreen() {
         (picked === 'Other' ? customSpecies.trim() : picked) || speciesFallback;
       if (hunting) {
         const parsedPoints = Number.parseInt(points, 10);
+        const coordinate = recordWhere ? await captureCoordinate() : null;
         addHarvest({
           activityId: activity.id,
           species: named,
+          coordinate: coordinate ?? undefined,
           sex,
           points: Number.isFinite(parsedPoints) ? parsedPoints : undefined,
           credentialId: tagForSeason(activity.seasonId),
@@ -116,7 +120,7 @@ export default function LogActivityScreen() {
         options={{
           title: hunting ? 'Log Hunt' : 'Log Fishing Trip',
           headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => <HeaderButton label="Save" onPress={save} prominent />,
+          headerRight: () => <HeaderButton label="Save" onPress={() => { void save(); }} prominent />,
         }}
       />
       <Host style={{ flex: 1 }} useViewportSizeMeasurement>
@@ -229,6 +233,9 @@ export default function LogActivityScreen() {
                 onTextChange={setPoints}
                 modifiers={[keyboardType('numeric')]}
               />
+            ) : null}
+            {took && hunting && locationAvailable() ? (
+              <Toggle label="Record where" isOn={recordWhere} onIsOnChange={setRecordWhere} />
             ) : null}
             {took && !hunting ? (
               <Stepper

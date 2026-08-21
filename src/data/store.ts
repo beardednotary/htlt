@@ -3,13 +3,14 @@ import { useSyncExternalStore } from 'react';
 import type {
   Activity,
   Catch,
-  DocumentRef,
-  DrawApplication,
-  Gear,
-  Harvest,
+  Coordinate,
   Credential,
   CredentialKind,
+  DocumentRef,
+  DrawApplication,
   FishingTechnique,
+  Gear,
+  Harvest,
   ID,
   ISODate,
   MethodOfTake,
@@ -381,6 +382,7 @@ export function removeActivity(id: ID) {
 export interface NewHarvestInput {
   activityId: ID;
   species: string;
+  coordinate?: Coordinate;
   sex?: Harvest['sex'];
   points?: number;
   /** The tag it was taken on, when the season has one linked. */
@@ -394,6 +396,7 @@ export function addHarvest(input: NewHarvestInput): Harvest {
     id: newId('harvest'),
     activityId: input.activityId,
     species: input.species.trim(),
+    coordinate: input.coordinate,
     sex: input.sex,
     points: input.points,
     credentialId: input.credentialId,

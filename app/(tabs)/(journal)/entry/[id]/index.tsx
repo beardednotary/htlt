@@ -23,9 +23,10 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Image as RNImage } from 'react-native';
+import { Image as RNImage, Linking } from 'react-native';
 
 import { METHOD_LABELS, TECHNIQUE_LABELS } from '../../../../../src/data/constants';
+import { formatCoordinate, mapsUrl } from '../../../../../src/data/location';
 import { captureWithCamera, deletePhotoFile, pickFromLibrary } from '../../../../../src/data/photos';
 import {
   addPhotoToActivity,
@@ -171,6 +172,23 @@ export default function JournalEntryScreen() {
                           foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
                         ]}>
                         {detail}
+                      </Text>
+                    ) : null}
+                    {harvest.coordinate ? (
+                      <Text
+                        modifiers={[
+                          font({ textStyle: 'footnote' }),
+                          foregroundStyle('blue'),
+                          contentShape(shapes.rectangle()),
+                          // Hands off to Apple Maps rather than opening a web view.
+                          onTapGesture(() => {
+                            const coordinate = harvest.coordinate;
+                            if (coordinate) {
+                              void Linking.openURL(mapsUrl(coordinate, harvest.species));
+                            }
+                          }),
+                        ]}>
+                        {formatCoordinate(harvest.coordinate)}
                       </Text>
                     ) : null}
                   </VStack>

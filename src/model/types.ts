@@ -248,10 +248,21 @@ export interface Activity {
   notes?: string;
 }
 
+/**
+ * Where something was taken. Metadata on a record, never a place you can browse:
+ * no map, no waypoints, no saved spots. That line is what keeps this app out of
+ * onX and HuntStand territory — see the product boundaries.
+ */
+export interface Coordinate {
+  latitude: number;
+  longitude: number;
+}
+
 export interface Harvest {
   id: ID;
   activityId: ID;
   species: string;
+  coordinate?: Coordinate;
   sex?: 'male' | 'female' | 'unknown';
   points?: number;
   weightLb?: number;
