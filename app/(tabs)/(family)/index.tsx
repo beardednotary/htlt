@@ -21,9 +21,10 @@ import { Stack, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 
 import { useStore } from '../../../src/data/store';
-import { credentialStatus } from '../../../src/model/derive';
+import { credentialStatus, formatShortDate, todayISO } from '../../../src/model/derive';
+import { tripReadiness, upcomingTrips } from '../../../src/model/readiness';
 import type { Person } from '../../../src/model/types';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { HeaderMenu } from '../../../src/ui/HeaderMenu';
 
 export default function FamilyScreen() {
   const { data } = useStore();
@@ -33,6 +34,7 @@ export default function FamilyScreen() {
     () => [...data.people].sort((a, b) => a.name.localeCompare(b.name)),
     [data.people]
   );
+  const trips = useMemo(() => upcomingTrips(data, todayISO()), [data]);
 
   /** What a glance at this person should tell you: what they hold, and what is wrong. */
   function summaryFor(person: Person): { line: string; needsAttention: boolean } {
@@ -57,13 +59,26 @@ export default function FamilyScreen() {
     <Stack.Screen
       options={{
         headerRight: () => (
-          <HeaderButton systemImage="plus" onPress={() => router.push('/person/new')} />
+          <HeaderMenu
+            items={[
+              {
+                label: 'Add Person',
+                systemImage: 'person.badge.plus',
+                onPress: () => router.push('/person/new'),
+              },
+              {
+                label: 'Plan a Trip',
+                systemImage: 'map',
+                onPress: () => router.push('/trip/new'),
+              },
+            ]}
+          />
         ),
       }}
     />
   );
 
-  if (people.length === 0) {
+  if (people.length === 0 && trips.length === 0) {
     return (
       <>
         {header}
@@ -83,6 +98,55 @@ export default function FamilyScreen() {
       {header}
       <Host style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
+          {trips.length > 0 ? (
+            <Section title="Upcoming Together">
+              {trips.map((trip) => {
+                const readiness = tripReadiness(data, trip);
+                const short = readiness.total - readiness.ready;
+                return (
+                  <HStack
+                    key={trip.id}
+                    modifiers={[
+                      contentShape(shapes.rectangle()),
+                      onTapGesture(() => router.push('/trip/' + trip.id)),
+                    ]}>
+                    <VStack alignment="leading" spacing={2}>
+                      <Text modifiers={[font({ textStyle: 'body' })]}>{trip.name}</Text>
+                      <Text
+                        modifiers={[
+                          font({ textStyle: 'subheadline' }),
+                          foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                        ]}>
+                        {`${formatShortDate(trip.startsOn)} – ${formatShortDate(trip.endsOn)}`}
+                      </Text>
+                      <Text
+                        modifiers={[
+                          font({ textStyle: 'footnote' }),
+                          readiness.unknowable
+                            ? foregroundStyle({ type: 'hierarchical', style: 'tertiary' })
+                            : short > 0
+                              ? foregroundStyle('orange')
+                              : foregroundStyle('green'),
+                        ]}>
+                        {readiness.unknowable
+                          ? 'Nothing to check yet'
+                          : short > 0
+                            ? `${short} of ${readiness.total} not ready`
+                            : `All ${readiness.total} ready`}
+                      </Text>
+                    </VStack>
+                    <Spacer />
+                    <Image
+                      systemName="chevron.right"
+                      size={13}
+                      modifiers={[foregroundStyle({ type: 'hierarchical', style: 'tertiary' })]}
+                    />
+                  </HStack>
+                );
+              })}
+            </Section>
+          ) : null}
+
           <Section
             footer={
               <Text>

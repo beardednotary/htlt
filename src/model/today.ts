@@ -1,6 +1,7 @@
 import type { AppData } from '../data/store';
 import { jurisdictionName } from '../data/constants';
 import { daysUntil, relativeDays, seasonTitle, todayISO } from './derive';
+import { tripReadiness, upcomingTrips } from './readiness';
 import type { ISODate } from './types';
 
 export interface TodayItem {
@@ -19,6 +20,9 @@ const REVIEW_LOOKAHEAD_DAYS = 45;
 
 /** Agencies reissue regulations annually; half a year old is stale enough to reread. */
 const REVIEW_STALE_DAYS = 180;
+
+/** Close enough that an expired license is a problem you still have time to solve. */
+const TRIP_READINESS_HORIZON_DAYS = 45;
 
 export interface TodaySummary {
   comingUp: TodayItem[];
@@ -121,6 +125,29 @@ export function summarizeToday(data: AppData, today: ISODate = todayISO()): Toda
       id: `${application.id}-deadline`,
       title: season ? seasonTitle(season) : jurisdictionName(''),
       detail: `Application due ${relativeDays(days)}`,
+      days,
+    });
+  }
+
+  for (const trip of upcomingTrips(data, today)) {
+    const days = daysUntil(trip.startsOn, today);
+    comingUp.push({
+      id: `${trip.id}-trip`,
+      title: trip.name,
+      detail: days > 0 ? `Leaves ${relativeDays(days)}` : 'Under way',
+      days: days > 0 ? days : -1,
+    });
+
+    // Only worth raising while there is still time to fix it.
+    if (days > TRIP_READINESS_HORIZON_DAYS) continue;
+    const readiness = tripReadiness(data, trip);
+    if (readiness.unknowable) continue;
+    const short = readiness.total - readiness.ready;
+    if (short === 0) continue;
+    attention.push({
+      id: `${trip.id}-ready`,
+      title: trip.name,
+      detail: `${short} of ${readiness.total} not ready`,
       days,
     });
   }

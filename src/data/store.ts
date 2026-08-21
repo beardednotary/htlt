@@ -722,3 +722,70 @@ export function removeDrawApplication(seasonId: ID) {
 export function drawForSeason(data: AppData, seasonId: ID): DrawApplication | undefined {
   return data.drawApplications.find((entry) => entry.seasonId === seasonId);
 }
+
+export interface TripInput {
+  name: string;
+  startsOn: ISODate;
+  endsOn: ISODate;
+  locationName?: string;
+  participantIds?: ID[];
+  seasonIds?: ID[];
+  notes?: string;
+}
+
+export function addTrip(input: TripInput): Trip {
+  const trip: Trip = {
+    id: newId('trip'),
+    householdId: state.data.householdId,
+    name: input.name.trim(),
+    startsOn: input.startsOn,
+    // A trip that ends before it starts is a typo, the same as a season window.
+    endsOn: input.endsOn < input.startsOn ? input.startsOn : input.endsOn,
+    locationName: input.locationName?.trim() || undefined,
+    participantIds: input.participantIds ?? [],
+    seasonIds: input.seasonIds ?? [],
+    notes: input.notes?.trim() || undefined,
+  };
+  mutate((data) => ({ ...data, trips: [...data.trips, trip] }));
+  return trip;
+}
+
+export function removeTrip(id: ID) {
+  mutate((data) => ({
+    ...data,
+    trips: data.trips.filter((trip) => trip.id !== id),
+    // Entries survive the trip being deleted; the days still happened.
+    activities: data.activities.map((activity) =>
+      activity.tripId === id ? { ...activity, tripId: undefined } : activity
+    ),
+  }));
+}
+
+function updateTrip(id: ID, change: (trip: Trip) => Trip) {
+  mutate((data) => ({
+    ...data,
+    trips: data.trips.map((trip) => (trip.id === id ? change(trip) : trip)),
+  }));
+}
+
+export function setTripParticipant(tripId: ID, personId: ID, going: boolean) {
+  updateTrip(tripId, (trip) => ({
+    ...trip,
+    participantIds: going
+      ? trip.participantIds.includes(personId)
+        ? trip.participantIds
+        : [...trip.participantIds, personId]
+      : trip.participantIds.filter((id) => id !== personId),
+  }));
+}
+
+export function setTripSeason(tripId: ID, seasonId: ID, included: boolean) {
+  updateTrip(tripId, (trip) => ({
+    ...trip,
+    seasonIds: included
+      ? trip.seasonIds.includes(seasonId)
+        ? trip.seasonIds
+        : [...trip.seasonIds, seasonId]
+      : trip.seasonIds.filter((id) => id !== seasonId),
+  }));
+}

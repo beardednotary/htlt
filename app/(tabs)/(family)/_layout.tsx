@@ -20,6 +20,16 @@ export default function FamilyLayout() {
         }}
       />
       <Stack.Screen name="person/[id]/index" options={{ headerLargeTitle: false }} />
+      <Stack.Screen
+        name="trip/new"
+        options={{
+          title: 'Plan a Trip',
+          presentation: 'formSheet',
+          headerLargeTitle: false,
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen name="trip/[id]/index" options={{ headerLargeTitle: false }} />
     </Stack>
   );
 }
