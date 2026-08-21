@@ -43,6 +43,7 @@ export default function TodayScreen() {
       <>
       <Stack.Toolbar placement="right" tintColor={accent}>
         <Stack.Toolbar.Button
+          hidesSharedBackground
           icon="person.crop.circle"
           onPress={() => router.push('/settings')}
         />
@@ -62,6 +63,7 @@ export default function TodayScreen() {
     <>
       <Stack.Toolbar placement="right" tintColor={accent}>
         <Stack.Toolbar.Button
+          hidesSharedBackground
           icon="person.crop.circle"
           onPress={() => router.push('/settings')}
         />

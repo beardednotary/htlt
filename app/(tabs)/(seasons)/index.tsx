@@ -51,10 +51,10 @@ export default function SeasonsScreen() {
     return (
       <>
       <Stack.Toolbar placement="left" tintColor={accent}>
-        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/recap/latest')} />
+        <Stack.Toolbar.Button hidesSharedBackground icon="chart.bar" onPress={() => router.push('/recap/latest')} />
       </Stack.Toolbar>
       <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/new')} />
+        <Stack.Toolbar.Button hidesSharedBackground icon="plus" onPress={() => router.push('/new')} />
       </Stack.Toolbar>
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
@@ -70,10 +70,10 @@ export default function SeasonsScreen() {
   return (
     <>
       <Stack.Toolbar placement="left" tintColor={accent}>
-        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/recap/latest')} />
+        <Stack.Toolbar.Button hidesSharedBackground icon="chart.bar" onPress={() => router.push('/recap/latest')} />
       </Stack.Toolbar>
       <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/new')} />
+        <Stack.Toolbar.Button hidesSharedBackground icon="plus" onPress={() => router.push('/new')} />
       </Stack.Toolbar>
       <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>

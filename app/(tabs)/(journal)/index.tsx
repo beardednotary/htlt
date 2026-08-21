@@ -68,7 +68,7 @@ export default function JournalScreen() {
     return (
       <>
       <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Menu icon="plus">
+        <Stack.Toolbar.Menu hidesSharedBackground icon="plus">
           <Stack.Toolbar.MenuAction icon="scope" onPress={() => router.push('/log?pursuit=hunting')}>
               Log Hunt
             </Stack.Toolbar.MenuAction>
@@ -91,7 +91,7 @@ export default function JournalScreen() {
   return (
     <>
       <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Menu icon="plus">
+        <Stack.Toolbar.Menu hidesSharedBackground icon="plus">
           <Stack.Toolbar.MenuAction icon="scope" onPress={() => router.push('/log?pursuit=hunting')}>
               Log Hunt
             </Stack.Toolbar.MenuAction>
