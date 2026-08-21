@@ -41,6 +41,22 @@ ours to design. App chrome stays Apple; the memories belong to the product.
 
 Adding is a top-right `+` with a native menu, contextual to the tab. Never a FAB.
 
+## Navigation bar buttons
+
+Header items go through **`Stack.Toolbar`**, never `headerLeft` / `headerRight`.
+Anything passed to those becomes a custom view inside UIKit's shared glass
+background; `Stack.Toolbar` produces real `UIBarButtonItem`s instead.
+
+Every toolbar item sets **`hidesSharedBackground`**. iOS 26 draws one glass container
+behind a bar's items, and in this app it flashes white on every transition — on every
+screen that renders a SwiftUI `List`, which is nearly all of them. Six attempts at
+styling the buttons changed nothing, because the buttons were never the cause: the
+tell was that the one tab rendering an empty state instead of a list never flashed.
+
+Losing the container means bare glyphs, which is how bar buttons looked before iOS 26
+and is still entirely native. Do not remove the prop to get the capsule back without
+first confirming the flash is actually fixed upstream.
+
 ## Voice
 
 A knowledgeable peer. Not a brand, not a butler, and never a coach.
