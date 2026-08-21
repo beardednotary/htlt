@@ -41,6 +41,25 @@ ours to design. App chrome stays Apple; the memories belong to the product.
 
 Adding is a top-right `+` with a native menu, contextual to the tab. Never a FAB.
 
+## Voice
+
+A knowledgeable peer. Not a brand, not a butler, and never a coach.
+
+- **State, do not sell.** No exclamation marks anywhere in the app. "Nothing to check
+  yet", never "You're all set!"
+- **Be unsentimental about failure.** "3 of 7 hunts ended without a harvest" carries the
+  same weight as the harvest count. An app that only counts successes is a scoreboard;
+  counting the blank days is what makes it a record — and what makes it trustworthy
+  when it does report something good.
+- **The user knows more than the app does.** We never assert that a season is open. We
+  report what they entered and point them at the agency.
+- **Plain, not clipped.** "The day still happened" over "activities are retained".
+- **Warmer on the memory surfaces** — Season Recap, harvest detail — but never sappy.
+  Weight, not sentiment: the difference between "Ethan's first trout" and "What a
+  special day!"
+- **No hunting-culture register.** No camo, no flags, no "get after it". Utility first;
+  the app earns trust by being useful, not by signalling membership.
+
 ## Spelling
 
 Fixed UI copy — empty states, section footers, settings, alerts — uses **US spelling**:

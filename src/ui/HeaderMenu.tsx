@@ -1,5 +1,5 @@
 import {Button, Image, Menu} from '@expo/ui/swift-ui';
-import { fixedSize } from '@expo/ui/swift-ui/modifiers';
+import { buttonStyle, fixedSize } from '@expo/ui/swift-ui/modifiers';
 import type { SFSymbol } from 'sf-symbols-typescript';
 import { AppHost } from './AppHost';
 
@@ -22,7 +22,7 @@ export function HeaderMenu({
 }) {
   return (
     <AppHost matchContents style={{ minWidth: 44, minHeight: 44 }}>
-      <Menu label={<Image systemName={systemImage} />} modifiers={[fixedSize({ horizontal: true })]}>
+      <Menu label={<Image systemName={systemImage} />} modifiers={[buttonStyle('glass'), fixedSize({ horizontal: true })]}>
         {items.map((item) => (
           <Button
             key={item.label}

@@ -1,5 +1,7 @@
 import { Stack } from 'expo-router';
 
+import { PlatformColor } from 'react-native';
+
 import { accent, screenBackground } from '../../../src/ui/theme';
 
 export default function FamilyLayout() {
@@ -9,6 +11,9 @@ export default function FamilyLayout() {
         headerLargeTitle: true,
         contentStyle: { backgroundColor: screenBackground },
         headerTintColor: accent,
+        // Apple tints controls, not titles.
+        headerTitleStyle: { color: PlatformColor('label') },
+        headerLargeTitleStyle: { color: PlatformColor('label') },
       }}>
       <Stack.Screen name="index" options={{ title: 'Family' }} />
       <Stack.Screen

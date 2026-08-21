@@ -1,6 +1,7 @@
 import {Button, Image} from '@expo/ui/swift-ui';
 import {
   bold,
+  buttonStyle,
   disabled as disabledModifier,
   fixedSize,
   lineLimit,
@@ -40,6 +41,10 @@ export function HeaderButton({
   // reported width, which lands on the label's exact ideal width. Without a little
   // slack a longer word like "Cancel" sits flush against the capsule edge.
   const modifiers = [
+    // Left automatic, iOS 26 resolves toolbar buttons to the prominent glass style,
+    // which fills the capsule with the accent and reads as a white flash against a
+    // dark bar. The neutral material is what Apple's own bar buttons use.
+    buttonStyle('glass'),
     fixedSize({ horizontal: true }),
     lineLimit(1),
     padding({ horizontal: 4 }),
