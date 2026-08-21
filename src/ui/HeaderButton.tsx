@@ -8,28 +8,43 @@ import {
   lineLimit,
   padding,
 } from '@expo/ui/swift-ui/modifiers';
+import { PlatformColor, Pressable, StyleSheet, Text } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { accent } from './theme';
 
 /**
- * A real SwiftUI button placed in the native navigation bar, so it picks up the
- * system's pressed states and Dynamic Type rather than imitating them.
+ * A navigation bar button, built from React Native rather than SwiftUI.
  *
- * Three things this has to work around, all learned the hard way:
+ * Why not a SwiftUI Host, which is what the rest of the app uses: every Host is a
+ * UIHostingController, and a hosting controller's view has a white background by
+ * default. expo-modules-core clears it once at init — but UIKit restores it when
+ * the view is re-attached or its traits change, which is exactly what a navigation
+ * transition does. The result was a white capsule flashing behind every bar button
+ * on every tab switch. A bar button is a word or a glyph; it does not need SwiftUI,
+ * and keeping hosting controllers out of the navigation bar removes the whole class
+ * of problem.
  *
- * - The underlying view only honours `systemImage` alongside a text label, so an
- *   icon-only button passes the symbol as a child instead.
- * - `Host matchContents` reports its size to React Native only after SwiftUI has
- *   measured, so without `fixedSize` the label is measured inside whatever width
- *   the header proposed and comes back compressed.
- * - UIKit already draws a glass capsule behind a bar button item. Any SwiftUI
- *   material inside that — which is what `automatic` resolves to on iOS 26 — stacks
- *   a second one on top and reads as a halo that flashes when the bar re-renders.
- *   So: `plain`, no seed colour, and the accent applied to the content directly.
- *   Deliberately not an AppHost for the same reason — seeding the tint into the
- *   environment colours the material, not just the glyph.
+ * Icon-only buttons need expo-symbols for real SF Symbols, which is native. Where
+ * it is missing — any build made before it was added — they fall back to the old
+ * SwiftUI path so the button still works, flash and all.
  */
+
+type SymbolModule = typeof import('expo-symbols');
+
+let cachedSymbols: SymbolModule | null | undefined;
+
+function symbols(): SymbolModule | null {
+  if (cachedSymbols !== undefined) return cachedSymbols;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    cachedSymbols = require('expo-symbols') as SymbolModule;
+  } catch {
+    cachedSymbols = null;
+  }
+  return cachedSymbols;
+}
+
 export function HeaderButton({
   label,
   systemImage,
@@ -43,30 +58,65 @@ export function HeaderButton({
   prominent?: boolean;
   disabled?: boolean;
 }) {
-  const modifiers = [
-    buttonStyle('plain'),
-    foregroundStyle(accent),
-    fixedSize({ horizontal: true }),
-    lineLimit(1),
-    padding({ horizontal: 4 }),
-  ];
-  if (prominent) modifiers.push(bold());
-  if (disabled) modifiers.push(disabledModifier(true));
+  if (label) {
+    return (
+      <Pressable onPress={onPress} disabled={disabled} hitSlop={10} style={styles.pressable}>
+        {({ pressed }) => (
+          <Text
+            style={[
+              styles.label,
+              prominent && styles.prominent,
+              disabled && styles.disabled,
+              pressed && styles.pressed,
+            ]}>
+            {label}
+          </Text>
+        )}
+      </Pressable>
+    );
+  }
 
+  const Symbols = symbols();
+  if (Symbols) {
+    return (
+      <Pressable onPress={onPress} disabled={disabled} hitSlop={10} style={styles.pressable}>
+        {({ pressed }) => (
+          <Symbols.SymbolView
+            name={systemImage ?? 'plus'}
+            tintColor={accent}
+            size={22}
+            type="monochrome"
+            style={[pressed && styles.pressed, disabled && styles.disabled]}
+          />
+        )}
+      </Pressable>
+    );
+  }
+
+  // Pre-expo-symbols builds keep the SwiftUI button rather than no button at all.
   return (
     <Host matchContents style={{ minWidth: 44, minHeight: 44 }}>
-      {label ? (
-        <Button
-          label={label}
-          systemImage={systemImage}
-          onPress={onPress}
-          modifiers={modifiers}
-        />
-      ) : (
-        <Button onPress={onPress} modifiers={modifiers}>
-          <Image systemName={systemImage ?? 'plus'} color={accent} />
-        </Button>
-      )}
+      <Button
+        onPress={onPress}
+        modifiers={[
+          buttonStyle('plain'),
+          foregroundStyle(accent),
+          fixedSize({ horizontal: true }),
+          lineLimit(1),
+          padding({ horizontal: 4 }),
+          ...(prominent ? [bold()] : []),
+          ...(disabled ? [disabledModifier(true)] : []),
+        ]}>
+        <Image systemName={systemImage ?? 'plus'} color={accent} />
+      </Button>
     </Host>
   );
 }
+
+const styles = StyleSheet.create({
+  pressable: { minWidth: 32, minHeight: 44, justifyContent: 'center', alignItems: 'center' },
+  label: { fontSize: 17, color: accent },
+  prominent: { fontWeight: '600' },
+  disabled: { color: PlatformColor('tertiaryLabel'), opacity: 0.5 },
+  pressed: { opacity: 0.4 },
+});

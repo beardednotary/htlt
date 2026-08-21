@@ -14,8 +14,10 @@ export interface HeaderMenuItem {
  * The top-right `+` with a native menu, contextual to the tab. Never a floating
  * action button — see the design rules.
  *
- * Plain style and no seed colour, for the same reason as HeaderButton: UIKit
- * already draws the capsule, and a SwiftUI material inside it stacks into a halo.
+ * Still a SwiftUI Host, unlike HeaderButton, because React Native has no anchored
+ * pull-down menu and an action sheet is a different control. That makes this the
+ * control group: if the white flash survives here but not on the plain buttons,
+ * the hosting controller's background is confirmed as the cause.
  */
 export function HeaderMenu({
   systemImage = 'plus',
@@ -25,7 +27,9 @@ export function HeaderMenu({
   items: HeaderMenuItem[];
 }) {
   return (
-    <Host matchContents style={{ minWidth: 44, minHeight: 44 }}>
+    <Host
+      matchContents
+      style={{ minWidth: 44, minHeight: 44, backgroundColor: 'transparent' }}>
       <Menu
         label={<Image systemName={systemImage} color={accent} />}
         modifiers={[buttonStyle('plain'), foregroundStyle(accent), fixedSize({ horizontal: true })]}>
