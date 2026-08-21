@@ -3,7 +3,9 @@ import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { setRemindersEnabled, useStore } from '../../../src/data/store';
+import { exportData, pickImportFile } from '../../../src/data/backup';
+import type { AppData } from '../../../src/data/store';
+import { replaceAllData, setRemindersEnabled, useStore } from '../../../src/data/store';
 import { useEntitlements } from '../../../src/purchases/entitlements';
 import { restore } from '../../../src/purchases/purchases';
 import { planReminders } from '../../../src/notifications/plan';
@@ -19,6 +21,8 @@ export default function SettingsScreen() {
   const { data } = useStore();
   const router = useRouter();
   const [denied, setDenied] = useState(false);
+  const [pendingImport, setPendingImport] = useState<AppData | null>(null);
+  const [importFailed, setImportFailed] = useState(false);
   const [scheduled, setScheduled] = useState<number | null>(null);
 
   const { tier, live, refresh } = useEntitlements();
@@ -55,6 +59,16 @@ export default function SettingsScreen() {
     setRemindersEnabled(true);
     const count = await syncReminders(data);
     setScheduled(count);
+  }
+
+  async function startImport() {
+    const result = await pickImportFile();
+    if (result.status === 'cancelled') return;
+    if (result.status === 'invalid') {
+      setImportFailed(true);
+      return;
+    }
+    setPendingImport(result.data);
   }
 
   return (
@@ -99,6 +113,30 @@ export default function SettingsScreen() {
                 }}
               />
             ) : null}
+          </Section>
+
+          <Section
+            title="Your Data"
+            footer={
+              <Text>
+                A plain file with every record you have entered. Photos stay in the app and
+                travel with your device backup. Importing replaces everything here.
+              </Text>
+            }>
+            <Button
+              label="Export"
+              systemImage="square.and.arrow.up"
+              onPress={() => {
+                void exportData(data);
+              }}
+            />
+            <Button
+              label="Import"
+              systemImage="square.and.arrow.down"
+              onPress={() => {
+                void startImport();
+              }}
+            />
           </Section>
 
           <Section
@@ -159,6 +197,42 @@ export default function SettingsScreen() {
             </HStack>
           </Section>
         </Form>
+
+        <Alert
+          title="Replace everything?"
+          isPresented={pendingImport !== null}
+          onIsPresentedChange={(presented) => {
+            if (!presented) setPendingImport(null);
+          }}>
+          <Alert.Message>
+            <Text>
+              This file becomes your records. Whatever is on this device now is discarded.
+            </Text>
+          </Alert.Message>
+          <Alert.Actions>
+            <Button
+              role="destructive"
+              label="Replace"
+              onPress={() => {
+                if (pendingImport) replaceAllData(pendingImport);
+                setPendingImport(null);
+              }}
+            />
+            <Button role="cancel" label="Cancel" onPress={() => setPendingImport(null)} />
+          </Alert.Actions>
+        </Alert>
+
+        <Alert
+          title="That file could not be read"
+          isPresented={importFailed}
+          onIsPresentedChange={setImportFailed}>
+          <Alert.Message>
+            <Text>It does not look like a file this app exported.</Text>
+          </Alert.Message>
+          <Alert.Actions>
+            <Button label="OK" onPress={() => setImportFailed(false)} />
+          </Alert.Actions>
+        </Alert>
 
         <Alert
           title="Notifications are off"

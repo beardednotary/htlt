@@ -789,3 +789,20 @@ export function setTripSeason(tripId: ID, seasonId: ID, included: boolean) {
       : trip.seasonIds.filter((id) => id !== seasonId),
   }));
 }
+
+/**
+ * Replaces the entire document with an imported one. Deliberately blunt: merging two
+ * households would mean reconciling ids nobody can see, and quietly duplicating a
+ * decade of records is a worse outcome than being told plainly that this replaces
+ * what is here.
+ */
+export function replaceAllData(incoming: AppData) {
+  const data: AppData = {
+    ...emptyData(),
+    ...incoming,
+    settings: { ...emptyData().settings, ...(incoming.settings ?? {}) },
+    schemaVersion: SCHEMA_VERSION,
+  };
+  emit({ loaded: true, data });
+  void writeItem(KEY, JSON.stringify(data));
+}
