@@ -72,3 +72,18 @@ export function canTrackDraws(tier: Tier): Gate {
       'Outdoorsman tracks draw applications and preference points — when to apply, when results land, and how many points you are sitting on.',
   };
 }
+
+/**
+ * Planning convenience rather than a safety net — nobody misses a season because
+ * their calendar did not sync, which is why this can sit behind the paywall when
+ * reminders cannot.
+ */
+export function canSyncCalendar(tier: Tier): Gate {
+  if (tier !== 'free') return allow;
+  return {
+    allowed: false,
+    requires: 'outdoorsman',
+    reason:
+      'Outdoorsman puts your openers, deadlines and trips in your calendar, where the people you live with can see them.',
+  };
+}

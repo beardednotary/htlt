@@ -38,6 +38,9 @@ export interface AppSettings {
   recapCovers?: Record<string, ID>;
   /** The walkthrough is shown once, then lives in Settings for whenever it is wanted. */
   welcomeSeen?: boolean;
+  /** One-way export into a calendar the app owns. */
+  calendarEnabled?: boolean;
+  calendarId?: string;
 }
 
 export interface AppData {
@@ -805,4 +808,11 @@ export function replaceAllData(incoming: AppData) {
   };
   emit({ loaded: true, data });
   void writeItem(KEY, JSON.stringify(data));
+}
+
+export function setCalendarSync(enabled: boolean, calendarId?: string) {
+  mutate((data) => ({
+    ...data,
+    settings: { ...data.settings, calendarEnabled: enabled, calendarId },
+  }));
 }

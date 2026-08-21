@@ -1,6 +1,7 @@
 import { Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
+import { syncCalendar } from '../src/calendar/calendar';
 import { loadStore, useStore } from '../src/data/store';
 import { syncReminders } from '../src/notifications/reminders';
 import { EntitlementsProvider } from '../src/purchases/entitlements';
@@ -32,6 +33,15 @@ export default function RootLayout() {
     const timer = setTimeout(() => {
       void syncReminders(data);
     }, 800);
+    return () => clearTimeout(timer);
+  }, [loaded, data]);
+
+  // Same rebuild-from-records contract as the reminders, on the same debounce.
+  useEffect(() => {
+    if (!loaded || !data.settings.calendarEnabled) return;
+    const timer = setTimeout(() => {
+      void syncCalendar(data, data.settings.calendarId);
+    }, 1200);
     return () => clearTimeout(timer);
   }, [loaded, data]);
 

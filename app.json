@@ -52,6 +52,20 @@
           "photosPermission": "Attach photos of your licenses, tags and harvests to the seasons and hunts they belong to.",
           "cameraPermission": "Take a photo of a license, tag or harvest to keep with its record."
         }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Put your openers, application deadlines and trips in a calendar this app creates."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Record where a harvest was taken, so the memory keeps its place.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false
+        }
       ]
     ],
     "extra": {

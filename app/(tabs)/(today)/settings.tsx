@@ -3,10 +3,22 @@ import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
+import {
+  calendarAvailable,
+  removeCalendar,
+  requestCalendarAccess,
+  syncCalendar,
+} from '../../../src/calendar/calendar';
 import { exportData, pickImportFile } from '../../../src/data/backup';
 import type { AppData } from '../../../src/data/store';
-import { replaceAllData, setRemindersEnabled, useStore } from '../../../src/data/store';
+import {
+  replaceAllData,
+  setCalendarSync,
+  setRemindersEnabled,
+  useStore,
+} from '../../../src/data/store';
 import { useEntitlements } from '../../../src/purchases/entitlements';
+import { canSyncCalendar } from '../../../src/purchases/limits';
 import { restore } from '../../../src/purchases/purchases';
 import { planReminders } from '../../../src/notifications/plan';
 import {
@@ -23,6 +35,8 @@ export default function SettingsScreen() {
   const [denied, setDenied] = useState(false);
   const [pendingImport, setPendingImport] = useState<AppData | null>(null);
   const [importFailed, setImportFailed] = useState(false);
+  const [calendarUnavailable, setCalendarUnavailable] = useState(false);
+  const calendarOn = Boolean(data.settings.calendarEnabled);
   const [scheduled, setScheduled] = useState<number | null>(null);
 
   const { tier, live, refresh } = useEntitlements();
@@ -59,6 +73,32 @@ export default function SettingsScreen() {
     setRemindersEnabled(true);
     const count = await syncReminders(data);
     setScheduled(count);
+  }
+
+  async function toggleCalendar(next: boolean) {
+    if (!next) {
+      if (data.settings.calendarId) await removeCalendar(data.settings.calendarId);
+      setCalendarSync(false, undefined);
+      return;
+    }
+
+    const gate = canSyncCalendar(tier);
+    if (!gate.allowed) {
+      router.push(`/paywall?requires=${gate.requires}&reason=${encodeURIComponent(gate.reason)}`);
+      return;
+    }
+
+    if (!calendarAvailable() || !(await requestCalendarAccess())) {
+      setCalendarUnavailable(true);
+      return;
+    }
+
+    const result = await syncCalendar(data, data.settings.calendarId);
+    if (!result) {
+      setCalendarUnavailable(true);
+      return;
+    }
+    setCalendarSync(true, result.calendarId);
   }
 
   async function startImport() {
@@ -113,6 +153,18 @@ export default function SettingsScreen() {
                 }}
               />
             ) : null}
+          </Section>
+
+          <Section
+            title="Calendar"
+            footer={
+              <Text>
+                Openers, application deadlines and trips are written to a calendar called
+                Hunting Seasons that this app creates. Your own calendars are never touched,
+                and turning this off deletes it.
+              </Text>
+            }>
+            <Toggle label="Add to Calendar" isOn={calendarOn} onIsOnChange={toggleCalendar} />
           </Section>
 
           <Section
@@ -219,6 +271,21 @@ export default function SettingsScreen() {
               }}
             />
             <Button role="cancel" label="Cancel" onPress={() => setPendingImport(null)} />
+          </Alert.Actions>
+        </Alert>
+
+        <Alert
+          title="Calendar is unavailable"
+          isPresented={calendarUnavailable}
+          onIsPresentedChange={setCalendarUnavailable}>
+          <Alert.Message>
+            <Text>
+              Allow calendar access for this app in the Settings app. If you have just
+              updated, this build may predate calendar support.
+            </Text>
+          </Alert.Message>
+          <Alert.Actions>
+            <Button label="OK" onPress={() => setCalendarUnavailable(false)} />
           </Alert.Actions>
         </Alert>
 
