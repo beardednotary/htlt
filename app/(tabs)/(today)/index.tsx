@@ -1,10 +1,12 @@
 import { ContentUnavailableView, HStack, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import { font, foregroundStyle, listStyle } from '@expo/ui/swift-ui/modifiers';
+import { Stack, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 
 import { useStore } from '../../../src/data/store';
 import { summarizeToday, type TodayItem } from '../../../src/model/today';
 import { AppHost } from '../../../src/ui/AppHost';
+import { accent } from '../../../src/ui/theme';
 
 function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
   return (
@@ -23,14 +25,28 @@ function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
   );
 }
 
+/**
+ * Header items come from Stack.Toolbar, which produces real UIBarButtonItems —
+ * a native title or SF Symbol, no custom view in the navigation bar. Anything
+ * hosted in the bar (a SwiftUI Host, or a plain React Native view) sits inside
+ * UIKit's shared glass background, and that background flashes white through
+ * every transition.
+ */
 export default function TodayScreen() {
   const { data } = useStore();
+  const router = useRouter();
   const { comingUp, attention } = useMemo(() => summarizeToday(data), [data]);
 
 
   if (comingUp.length === 0 && attention.length === 0) {
     return (
       <>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Button
+          icon="person.crop.circle"
+          onPress={() => router.push('/settings')}
+        />
+      </Stack.Toolbar>
         <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Nothing Coming Up"
@@ -44,6 +60,12 @@ export default function TodayScreen() {
 
   return (
     <>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Button
+          icon="person.crop.circle"
+          onPress={() => router.push('/settings')}
+        />
+      </Stack.Toolbar>
       <AppHost style={{ flex: 1 }}>
       <List modifiers={[listStyle('insetGrouped')]}>
         {attention.length > 0 ? (

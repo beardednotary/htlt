@@ -10,7 +10,7 @@ import {
   shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
 import { useStore } from '../../../src/data/store';
@@ -22,6 +22,7 @@ import {
   type SeasonPhase,
 } from '../../../src/model/derive';
 import { AppHost } from '../../../src/ui/AppHost';
+import { accent } from '../../../src/ui/theme';
 
 const PHASES: { value: SeasonPhase; label: string }[] = [
   { value: 'active', label: 'Active' },
@@ -49,6 +50,12 @@ export default function SeasonsScreen() {
   if (data.seasons.length === 0) {
     return (
       <>
+      <Stack.Toolbar placement="left" tintColor={accent}>
+        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/recap/latest')} />
+      </Stack.Toolbar>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/new')} />
+      </Stack.Toolbar>
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Seasons Yet"
@@ -62,6 +69,12 @@ export default function SeasonsScreen() {
 
   return (
     <>
+      <Stack.Toolbar placement="left" tintColor={accent}>
+        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/recap/latest')} />
+      </Stack.Toolbar>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/new')} />
+      </Stack.Toolbar>
       <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker

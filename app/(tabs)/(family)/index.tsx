@@ -7,7 +7,7 @@ import {
   onTapGesture,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 
 import { useStore } from '../../../src/data/store';
@@ -15,6 +15,7 @@ import { credentialStatus, formatShortDate, todayISO } from '../../../src/model/
 import { tripReadiness, upcomingTrips } from '../../../src/model/readiness';
 import type { Person } from '../../../src/model/types';
 import { AppHost } from '../../../src/ui/AppHost';
+import { accent } from '../../../src/ui/theme';
 
 export default function FamilyScreen() {
   const { data } = useStore();
@@ -49,6 +50,16 @@ export default function FamilyScreen() {
   if (people.length === 0 && trips.length === 0) {
     return (
       <>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Menu icon="plus">
+          <Stack.Toolbar.MenuAction icon="person.badge.plus" onPress={() => router.push('/person/new')}>
+              Add Person
+            </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="map" onPress={() => router.push('/trip/new')}>
+              Plan a Trip
+            </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No People Yet"
@@ -62,6 +73,16 @@ export default function FamilyScreen() {
 
   return (
     <>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Menu icon="plus">
+          <Stack.Toolbar.MenuAction icon="person.badge.plus" onPress={() => router.push('/person/new')}>
+              Add Person
+            </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="map" onPress={() => router.push('/trip/new')}>
+              Plan a Trip
+            </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
       <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           {trips.length > 0 ? (
