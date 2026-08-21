@@ -151,7 +151,13 @@ export default function JournalEntryScreen() {
                 .join(' · ');
               return (
                 <SwipeActions key={harvest.id}>
-                  <VStack alignment="leading" spacing={2}>
+                  <VStack
+                    alignment="leading"
+                    spacing={2}
+                    modifiers={[
+                      contentShape(shapes.rectangle()),
+                      onTapGesture(() => router.push('/harvest/' + harvest.id)),
+                    ]}>
                     <Text>{harvest.species}</Text>
                     {detail ? (
                       <Text

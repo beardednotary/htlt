@@ -12,6 +12,7 @@ export default function JournalLayout() {
       }}>
       <Stack.Screen name="index" options={{ title: 'Journal' }} />
       <Stack.Screen name="entry/[id]/index" options={{ headerLargeTitle: false }} />
+      <Stack.Screen name="harvest/[id]" options={{ headerLargeTitle: false }} />
       <Stack.Screen
         name="entry/[id]/take"
         options={{
