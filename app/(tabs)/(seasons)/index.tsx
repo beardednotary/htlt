@@ -10,11 +10,10 @@ import {
   shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
 import { useStore } from '../../../src/data/store';
-import { yearsWithActivity } from '../../../src/model/recap';
 import {
   seasonDatesLine,
   seasonPhase,
@@ -22,7 +21,6 @@ import {
   seasonTitle,
   type SeasonPhase,
 } from '../../../src/model/derive';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
 import { AppHost } from '../../../src/ui/AppHost';
 
 const PHASES: { value: SeasonPhase; label: string }[] = [
@@ -47,28 +45,10 @@ export default function SeasonsScreen() {
     [data.seasons, phase]
   );
 
-  const recapYear = yearsWithActivity(data)[0] ?? new Date().getFullYear();
-
-  const header = (
-    <Stack.Screen
-      options={{
-        headerLeft: () => (
-          <HeaderButton
-            systemImage="chart.bar"
-            onPress={() => router.push(`/recap/${recapYear}`)}
-          />
-        ),
-        headerRight: () => (
-          <HeaderButton systemImage="plus" onPress={() => router.push('/new')} />
-        ),
-      }}
-    />
-  );
 
   if (data.seasons.length === 0) {
     return (
       <>
-        {header}
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Seasons Yet"
@@ -82,7 +62,6 @@ export default function SeasonsScreen() {
 
   return (
     <>
-      {header}
       <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker

@@ -10,14 +10,13 @@ import {
   shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 
 import { METHOD_LABELS, TECHNIQUE_LABELS } from '../../../src/data/constants';
 import { useStore } from '../../../src/data/store';
 import { formatEntryDate, seasonTitle } from '../../../src/model/derive';
 import type { Activity, Pursuit } from '../../../src/model/types';
-import { HeaderMenu } from '../../../src/ui/HeaderMenu';
 import { AppHost } from '../../../src/ui/AppHost';
 
 type Filter = 'all' | Pursuit;
@@ -63,25 +62,10 @@ export default function JournalScreen() {
     return parts.join(' · ');
   }
 
-  const header = (
-    <Stack.Screen
-      options={{
-        headerRight: () => (
-          <HeaderMenu
-            items={[
-              { label: 'Log Hunt', systemImage: 'scope', onPress: () => router.push('/log?pursuit=hunting') },
-              { label: 'Log Fishing Trip', systemImage: 'fish', onPress: () => router.push('/log?pursuit=fishing') },
-            ]}
-          />
-        ),
-      }}
-    />
-  );
 
   if (data.activities.length === 0) {
     return (
       <>
-        {header}
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Entries Yet"
@@ -95,7 +79,6 @@ export default function JournalScreen() {
 
   return (
     <>
-      {header}
       <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker

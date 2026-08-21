@@ -1,11 +1,9 @@
 import { ContentUnavailableView, HStack, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import { font, foregroundStyle, listStyle } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 
 import { useStore } from '../../../src/data/store';
 import { summarizeToday, type TodayItem } from '../../../src/model/today';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
 import { AppHost } from '../../../src/ui/AppHost';
 
 function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
@@ -27,27 +25,12 @@ function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
 
 export default function TodayScreen() {
   const { data } = useStore();
-  const router = useRouter();
   const { comingUp, attention } = useMemo(() => summarizeToday(data), [data]);
 
-  // Settings lives behind the person button, not a fifth tab.
-  const header = (
-    <Stack.Screen
-      options={{
-        headerRight: () => (
-          <HeaderButton
-            systemImage="person.crop.circle"
-            onPress={() => router.push('/settings')}
-          />
-        ),
-      }}
-    />
-  );
 
   if (comingUp.length === 0 && attention.length === 0) {
     return (
       <>
-        {header}
         <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Nothing Coming Up"
@@ -61,7 +44,6 @@ export default function TodayScreen() {
 
   return (
     <>
-      {header}
       <AppHost style={{ flex: 1 }}>
       <List modifiers={[listStyle('insetGrouped')]}>
         {attention.length > 0 ? (

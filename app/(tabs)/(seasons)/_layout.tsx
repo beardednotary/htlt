@@ -1,10 +1,13 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
 import { PlatformColor } from 'react-native';
 
 import { accent, screenBackground } from '../../../src/ui/theme';
+import { HeaderButton } from '../../../src/ui/HeaderButton';
 
 export default function SeasonsLayout() {
+  const router = useRouter();
+
   return (
     <Stack
       screenOptions={{
@@ -15,7 +18,18 @@ export default function SeasonsLayout() {
         headerTitleStyle: { color: PlatformColor('label') },
         headerLargeTitleStyle: { color: PlatformColor('label') },
       }}>
-      <Stack.Screen name="index" options={{ title: 'Seasons' }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: 'Seasons',
+          headerLeft: () => (
+            <HeaderButton systemImage="chart.bar" onPress={() => router.push('/recap/latest')} />
+          ),
+          headerRight: () => (
+            <HeaderButton systemImage="plus" onPress={() => router.push('/new')} />
+          ),
+        }}
+      />
       <Stack.Screen
         name="new"
         options={{

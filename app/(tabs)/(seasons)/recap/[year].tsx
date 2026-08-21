@@ -39,9 +39,10 @@ export default function RecapScreen() {
   const { tier } = useEntitlements();
   const cardRef = useRef<View>(null);
 
-  const current = Number(year) || new Date().getFullYear();
+  // "latest" lets a static header button link here without knowing the data.
+  const years = yearsWithActivity(data);
+  const current = Number(year) || years[0] || new Date().getFullYear();
   const recap = useMemo(() => summarizeYear(data, current), [data, current]);
-  const years = useMemo(() => yearsWithActivity(data), [data]);
 
   // A chosen cover wins; otherwise the year picks its own photo.
   const chosenCoverId = data.settings.recapCovers?.[String(current)];

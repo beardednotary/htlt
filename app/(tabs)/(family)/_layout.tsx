@@ -1,10 +1,13 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
 import { PlatformColor } from 'react-native';
 
+import { HeaderMenu } from '../../../src/ui/HeaderMenu';
 import { accent, screenBackground } from '../../../src/ui/theme';
 
 export default function FamilyLayout() {
+  const router = useRouter();
+
   return (
     <Stack
       screenOptions={{
@@ -15,7 +18,24 @@ export default function FamilyLayout() {
         headerTitleStyle: { color: PlatformColor('label') },
         headerLargeTitleStyle: { color: PlatformColor('label') },
       }}>
-      <Stack.Screen name="index" options={{ title: 'Family' }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: 'Family',
+          headerRight: () => (
+            <HeaderMenu
+              items={[
+                {
+                  label: 'Add Person',
+                  systemImage: 'person.badge.plus',
+                  onPress: () => router.push('/person/new'),
+                },
+                { label: 'Plan a Trip', systemImage: 'map', onPress: () => router.push('/trip/new') },
+              ]}
+            />
+          ),
+        }}
+      />
       <Stack.Screen
         name="person/new"
         options={{

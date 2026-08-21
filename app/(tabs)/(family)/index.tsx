@@ -7,14 +7,13 @@ import {
   onTapGesture,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 
 import { useStore } from '../../../src/data/store';
 import { credentialStatus, formatShortDate, todayISO } from '../../../src/model/derive';
 import { tripReadiness, upcomingTrips } from '../../../src/model/readiness';
 import type { Person } from '../../../src/model/types';
-import { HeaderMenu } from '../../../src/ui/HeaderMenu';
 import { AppHost } from '../../../src/ui/AppHost';
 
 export default function FamilyScreen() {
@@ -46,33 +45,10 @@ export default function FamilyScreen() {
     };
   }
 
-  const header = (
-    <Stack.Screen
-      options={{
-        headerRight: () => (
-          <HeaderMenu
-            items={[
-              {
-                label: 'Add Person',
-                systemImage: 'person.badge.plus',
-                onPress: () => router.push('/person/new'),
-              },
-              {
-                label: 'Plan a Trip',
-                systemImage: 'map',
-                onPress: () => router.push('/trip/new'),
-              },
-            ]}
-          />
-        ),
-      }}
-    />
-  );
 
   if (people.length === 0 && trips.length === 0) {
     return (
       <>
-        {header}
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No People Yet"
@@ -86,7 +62,6 @@ export default function FamilyScreen() {
 
   return (
     <>
-      {header}
       <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           {trips.length > 0 ? (
