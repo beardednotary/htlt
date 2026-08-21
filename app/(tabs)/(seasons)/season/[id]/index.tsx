@@ -26,8 +26,12 @@ import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useState } from 'react';
 
 import { addCredentialLabel, credentialsSectionTitle } from '../../../../../src/data/vocabulary';
+import { DRAW_STATUS_DETAIL, DRAW_STATUS_LABELS, pointsAreRelevant } from '../../../../../src/model/draw';
+import { useEntitlements } from '../../../../../src/purchases/entitlements';
+import { canTrackDraws } from '../../../../../src/purchases/limits';
 import {
   addSeasonParticipant,
+  drawForSeason,
   markRegulationReviewed,
   removeRegulation,
   removeSeason,
@@ -47,6 +51,7 @@ export default function SeasonDetailScreen() {
   const { data } = useStore();
   const router = useRouter();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const { tier } = useEntitlements();
 
   const season = useMemo(() => data.seasons.find((s) => s.id === id), [data.seasons, id]);
   const hunts = useMemo(
@@ -68,6 +73,7 @@ export default function SeasonDetailScreen() {
 
   const credentials = data.credentials.filter((c) => season.credentialIds.includes(c.id));
   const regulations = data.regulations.filter((r) => season.regulationIds.includes(r.id));
+  const draw = drawForSeason(data, season.id);
   const participants = data.people.filter((person) => season.participantIds.includes(person.id));
   const available = data.people.filter((person) => !season.participantIds.includes(person.id));
 
@@ -150,6 +156,86 @@ export default function SeasonDetailScreen() {
               label={addCredentialLabel(season.jurisdictionId)}
               systemImage="plus"
               onPress={() => router.push(`/season/${season.id}/credentials`)}
+            />
+          </Section>
+
+          <Section
+            title="Draw"
+            footer={
+              <Text>
+                {draw?.deadline
+                  ? 'Today counts this down, and reminders fire 30, 7 and 1 days out.'
+                  : 'For seasons you have to apply for rather than buy over the counter.'}
+              </Text>
+            }>
+            {draw ? (
+              <>
+                <HStack>
+                  <Text>{DRAW_STATUS_LABELS[draw.status]}</Text>
+                  <Spacer />
+                  <Text
+                    modifiers={[
+                      font({ textStyle: 'subheadline' }),
+                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                    ]}>
+                    {DRAW_STATUS_DETAIL[draw.status]}
+                  </Text>
+                </HStack>
+                {draw.deadline ? (
+                  <HStack>
+                    <Text>Deadline</Text>
+                    <Spacer />
+                    <Text
+                      modifiers={[
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}>
+                      {formatShortDate(draw.deadline)}
+                    </Text>
+                  </HStack>
+                ) : null}
+                {draw.resultsOn ? (
+                  <HStack>
+                    <Text>Results</Text>
+                    <Spacer />
+                    <Text
+                      modifiers={[
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}>
+                      {formatShortDate(draw.resultsOn)}
+                    </Text>
+                  </HStack>
+                ) : null}
+                {draw.preferencePoints != null && pointsAreRelevant(draw.status) ? (
+                  <HStack>
+                    <Text>Preference points</Text>
+                    <Spacer />
+                    <Text
+                      modifiers={[
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}>
+                      {String(draw.preferencePoints)}
+                    </Text>
+                  </HStack>
+                ) : null}
+              </>
+            ) : (
+              <Text modifiers={[foregroundStyle({ type: 'hierarchical', style: 'secondary' })]}>
+                Not a draw season
+              </Text>
+            )}
+            <Button
+              label={draw ? 'Edit Draw' : 'Add Draw'}
+              systemImage={draw ? 'pencil' : 'plus'}
+              onPress={() => {
+                const gate = canTrackDraws(tier);
+                if (!gate.allowed) {
+                  router.push(
+                    `/paywall?requires=${gate.requires}&reason=${encodeURIComponent(gate.reason)}`
+                  );
+                  return;
+                }
+                router.push(`/season/${season.id}/draw`);
+              }}
             />
           </Section>
 

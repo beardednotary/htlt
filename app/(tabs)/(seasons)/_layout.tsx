@@ -40,6 +40,14 @@ export default function SeasonsLayout() {
         }}
       />
       <Stack.Screen
+        name="season/[id]/draw"
+        options={{
+          presentation: 'formSheet',
+          headerLargeTitle: false,
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
         name="season/[id]/dates"
         options={{
           title: 'Add Dates',

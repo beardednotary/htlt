@@ -57,3 +57,18 @@ export function canExportRecap(tier: Tier): Gate {
     reason: 'Outdoorsman exports your season as a PDF you can print, keep or send.',
   };
 }
+
+/**
+ * Draws are the reason a serious multi-state hunter pays. Points accumulate over
+ * years and the deadlines are unforgiving, which is exactly the anxiety a
+ * subscription should be relieving.
+ */
+export function canTrackDraws(tier: Tier): Gate {
+  if (tier !== 'free') return allow;
+  return {
+    allowed: false,
+    requires: 'outdoorsman',
+    reason:
+      'Outdoorsman tracks draw applications and preference points — when to apply, when results land, and how many points you are sitting on.',
+  };
+}

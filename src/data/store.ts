@@ -661,3 +661,64 @@ export function recapCoverUri(year: number): string | undefined {
 export function setWelcomeSeen(seen: boolean) {
   mutate((data) => ({ ...data, settings: { ...data.settings, welcomeSeen: seen } }));
 }
+
+export interface DrawInput {
+  status: DrawApplication['status'];
+  personId?: ID;
+  opensOn?: ISODate;
+  deadline?: ISODate;
+  resultsOn?: ISODate;
+  preferencePoints?: number;
+  notes?: string;
+}
+
+/**
+ * A season carries at most one draw, so this replaces rather than appends. The
+ * application is part of the season's own story — planning, applied, drawn,
+ * purchased — not a separate module to keep in sync.
+ */
+export function saveDrawApplication(seasonId: ID, input: DrawInput): DrawApplication {
+  const season = state.data.seasons.find((entry) => entry.id === seasonId);
+  const existing = season?.drawApplicationId
+    ? state.data.drawApplications.find((entry) => entry.id === season.drawApplicationId)
+    : undefined;
+
+  const application: DrawApplication = {
+    id: existing?.id ?? newId('draw'),
+    seasonId,
+    personId: input.personId ?? existing?.personId ?? primaryPersonId(),
+    status: input.status,
+    opensOn: input.opensOn,
+    deadline: input.deadline,
+    resultsOn: input.resultsOn,
+    preferencePoints: input.preferencePoints,
+    credentialId: existing?.credentialId,
+    notes: input.notes?.trim() || undefined,
+  };
+
+  mutate((data) => ({
+    ...data,
+    drawApplications: existing
+      ? data.drawApplications.map((entry) => (entry.id === existing.id ? application : entry))
+      : [...data.drawApplications, application],
+    seasons: data.seasons.map((entry) =>
+      entry.id === seasonId ? { ...entry, drawApplicationId: application.id } : entry
+    ),
+  }));
+
+  return application;
+}
+
+export function removeDrawApplication(seasonId: ID) {
+  mutate((data) => ({
+    ...data,
+    drawApplications: data.drawApplications.filter((entry) => entry.seasonId !== seasonId),
+    seasons: data.seasons.map((entry) =>
+      entry.id === seasonId ? { ...entry, drawApplicationId: undefined } : entry
+    ),
+  }));
+}
+
+export function drawForSeason(data: AppData, seasonId: ID): DrawApplication | undefined {
+  return data.drawApplications.find((entry) => entry.seasonId === seasonId);
+}
