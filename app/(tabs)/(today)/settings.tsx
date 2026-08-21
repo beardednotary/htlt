@@ -1,4 +1,4 @@
-import { Alert, Button, Form, Host, HStack, Section, Spacer, Text, Toggle } from '@expo/ui/swift-ui';
+import { Alert, Button, Form, HStack, Section, Spacer, Text, Toggle } from '@expo/ui/swift-ui';
 import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -28,6 +28,7 @@ import {
   syncReminders,
 } from '../../../src/notifications/reminders';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { AppHost } from '../../../src/ui/AppHost';
 
 export default function SettingsScreen() {
   const { data } = useStore();
@@ -119,7 +120,7 @@ export default function SettingsScreen() {
           headerLeft: () => <HeaderButton label="Done" onPress={() => router.back()} prominent />,
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
             title="Subscription"
@@ -314,7 +315,7 @@ export default function SettingsScreen() {
             <Button label="OK" onPress={() => setDenied(false)} />
           </Alert.Actions>
         </Alert>
-      </Host>
+      </AppHost>
     </>
   );
 }

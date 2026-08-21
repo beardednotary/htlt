@@ -1,14 +1,4 @@
-import {
-  ContentUnavailableView,
-  HStack,
-  Host,
-  Image,
-  List,
-  Picker,
-  Spacer,
-  Text,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { ContentUnavailableView, HStack, Image, List, Picker, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   font,
@@ -33,6 +23,7 @@ import {
   type SeasonPhase,
 } from '../../../src/model/derive';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { AppHost } from '../../../src/ui/AppHost';
 
 const PHASES: { value: SeasonPhase; label: string }[] = [
   { value: 'active', label: 'Active' },
@@ -78,13 +69,13 @@ export default function SeasonsScreen() {
     return (
       <>
         {header}
-        <Host style={{ flex: 1 }}>
+        <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Seasons Yet"
             systemImage="calendar"
             description="A season is one species, one place, one year — California Deer, 2026. Its tag, the license that covers it, the dates it runs and the official regulations all hang off it. Tap + to start one."
           />
-        </Host>
+        </AppHost>
       </>
     );
   }
@@ -92,7 +83,7 @@ export default function SeasonsScreen() {
   return (
     <>
       {header}
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker
             selection={phase}
@@ -153,7 +144,7 @@ export default function SeasonsScreen() {
             )}
           </List>
         </VStack>
-      </Host>
+      </AppHost>
     </>
   );
 }

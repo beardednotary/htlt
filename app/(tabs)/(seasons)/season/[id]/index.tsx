@@ -1,18 +1,4 @@
-import {
-  Alert,
-  Button,
-  ContentUnavailableView,
-  HStack,
-  Host,
-  Image,
-  List,
-  Menu,
-  Section,
-  Spacer,
-  SwipeActions,
-  Text,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { Alert, Button, ContentUnavailableView, HStack, Image, List, Menu, Section, Spacer, SwipeActions, Text, VStack } from '@expo/ui/swift-ui';
 import {
   font,
   foregroundStyle,
@@ -45,6 +31,7 @@ import {
   seasonTitle,
   todayISO,
 } from '../../../../../src/model/derive';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 export default function SeasonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -61,13 +48,13 @@ export default function SeasonDetailScreen() {
 
   if (!season) {
     return (
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Season Not Found"
           systemImage="questionmark.folder"
           description="It may have been deleted."
         />
-      </Host>
+      </AppHost>
     );
   }
 
@@ -87,7 +74,7 @@ export default function SeasonDetailScreen() {
   return (
     <>
       <Stack.Screen options={{ title: seasonTitle(season), headerLargeTitle: false }} />
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           <Section>
             <VStack alignment="leading" spacing={2}>
@@ -378,7 +365,7 @@ export default function SeasonDetailScreen() {
             <Button role="cancel" label="Cancel" onPress={() => setConfirmingDelete(false)} />
           </Alert.Actions>
         </Alert>
-      </Host>
+      </AppHost>
     </>
   );
 }

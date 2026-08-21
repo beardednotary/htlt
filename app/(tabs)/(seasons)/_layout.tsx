@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 
-import { screenBackground } from '../../../src/ui/theme';
+import { accent, screenBackground } from '../../../src/ui/theme';
 
 export default function SeasonsLayout() {
   return (
@@ -8,6 +8,7 @@ export default function SeasonsLayout() {
       screenOptions={{
         headerLargeTitle: true,
         contentStyle: { backgroundColor: screenBackground },
+        headerTintColor: accent,
       }}>
       <Stack.Screen name="index" options={{ title: 'Seasons' }} />
       <Stack.Screen

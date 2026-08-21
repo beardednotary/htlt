@@ -1,4 +1,4 @@
-import { DatePicker, Form, Host, Picker, Section, Text } from '@expo/ui/swift-ui';
+import { DatePicker, Form, Picker, Section, Text } from '@expo/ui/swift-ui';
 import { datePickerStyle, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -8,6 +8,7 @@ import { addSeasonWindow, useStore } from '../../../../../src/data/store';
 import { todayISO } from '../../../../../src/model/derive';
 import type { MethodOfTake } from '../../../../../src/model/types';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 /** A season can have several dated windows — archery, then general, then youth. */
 export default function SeasonDatesScreen() {
@@ -42,7 +43,7 @@ export default function SeasonDatesScreen() {
           headerRight: () => <HeaderButton label="Add" onPress={save} prominent />,
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section>
             <Picker
@@ -75,7 +76,7 @@ export default function SeasonDatesScreen() {
             />
           </Section>
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

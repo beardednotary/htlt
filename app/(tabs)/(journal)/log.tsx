@@ -1,14 +1,4 @@
-import {
-  DatePicker,
-  Form,
-  Host,
-  Picker,
-  Section,
-  Stepper,
-  Text,
-  TextField,
-  Toggle,
-} from '@expo/ui/swift-ui';
+import { DatePicker, Form, Picker, Section, Stepper, Text, TextField, Toggle } from '@expo/ui/swift-ui';
 import { datePickerStyle, keyboardType, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
@@ -25,6 +15,7 @@ import { seasonTitle, todayISO } from '../../../src/model/derive';
 import type { FishingTechnique, Harvest, MethodOfTake, Pursuit } from '../../../src/model/types';
 import { captureCoordinate, locationAvailable } from '../../../src/data/location';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { AppHost } from '../../../src/ui/AppHost';
 
 const NO_SEASON = 'none';
 
@@ -123,7 +114,7 @@ export default function LogActivityScreen() {
           headerRight: () => <HeaderButton label="Save" onPress={() => { void save(); }} prominent />,
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section>
             <DatePicker
@@ -258,7 +249,7 @@ export default function LogActivityScreen() {
             />
           </Section>
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { Form, Host, Section, Text, TextField } from '@expo/ui/swift-ui';
+import { Form, Section, Text, TextField } from '@expo/ui/swift-ui';
 import { keyboardType } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -7,6 +7,7 @@ import { addPerson, useStore } from '../../../../src/data/store';
 import { useEntitlements } from '../../../../src/purchases/entitlements';
 import { canAddPerson } from '../../../../src/purchases/limits';
 import { HeaderButton } from '../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../src/ui/AppHost';
 
 /**
  * A name is enough. The years are there for the people whose history predates the
@@ -61,7 +62,7 @@ export default function NewPersonScreen() {
           ),
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section>
             <TextField placeholder="Name" onTextChange={setName} autoFocus />
@@ -86,7 +87,7 @@ export default function NewPersonScreen() {
             />
           </Section>
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

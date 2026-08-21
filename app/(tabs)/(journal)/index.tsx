@@ -1,13 +1,4 @@
-import {
-  ContentUnavailableView,
-  HStack,
-  Host,
-  List,
-  Picker,
-  Spacer,
-  Text,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { ContentUnavailableView, HStack, List, Picker, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   font,
@@ -27,6 +18,7 @@ import { useStore } from '../../../src/data/store';
 import { formatEntryDate, seasonTitle } from '../../../src/model/derive';
 import type { Activity, Pursuit } from '../../../src/model/types';
 import { HeaderMenu } from '../../../src/ui/HeaderMenu';
+import { AppHost } from '../../../src/ui/AppHost';
 
 type Filter = 'all' | Pursuit;
 
@@ -90,13 +82,13 @@ export default function JournalScreen() {
     return (
       <>
         {header}
-        <Host style={{ flex: 1 }}>
+        <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Entries Yet"
             systemImage="book.closed"
             description="Log the days you go out and what came of them. A day with nothing taken is still worth keeping. Tap + to record a hunt or a fishing trip."
           />
-        </Host>
+        </AppHost>
       </>
     );
   }
@@ -104,7 +96,7 @@ export default function JournalScreen() {
   return (
     <>
       {header}
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker
             selection={filter}
@@ -157,7 +149,7 @@ export default function JournalScreen() {
             )}
           </List>
         </VStack>
-      </Host>
+      </AppHost>
     </>
   );
 }

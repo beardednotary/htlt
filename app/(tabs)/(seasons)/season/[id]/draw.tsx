@@ -1,14 +1,4 @@
-import {
-  DatePicker,
-  Form,
-  Host,
-  Picker,
-  Section,
-  Text,
-  TextField,
-  Toggle,
-  useNativeState,
-} from '@expo/ui/swift-ui';
+import { DatePicker, Form, Picker, Section, Text, TextField, Toggle, useNativeState } from '@expo/ui/swift-ui';
 import {
   contentShape,
   datePickerStyle,
@@ -27,6 +17,7 @@ import { DRAW_STATUS_LABELS, DRAW_STATUS_ORDER, pointsAreRelevant } from '../../
 import { todayISO } from '../../../../../src/model/derive';
 import type { DrawStatus } from '../../../../../src/model/types';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 function parseDate(iso: string | undefined, fallback: Date): Date {
   if (!iso) return fallback;
@@ -99,7 +90,7 @@ export default function SeasonDrawScreen() {
           headerRight: () => <HeaderButton label="Save" onPress={save} prominent />,
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
             footer={
@@ -192,7 +183,7 @@ export default function SeasonDrawScreen() {
             </Section>
           ) : null}
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

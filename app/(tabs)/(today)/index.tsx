@@ -1,4 +1,4 @@
-import { ContentUnavailableView, HStack, Host, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
+import { ContentUnavailableView, HStack, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import { font, foregroundStyle, listStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
 import { useMemo } from 'react';
@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useStore } from '../../../src/data/store';
 import { summarizeToday, type TodayItem } from '../../../src/model/today';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { AppHost } from '../../../src/ui/AppHost';
 
 function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
   return (
@@ -47,13 +48,13 @@ export default function TodayScreen() {
     return (
       <>
         {header}
-        <Host style={{ flex: 1 }}>
+        <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Nothing Coming Up"
           systemImage="calendar.badge.plus"
           description="Openers, application deadlines and licenses about to lapse all surface here. Today is assembled from what you enter elsewhere — start with a season."
           />
-        </Host>
+        </AppHost>
       </>
     );
   }
@@ -61,7 +62,7 @@ export default function TodayScreen() {
   return (
     <>
       {header}
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
       <List modifiers={[listStyle('insetGrouped')]}>
         {attention.length > 0 ? (
           <Section title="Needs Attention">
@@ -92,7 +93,7 @@ export default function TodayScreen() {
           </HStack>
           </Section>
         </List>
-      </Host>
+      </AppHost>
     </>
   );
 }

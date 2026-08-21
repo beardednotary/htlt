@@ -1,8 +1,10 @@
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 
+import { accent } from '../../src/ui/theme';
+
 export default function TabsLayout() {
   return (
-    <NativeTabs>
+    <NativeTabs tintColor={accent}>
       <NativeTabs.Trigger name="(today)">
         <NativeTabs.Trigger.Label>Today</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={{ default: 'sun.horizon', selected: 'sun.horizon.fill' }} />

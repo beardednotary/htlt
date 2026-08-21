@@ -1,4 +1,4 @@
-import { DatePicker, Form, Host, Section, Text, TextField, Toggle } from '@expo/ui/swift-ui';
+import { DatePicker, Form, Section, Text, TextField, Toggle } from '@expo/ui/swift-ui';
 import { datePickerStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { addTrip, useStore } from '../../../../src/data/store';
 import { todayISO } from '../../../../src/model/derive';
 import { HeaderButton } from '../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../src/ui/AppHost';
 
 export default function NewTripScreen() {
   const { data } = useStore();
@@ -51,7 +52,7 @@ export default function NewTripScreen() {
           ),
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section>
             <TextField placeholder="Opening Weekend" onTextChange={setName} autoFocus />
@@ -95,7 +96,7 @@ export default function NewTripScreen() {
             </Section>
           ) : null}
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

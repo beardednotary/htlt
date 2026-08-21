@@ -1,15 +1,4 @@
-import {
-  Alert,
-  Button,
-  ContentUnavailableView,
-  HStack,
-  Host,
-  List,
-  Section,
-  Spacer,
-  Text,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { Alert, Button, ContentUnavailableView, HStack, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   font,
@@ -30,6 +19,7 @@ import {
   seasonSubtitle,
   seasonTitle,
 } from '../../../../../src/model/derive';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 export default function PersonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -60,13 +50,13 @@ export default function PersonScreen() {
 
   if (!person) {
     return (
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Person Not Found"
           systemImage="questionmark.folder"
           description="They may have been removed."
         />
-      </Host>
+      </AppHost>
     );
   }
 
@@ -84,7 +74,7 @@ export default function PersonScreen() {
   return (
     <>
       <Stack.Screen options={{ title: person.name, headerLargeTitle: false }} />
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           {person.birthYear || person.huntingSince ? (
             <Section>
@@ -235,7 +225,7 @@ export default function PersonScreen() {
             <Button role="cancel" label="Cancel" onPress={() => setConfirmingDelete(false)} />
           </Alert.Actions>
         </Alert>
-      </Host>
+      </AppHost>
     </>
   );
 }

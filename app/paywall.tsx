@@ -13,6 +13,7 @@ import {
 import type { PurchasesPackage } from 'react-native-purchases';
 
 import { useEntitlements } from '../src/purchases/entitlements';
+import { accent, onAccent } from '../src/ui/theme';
 import { currentOffering, purchase, restore } from '../src/purchases/purchases';
 
 /** Apple requires both to be reachable from any screen that sells a subscription. */
@@ -197,12 +198,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 14,
-    backgroundColor: PlatformColor('systemBlue'),
+    backgroundColor: accent,
     alignItems: 'center',
   },
   buyPressed: { opacity: 0.85 },
-  buyLabel: { fontSize: 17, fontWeight: '600', color: '#fff' },
-  buyPrice: { fontSize: 14, color: 'rgba(255,255,255,0.9)', paddingTop: 2 },
+  buyLabel: { fontSize: 17, fontWeight: '600', color: onAccent },
+  buyPrice: { fontSize: 14, color: onAccent, opacity: 0.85, paddingTop: 2 },
 
   error: {
     paddingTop: 16,
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
   secondary: {
     paddingTop: 20,
     fontSize: 16,
-    color: PlatformColor('systemBlue'),
+    color: accent,
     textAlign: 'center',
   },
 

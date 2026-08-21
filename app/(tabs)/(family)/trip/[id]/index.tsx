@@ -1,17 +1,4 @@
-import {
-  Alert,
-  Button,
-  ContentUnavailableView,
-  HStack,
-  Host,
-  Image,
-  List,
-  Section,
-  Spacer,
-  Text,
-  Toggle,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { Alert, Button, ContentUnavailableView, HStack, Image, List, Section, Spacer, Text, Toggle, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   font,
@@ -26,6 +13,7 @@ import { useMemo, useState } from 'react';
 import { removeTrip, setTripParticipant, setTripSeason, useStore } from '../../../../../src/data/store';
 import { formatEntryDate, formatShortDate, seasonSubtitle, seasonTitle } from '../../../../../src/model/derive';
 import { tripReadiness } from '../../../../../src/model/readiness';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 export default function TripScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -38,13 +26,13 @@ export default function TripScreen() {
 
   if (!trip || !readiness) {
     return (
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Trip Not Found"
           systemImage="questionmark.folder"
           description="It may have been deleted."
         />
-      </Host>
+      </AppHost>
     );
   }
 
@@ -62,7 +50,7 @@ export default function TripScreen() {
   return (
     <>
       <Stack.Screen options={{ title: trip.name, headerLargeTitle: false }} />
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           <Section>
             <HStack>
@@ -213,7 +201,7 @@ export default function TripScreen() {
             <Button role="cancel" label="Cancel" onPress={() => setConfirmingDelete(false)} />
           </Alert.Actions>
         </Alert>
-      </Host>
+      </AppHost>
     </>
   );
 }

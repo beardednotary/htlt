@@ -8,10 +8,12 @@ import {
   View,
 } from 'react-native';
 
-import { Host, Image as SwiftUIImage } from '@expo/ui/swift-ui';
+import { Image as SwiftUIImage } from '@expo/ui/swift-ui';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { setWelcomeSeen } from '../src/data/store';
+import { accent, onAccent } from '../src/ui/theme';
+import { AppHost } from '../src/ui/AppHost';
 
 interface Step {
   symbol: SFSymbol;
@@ -72,9 +74,9 @@ export default function WelcomeScreen() {
                   size back to the view, so a wider symbol would otherwise shift
                   its own row's text and break the left edge. */}
               <View style={styles.stepIcon}>
-                <Host matchContents>
+                <AppHost matchContents>
                   <SwiftUIImage systemName={step.symbol} size={24} />
-                </Host>
+                </AppHost>
               </View>
               <View style={styles.stepText}>
                 <Text style={styles.stepTitle}>{step.title}</Text>
@@ -141,9 +143,9 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 16,
     borderRadius: 14,
-    backgroundColor: PlatformColor('systemBlue'),
+    backgroundColor: accent,
     alignItems: 'center',
   },
   buttonPressed: { opacity: 0.85 },
-  buttonLabel: { fontSize: 17, fontWeight: '600', color: '#fff' },
+  buttonLabel: { fontSize: 17, fontWeight: '600', color: onAccent },
 });

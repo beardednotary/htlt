@@ -1,4 +1,4 @@
-import { Button, Host, Image } from '@expo/ui/swift-ui';
+import {Button, Image} from '@expo/ui/swift-ui';
 import {
   bold,
   disabled as disabledModifier,
@@ -7,6 +7,7 @@ import {
   padding,
 } from '@expo/ui/swift-ui/modifiers';
 import type { SFSymbol } from 'sf-symbols-typescript';
+import { AppHost } from './AppHost';
 
 /**
  * A real SwiftUI button placed in the native navigation bar, so it picks up the
@@ -47,7 +48,7 @@ export function HeaderButton({
   if (disabled) modifiers.push(disabledModifier(true));
 
   return (
-    <Host matchContents style={{ minWidth: 44, minHeight: 44 }}>
+    <AppHost matchContents style={{ minWidth: 44, minHeight: 44 }}>
       {label ? (
         <Button
           label={label}
@@ -60,6 +61,6 @@ export function HeaderButton({
           <Image systemName={systemImage ?? 'plus'} />
         </Button>
       )}
-    </Host>
+    </AppHost>
   );
 }

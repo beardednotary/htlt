@@ -1,4 +1,4 @@
-import { Form, Host, Section, Text, TextField, useNativeState } from '@expo/ui/swift-ui';
+import { Form, Section, Text, TextField, useNativeState } from '@expo/ui/swift-ui';
 import {
   autocorrectionDisabled,
   keyboardType,
@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { JURISDICTIONS } from '../../../../../src/data/constants';
 import { addRegulation, useStore } from '../../../../../src/data/store';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 /**
  * We save the pointer, not the law. The agency owns the regulations and the liability
@@ -53,7 +54,7 @@ export default function SeasonRegulationsScreen() {
           ),
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
             title="Official Source"
@@ -88,7 +89,7 @@ export default function SeasonRegulationsScreen() {
             />
           </Section>
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

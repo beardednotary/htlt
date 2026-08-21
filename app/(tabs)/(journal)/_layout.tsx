@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 
-import { screenBackground } from '../../../src/ui/theme';
+import { accent, screenBackground } from '../../../src/ui/theme';
 
 export default function JournalLayout() {
   return (
@@ -8,6 +8,7 @@ export default function JournalLayout() {
       screenOptions={{
         headerLargeTitle: true,
         contentStyle: { backgroundColor: screenBackground },
+        headerTintColor: accent,
       }}>
       <Stack.Screen name="index" options={{ title: 'Journal' }} />
       <Stack.Screen name="entry/[id]/index" options={{ headerLargeTitle: false }} />

@@ -1,15 +1,4 @@
-import {
-  DatePicker,
-  Form,
-  HStack,
-  Host,
-  Picker,
-  Section,
-  Spacer,
-  Text,
-  TextField,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { DatePicker, Form, HStack, Picker, Section, Spacer, Text, TextField, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   datePickerStyle,
@@ -36,6 +25,7 @@ import type { CredentialKind } from '../../../../../src/model/types';
 import { useEntitlements } from '../../../../../src/purchases/entitlements';
 import { canAddCredential } from '../../../../../src/purchases/limits';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 const KIND_ORDER: CredentialKind[] = ['license', 'tag', 'permit', 'validation'];
 
@@ -106,7 +96,7 @@ export default function SeasonCredentialsScreen() {
           ),
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section title="New">
             {people.length > 1 ? (
@@ -178,7 +168,7 @@ export default function SeasonCredentialsScreen() {
             </Section>
           ) : null}
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, Host, Image as SwiftUIImage } from '@expo/ui/swift-ui';
+import { Button, Image as SwiftUIImage } from '@expo/ui/swift-ui';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
 import {
@@ -24,6 +24,7 @@ import { HeaderButton } from '../../../../src/ui/HeaderButton';
 import { HeaderMenu, type HeaderMenuItem } from '../../../../src/ui/HeaderMenu';
 import { useEntitlements } from '../../../../src/purchases/entitlements';
 import { canExportRecap } from '../../../../src/purchases/limits';
+import { AppHost } from '../../../../src/ui/AppHost';
 
 /**
  * The one screen that is ours to design. Everywhere else the app wears Apple's
@@ -237,11 +238,11 @@ function Hero({
       </Text>
 
       {/* On the image itself, because nobody finds a cover picker in a menu. */}
-      <Host matchContents style={styles.heroEdit} seedColor="#ffffff">
+      <AppHost matchContents style={styles.heroEdit} seedColor="#ffffff">
         <Button onPress={onChooseCover}>
           <SwiftUIImage systemName="photo.badge.plus" size={20} color="#ffffff" />
         </Button>
-      </Host>
+      </AppHost>
     </View>
   );
 }

@@ -1,14 +1,4 @@
-import {
-  ContentUnavailableView,
-  HStack,
-  Host,
-  Image,
-  List,
-  Section,
-  Spacer,
-  Text,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { ContentUnavailableView, HStack, Image, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   font,
@@ -25,6 +15,7 @@ import { credentialStatus, formatShortDate, todayISO } from '../../../src/model/
 import { tripReadiness, upcomingTrips } from '../../../src/model/readiness';
 import type { Person } from '../../../src/model/types';
 import { HeaderMenu } from '../../../src/ui/HeaderMenu';
+import { AppHost } from '../../../src/ui/AppHost';
 
 export default function FamilyScreen() {
   const { data } = useStore();
@@ -82,13 +73,13 @@ export default function FamilyScreen() {
     return (
       <>
         {header}
-        <Host style={{ flex: 1 }}>
+        <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No People Yet"
             systemImage="person.2"
             description="Add the people you hunt and fish with. Nobody needs an account of their own — you hold their licenses, tags and history, which is how a family's hunting history stays in one place. Tap + to add someone."
           />
-        </Host>
+        </AppHost>
       </>
     );
   }
@@ -96,7 +87,7 @@ export default function FamilyScreen() {
   return (
     <>
       {header}
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           {trips.length > 0 ? (
             <Section title="Upcoming Together">
@@ -186,7 +177,7 @@ export default function FamilyScreen() {
             })}
           </Section>
         </List>
-      </Host>
+      </AppHost>
     </>
   );
 }

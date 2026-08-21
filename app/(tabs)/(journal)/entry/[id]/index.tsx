@@ -1,18 +1,4 @@
-import {
-  Alert,
-  Button,
-  ContentUnavailableView,
-  HStack,
-  Host,
-  List,
-  Menu,
-  RNHostView,
-  Section,
-  Spacer,
-  SwipeActions,
-  Text,
-  VStack,
-} from '@expo/ui/swift-ui';
+import { Alert, Button, ContentUnavailableView, HStack, List, Menu, RNHostView, Section, Spacer, SwipeActions, Text, VStack } from '@expo/ui/swift-ui';
 import {
   contentShape,
   font,
@@ -37,6 +23,8 @@ import {
   useStore,
 } from '../../../../../src/data/store';
 import { formatEntryDate, seasonTitle } from '../../../../../src/model/derive';
+import { AppHost } from '../../../../../src/ui/AppHost';
+import { accent } from '../../../../../src/ui/theme';
 
 export default function JournalEntryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -64,13 +52,13 @@ export default function JournalEntryScreen() {
 
   if (!activity) {
     return (
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Entry Not Found"
           systemImage="questionmark.folder"
           description="It may have been deleted."
         />
-      </Host>
+      </AppHost>
     );
   }
 
@@ -88,7 +76,7 @@ export default function JournalEntryScreen() {
   return (
     <>
       <Stack.Screen options={{ title, headerLargeTitle: false }} />
-      <Host style={{ flex: 1 }}>
+      <AppHost style={{ flex: 1 }}>
         <List modifiers={[listStyle('insetGrouped')]}>
           <Section>
             <HStack>
@@ -178,7 +166,7 @@ export default function JournalEntryScreen() {
                       <Text
                         modifiers={[
                           font({ textStyle: 'footnote' }),
-                          foregroundStyle('blue'),
+                          foregroundStyle(accent),
                           contentShape(shapes.rectangle()),
                           // Hands off to Apple Maps rather than opening a web view.
                           onTapGesture(() => {
@@ -323,7 +311,7 @@ export default function JournalEntryScreen() {
             <Button role="cancel" label="Cancel" onPress={() => setConfirmingDelete(false)} />
           </Alert.Actions>
         </Alert>
-      </Host>
+      </AppHost>
     </>
   );
 }

@@ -1,6 +1,7 @@
-import { Button, Host, Image, Menu } from '@expo/ui/swift-ui';
+import {Button, Image, Menu} from '@expo/ui/swift-ui';
 import { fixedSize } from '@expo/ui/swift-ui/modifiers';
 import type { SFSymbol } from 'sf-symbols-typescript';
+import { AppHost } from './AppHost';
 
 export interface HeaderMenuItem {
   label: string;
@@ -20,7 +21,7 @@ export function HeaderMenu({
   items: HeaderMenuItem[];
 }) {
   return (
-    <Host matchContents style={{ minWidth: 44, minHeight: 44 }}>
+    <AppHost matchContents style={{ minWidth: 44, minHeight: 44 }}>
       <Menu label={<Image systemName={systemImage} />} modifiers={[fixedSize({ horizontal: true })]}>
         {items.map((item) => (
           <Button
@@ -31,6 +32,6 @@ export function HeaderMenu({
           />
         ))}
       </Menu>
-    </Host>
+    </AppHost>
   );
 }

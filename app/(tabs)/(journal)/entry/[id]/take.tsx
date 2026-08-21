@@ -1,4 +1,4 @@
-import { Form, Host, Picker, Section, Stepper, Text, TextField, Toggle } from '@expo/ui/swift-ui';
+import { Form, Picker, Section, Stepper, Text, TextField, Toggle } from '@expo/ui/swift-ui';
 import { keyboardType, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -8,6 +8,7 @@ import { addCatch, addHarvest, tagForSeason, useStore } from '../../../../../src
 import type { Harvest } from '../../../../../src/model/types';
 import { captureCoordinate, locationAvailable } from '../../../../../src/data/location';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { AppHost } from '../../../../../src/ui/AppHost';
 
 const SEXES: { value: NonNullable<Harvest['sex']>; label: string }[] = [
   { value: 'male', label: 'Male' },
@@ -70,7 +71,7 @@ export default function AddTakeScreen() {
           headerRight: () => <HeaderButton label="Add" onPress={() => { void save(); }} prominent />,
         }}
       />
-      <Host style={{ flex: 1 }} useViewportSizeMeasurement>
+      <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
             footer={
@@ -136,7 +137,7 @@ export default function AddTakeScreen() {
             </Section>
           )}
         </Form>
-      </Host>
+      </AppHost>
     </>
   );
 }
