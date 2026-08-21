@@ -1,6 +1,6 @@
 import { Button, Host, Image as SwiftUIImage } from '@expo/ui/swift-ui';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import {
   Image,
   PlatformColor,
@@ -19,6 +19,7 @@ import {
 } from '../../../../src/data/store';
 import { summarizeYear, yearsWithActivity, type Tally, type YearRecap } from '../../../../src/model/recap';
 import { shareRecap } from '../../../../src/model/recapExport';
+import { shareCardAvailable, shareRecapImage } from '../../../../src/model/recapCard';
 import { HeaderButton } from '../../../../src/ui/HeaderButton';
 import { HeaderMenu, type HeaderMenuItem } from '../../../../src/ui/HeaderMenu';
 import { useEntitlements } from '../../../../src/purchases/entitlements';
@@ -35,6 +36,7 @@ export default function RecapScreen() {
   const { data } = useStore();
   const router = useRouter();
   const { tier } = useEntitlements();
+  const cardRef = useRef<View>(null);
 
   const current = Number(year) || new Date().getFullYear();
   const recap = useMemo(() => summarizeYear(data, current), [data, current]);
@@ -77,6 +79,24 @@ export default function RecapScreen() {
                     void shareRecap(recap);
                   },
                 },
+                ...(shareCardAvailable()
+                  ? ([
+                      {
+                        label: 'Share as Image',
+                        systemImage: 'photo.badge.arrow.down',
+                        onPress: () => {
+                          const gate = canExportRecap(tier);
+                          if (!gate.allowed) {
+                            router.push(
+                              `/paywall?requires=${gate.requires}&reason=${encodeURIComponent(gate.reason)}`
+                            );
+                            return;
+                          }
+                          void shareRecapImage(cardRef, current);
+                        },
+                      },
+                    ] satisfies HeaderMenuItem[])
+                  : []),
                 { label: 'Choose Cover Photo', systemImage: 'photo', onPress: chooseCover },
                 ...(chosenCoverId
                   ? ([
@@ -154,7 +174,43 @@ export default function RecapScreen() {
           </View>
         ) : null}
       </ScrollView>
+
+      {/* Rendered off-screen at a fixed size so the shared image is the same
+          whatever device captured it. */}
+      <View style={styles.cardHost} pointerEvents="none">
+        <View ref={cardRef} collapsable={false} style={styles.card}>
+          {coverUri ? (
+            <Image source={{ uri: coverUri }} style={styles.cardPhoto} />
+          ) : (
+            <View style={[styles.cardPhoto, styles.heroBlank]} />
+          )}
+          <View style={styles.cardScrim} />
+          <View style={styles.cardBody}>
+            <Text style={styles.cardYear}>{recap.year}</Text>
+            <View style={styles.cardStats}>
+              <CardStat value={recap.daysAfield} label="Days afield" />
+              <CardStat value={recap.harvests} label="Harvests" />
+              <CardStat value={recap.fish} label="Fish" />
+            </View>
+            {recap.places.length > 0 ? (
+              <Text style={styles.cardPlaces}>{recap.places.join('  ·  ')}</Text>
+            ) : null}
+            {recap.firsts.length > 0 ? (
+              <Text style={styles.cardFirst}>{recap.firsts[0].label}</Text>
+            ) : null}
+          </View>
+        </View>
+      </View>
     </>
+  );
+}
+
+function CardStat({ value, label }: { value: number; label: string }) {
+  return (
+    <View style={styles.cardStat}>
+      <Text style={styles.cardStatValue}>{value}</Text>
+      <Text style={styles.cardStatLabel}>{label}</Text>
+    </View>
   );
 }
 
@@ -294,4 +350,23 @@ const styles = StyleSheet.create({
 
   heroEdit: { position: 'absolute', right: 14, top: 14 },
   switcher: { alignItems: 'center', paddingTop: 40 },
+
+  cardHost: { position: 'absolute', left: -2000, top: 0 },
+  card: { width: 360, height: 640, justifyContent: 'flex-end', overflow: 'hidden' },
+  cardPhoto: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
+  cardScrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.42)' },
+  cardBody: { padding: 28 },
+  cardYear: { fontSize: 84, fontWeight: '700', letterSpacing: -3, color: '#fff' },
+  cardStats: { flexDirection: 'row', paddingTop: 18 },
+  cardStat: { flex: 1 },
+  cardStatValue: { fontSize: 30, fontWeight: '600', color: '#fff' },
+  cardStatLabel: {
+    fontSize: 11,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    color: 'rgba(255,255,255,0.75)',
+    paddingTop: 2,
+  },
+  cardPlaces: { fontSize: 14, color: 'rgba(255,255,255,0.8)', paddingTop: 18 },
+  cardFirst: { fontSize: 20, fontWeight: '600', color: '#fff', paddingTop: 10 },
 });
