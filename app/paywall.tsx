@@ -17,8 +17,8 @@ import { accent, onAccent } from '../src/ui/theme';
 import { currentOffering, purchase, restore } from '../src/purchases/purchases';
 
 /** Apple requires both to be reachable from any screen that sells a subscription. */
-const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
-const PRIVACY_URL = 'https://dahvio.com/htlt/privacy';
+const TERMS_URL = 'https://dahvio.com/hunting-tags-license-tracker-terms';
+const PRIVACY_URL = 'https://dahvio.com/hunting-tags-license-tracker-privacy';
 
 const OUTDOORSMAN_FEATURES = [
   'Unlimited licenses, tags and permits',
