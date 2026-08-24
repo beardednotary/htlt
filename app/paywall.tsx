@@ -14,7 +14,7 @@ import type { PurchasesPackage } from 'react-native-purchases';
 
 import { useEntitlements } from '../src/purchases/entitlements';
 import { accent, onAccent } from '../src/ui/theme';
-import { currentOffering, purchase, restore } from '../src/purchases/purchases';
+import { currentOffering, purchase, restore, tierForProduct } from '../src/purchases/purchases';
 
 /** Apple requires both to be reachable from any screen that sells a subscription. */
 const TERMS_URL = 'https://dahvio.com/hunting-tags-license-tracker-terms';
@@ -82,6 +82,13 @@ export default function PaywallScreen() {
 
   const features = family ? FAMILY_FEATURES : OUTDOORSMAN_FEATURES;
 
+  // Only show what would actually unlock the thing they just hit. Family gates are
+  // satisfied by Family alone; an Outdoorsman gate is satisfied by either, so both
+  // stay visible and the higher tier reads as an upsell rather than a mistake.
+  const offered = (packages ?? []).filter((pkg) =>
+    family ? tierForProduct(pkg.product.identifier) === 'family' : true
+  );
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -107,14 +114,14 @@ export default function PaywallScreen() {
 
         {packages === null ? (
           <ActivityIndicator style={styles.loading} />
-        ) : packages.length === 0 ? (
+        ) : offered.length === 0 ? (
           <Text style={styles.unavailable}>
             {live
               ? 'Subscriptions are not available right now. Try again in a moment.'
               : 'Subscriptions are not configured in this build yet.'}
           </Text>
         ) : (
-          packages.map((pkg) => (
+          offered.map((pkg) => (
             <Pressable
               key={pkg.identifier}
               style={({ pressed }) => [styles.buy, pressed && styles.buyPressed]}

@@ -15,6 +15,23 @@ export const ENTITLEMENT_FAMILY = 'family';
 
 export type Tier = 'free' | 'outdoorsman' | 'family';
 
+/**
+ * Product identifiers as configured in App Store Connect. Like the entitlements
+ * above, these are a contract with the dashboard — renaming one there means
+ * renaming it here, and nowhere else should reference the raw strings.
+ */
+export const PRODUCT_OUTDOORSMAN_ANNUAL = 'com.dahvio.htlt.outdoorsman.annual';
+export const PRODUCT_FAMILY_ANNUAL = 'com.dahvio.htlt.family.annual';
+
+/** Which tier a package would grant, so the paywall can show only what qualifies. */
+export function tierForProduct(productId: string): Tier {
+  if (productId === PRODUCT_FAMILY_ANNUAL) return 'family';
+  if (productId === PRODUCT_OUTDOORSMAN_ANNUAL) return 'outdoorsman';
+  // An unrecognised product still unlocks something; treat it as the lower tier
+  // rather than hiding it, so a new SKU is visible before this file knows about it.
+  return 'outdoorsman';
+}
+
 /** Public SDK key. Safe to ship, but read from the environment rather than pasted in. */
 const API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
 
