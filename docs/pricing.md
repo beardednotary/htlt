@@ -78,6 +78,38 @@ Still to build before either paid tier is honest:
 - **Export your data.** Free on every tier, and the honest answer to "am I going
   to lose all this".
 
+## Lifetime tiers — decided against for launch (Aug 22, 2026)
+
+A lifetime purchase fits this app better than most: it is local-first with no server
+and no per-user cost, so a lifetime buyer costs nothing forever, and the product's own
+pitch is that it outlives the season. Renting someone access to their own twenty-year
+archive has a dissonance to it.
+
+It still waits, for three reasons:
+
+1. **Pricing it now would be a guess.** Lifetime pricing depends on how long the average
+   subscriber actually stays, which is unknown until roughly a year of data exists. Guess
+   low and the best customers are permanently sold for three years of revenue. Lifetime
+   can be added later; it cannot be un-sold.
+2. **Four SKUs converts worse than two.** More options lower conversion, and
+   "I bought Outdoorsman Lifetime, now I want Family" is an upgrade path Apple makes
+   genuinely awkward between non-consumables.
+3. **It is a promise against a product that may change.** If cloud sync ever ships, every
+   lifetime buyer becomes a permanent server cost sold for a flat fee.
+
+If it is added later: **one SKU, not two** — "Lifetime, everything including Family",
+somewhere around $79.99–$99.99. And the Terms must define lifetime *before* the first
+sale: lifetime of the app on this platform, with no guarantee of future server-dependent
+features. Retrofitting that language after people have paid is how you earn angry reviews.
+
+## Free trial
+
+A **7-day free trial on both annual products** ships at launch instead. Introductory
+offers are native to App Store Connect, cost nothing to configure, and for a utility
+people evaluate slowly they move conversion further than a lifetime option would. Someone
+who adds three seasons and a tag during the trial has already done the work that makes
+the app hard to leave.
+
 ## RevenueCat configuration
 
 The dashboard must match these identifiers exactly — they are the contract with
