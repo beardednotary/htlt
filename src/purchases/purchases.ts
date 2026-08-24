@@ -46,6 +46,33 @@ export async function configurePurchases(): Promise<void> {
   Purchases.setLogLevel(__DEV__ ? LOG_LEVEL.WARN : LOG_LEVEL.ERROR);
   await Purchases.configure({ apiKey: API_KEY });
   configured = true;
+  if (__DEV__) void reportStoreProducts();
+}
+
+/**
+ * Asks the App Store directly about our two product IDs, bypassing offerings.
+ *
+ * "Offerings are empty" is ambiguous: it means the store returned nothing, which
+ * could be a RevenueCat wiring problem or an App Store Connect one. This separates
+ * them — if the store returns both products here, the fault is in the dashboard's
+ * offering or product links. If it returns neither, the fault is on Apple's side:
+ * product IDs, agreements, or metadata.
+ */
+async function reportStoreProducts(): Promise<void> {
+  const wanted = [PRODUCT_OUTDOORSMAN_ANNUAL, PRODUCT_FAMILY_ANNUAL];
+  try {
+    const found = await Purchases.getProducts(wanted);
+    const ids = found.map((product) => product.identifier);
+    console.log('[purchases] App Store returned', found.length, 'of', wanted.length, 'products');
+    for (const id of wanted) {
+      const hit = found.find((product) => product.identifier === id);
+      console.log(`[purchases]   ${hit ? 'FOUND  ' + hit.priceString : 'MISSING'}  ${id}`);
+    }
+    const unexpected = ids.filter((id) => !wanted.includes(id));
+    if (unexpected.length > 0) console.log('[purchases] unexpected ids:', unexpected);
+  } catch (error) {
+    console.log('[purchases] getProducts threw:', error);
+  }
 }
 
 export function tierFrom(info: CustomerInfo | null): Tier {
