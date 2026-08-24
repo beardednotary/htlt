@@ -42,6 +42,7 @@ export default function PaywallScreen() {
   const { live, refresh } = useEntitlements();
 
   const family = requires === 'family';
+  const requiredTier = family ? 'family' : 'outdoorsman';
   const [packages, setPackages] = useState<PurchasesPackage[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -121,18 +122,32 @@ export default function PaywallScreen() {
               : 'Subscriptions are not configured in this build yet.'}
           </Text>
         ) : (
-          offered.map((pkg) => (
-            <Pressable
-              key={pkg.identifier}
-              style={({ pressed }) => [styles.buy, pressed && styles.buyPressed]}
-              disabled={busy}
-              onPress={() => {
-                void buy(pkg);
-              }}>
-              <Text style={styles.buyLabel}>{pkg.product.title || 'Subscribe'}</Text>
-              <Text style={styles.buyPrice}>{pkg.product.priceString} / year</Text>
-            </Pressable>
-          ))
+          offered.map((pkg) => {
+            // The tier they came for is the primary action. Anything above it is an
+            // upsell and reads as one — two filled buttons make the eye pick neither,
+            // and put the more expensive option in competition with the intended one.
+            const isPrimary = tierForProduct(pkg.product.identifier) === requiredTier;
+            return (
+              <Pressable
+                key={pkg.identifier}
+                style={({ pressed }) => [
+                  styles.buy,
+                  isPrimary ? styles.buyPrimary : styles.buySecondary,
+                  pressed && styles.buyPressed,
+                ]}
+                disabled={busy}
+                onPress={() => {
+                  void buy(pkg);
+                }}>
+                <Text style={[styles.buyLabel, !isPrimary && styles.buyLabelSecondary]}>
+                  {pkg.product.title || 'Subscribe'}
+                </Text>
+                <Text style={[styles.buyPrice, !isPrimary && styles.buyPriceSecondary]}>
+                  {pkg.product.priceString} / year
+                </Text>
+              </Pressable>
+            );
+          })
         )}
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -201,16 +216,23 @@ const styles = StyleSheet.create({
   },
 
   buy: {
-    marginTop: 24,
+    marginTop: 14,
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 14,
-    backgroundColor: accent,
     alignItems: 'center',
+  },
+  buyPrimary: { backgroundColor: accent, marginTop: 24 },
+  buySecondary: {
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: accent,
   },
   buyPressed: { opacity: 0.85 },
   buyLabel: { fontSize: 17, fontWeight: '600', color: onAccent },
+  buyLabelSecondary: { color: accent },
   buyPrice: { fontSize: 14, color: onAccent, opacity: 0.85, paddingTop: 2 },
+  buyPriceSecondary: { color: accent, opacity: 0.8 },
 
   error: {
     paddingTop: 16,
