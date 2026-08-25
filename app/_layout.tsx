@@ -1,11 +1,11 @@
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useRouter } from 'expo-router';
+import { Stack, ThemeProvider, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
 
 import { syncCalendar } from '../src/calendar/calendar';
 import { loadStore, useStore } from '../src/data/store';
 import { syncReminders } from '../src/notifications/reminders';
 import { EntitlementsProvider } from '../src/purchases/entitlements';
+import { navigationTheme } from '../src/ui/navigationTheme';
 
 /**
  * A stack above the tabs, so anything that has to appear over the whole app —
@@ -15,7 +15,6 @@ import { EntitlementsProvider } from '../src/purchases/entitlements';
 export default function RootLayout() {
   const { loaded, data } = useStore();
   const router = useRouter();
-  const scheme = useColorScheme();
 
   useEffect(() => {
     void loadStore();
@@ -47,11 +46,8 @@ export default function RootLayout() {
     return () => clearTimeout(timer);
   }, [loaded, data]);
 
-  // The navigation bar takes its background and title colour from this theme, not
-  // from the system. Left on the default, every header renders light — a white bar
-  // with black text in dark mode, and a large title drawn black on a black screen.
   return (
-    <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={navigationTheme}>
       <EntitlementsProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
