@@ -11,7 +11,7 @@ import {
   tag,
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 
 import { useStore } from '../../../src/data/store';
 import {
@@ -36,6 +36,28 @@ const EMPTY_PHASE_TEXT: Record<SeasonPhase, string> = {
   past: 'Nothing closed yet. Seasons move here after their last day.',
 };
 
+const SeasonsToolbar = memo(function SeasonsToolbar() {
+  const router = useRouter();
+  return (
+    <>
+      <Stack.Toolbar placement="left" tintColor={accent}>
+        <Stack.Toolbar.Button
+          hidesSharedBackground
+          icon="chart.bar"
+          onPress={() => router.push('/recap/latest')}
+        />
+      </Stack.Toolbar>
+      <Stack.Toolbar placement="right" tintColor={accent}>
+        <Stack.Toolbar.Button
+          hidesSharedBackground
+          icon="plus"
+          onPress={() => router.push('/new')}
+        />
+      </Stack.Toolbar>
+    </>
+  );
+});
+
 export default function SeasonsScreen() {
   const { data } = useStore();
   const router = useRouter();
@@ -50,12 +72,7 @@ export default function SeasonsScreen() {
   if (data.seasons.length === 0) {
     return (
       <>
-      <Stack.Toolbar placement="left" tintColor={accent}>
-        <Stack.Toolbar.Button hidesSharedBackground icon="chart.bar" onPress={() => router.push('/recap/latest')} />
-      </Stack.Toolbar>
-      <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Button hidesSharedBackground icon="plus" onPress={() => router.push('/new')} />
-      </Stack.Toolbar>
+      <SeasonsToolbar />
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Seasons Yet"
@@ -69,12 +86,7 @@ export default function SeasonsScreen() {
 
   return (
     <>
-      <Stack.Toolbar placement="left" tintColor={accent}>
-        <Stack.Toolbar.Button hidesSharedBackground icon="chart.bar" onPress={() => router.push('/recap/latest')} />
-      </Stack.Toolbar>
-      <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Button hidesSharedBackground icon="plus" onPress={() => router.push('/new')} />
-      </Stack.Toolbar>
+      <SeasonsToolbar />
       <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker

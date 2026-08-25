@@ -11,7 +11,7 @@ import {
   tag,
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 
 import { METHOD_LABELS, TECHNIQUE_LABELS } from '../../../src/data/constants';
 import { useStore } from '../../../src/data/store';
@@ -27,6 +27,22 @@ const FILTERS: { value: Filter; label: string }[] = [
   { value: 'hunting', label: 'Hunting' },
   { value: 'fishing', label: 'Fishing' },
 ];
+
+const JournalToolbar = memo(function JournalToolbar() {
+  const router = useRouter();
+  return (
+    <Stack.Toolbar placement="right" tintColor={accent}>
+      <Stack.Toolbar.Menu hidesSharedBackground icon="plus">
+        <Stack.Toolbar.MenuAction icon="scope" onPress={() => router.push('/log?pursuit=hunting')}>
+          Log Hunt
+        </Stack.Toolbar.MenuAction>
+        <Stack.Toolbar.MenuAction icon="fish" onPress={() => router.push('/log?pursuit=fishing')}>
+          Log Fishing Trip
+        </Stack.Toolbar.MenuAction>
+      </Stack.Toolbar.Menu>
+    </Stack.Toolbar>
+  );
+});
 
 export default function JournalScreen() {
   const { data } = useStore();
@@ -67,16 +83,7 @@ export default function JournalScreen() {
   if (data.activities.length === 0) {
     return (
       <>
-      <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Menu hidesSharedBackground icon="plus">
-          <Stack.Toolbar.MenuAction icon="scope" onPress={() => router.push('/log?pursuit=hunting')}>
-              Log Hunt
-            </Stack.Toolbar.MenuAction>
-          <Stack.Toolbar.MenuAction icon="fish" onPress={() => router.push('/log?pursuit=fishing')}>
-              Log Fishing Trip
-            </Stack.Toolbar.MenuAction>
-        </Stack.Toolbar.Menu>
-      </Stack.Toolbar>
+      <JournalToolbar />
         <AppHost style={{ flex: 1 }}>
           <ContentUnavailableView
             title="No Entries Yet"
@@ -90,16 +97,7 @@ export default function JournalScreen() {
 
   return (
     <>
-      <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Menu hidesSharedBackground icon="plus">
-          <Stack.Toolbar.MenuAction icon="scope" onPress={() => router.push('/log?pursuit=hunting')}>
-              Log Hunt
-            </Stack.Toolbar.MenuAction>
-          <Stack.Toolbar.MenuAction icon="fish" onPress={() => router.push('/log?pursuit=fishing')}>
-              Log Fishing Trip
-            </Stack.Toolbar.MenuAction>
-        </Stack.Toolbar.Menu>
-      </Stack.Toolbar>
+      <JournalToolbar />
       <AppHost style={{ flex: 1 }}>
         <VStack spacing={0}>
           <Picker

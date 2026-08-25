@@ -1,7 +1,7 @@
 import { ContentUnavailableView, HStack, List, Section, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import { font, foregroundStyle, listStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { useStore } from '../../../src/data/store';
 import { summarizeToday, type TodayItem } from '../../../src/model/today';
@@ -32,22 +32,28 @@ function Row({ item, tint }: { item: TodayItem; tint?: 'warning' }) {
  * UIKit's shared glass background, and that background flashes white through
  * every transition.
  */
+const TodayToolbar = memo(function TodayToolbar() {
+  const router = useRouter();
+  return (
+    <Stack.Toolbar placement="right" tintColor={accent}>
+      <Stack.Toolbar.Button
+        hidesSharedBackground
+        icon="person.crop.circle"
+        onPress={() => router.push('/settings')}
+      />
+    </Stack.Toolbar>
+  );
+});
+
 export default function TodayScreen() {
   const { data } = useStore();
-  const router = useRouter();
   const { comingUp, attention } = useMemo(() => summarizeToday(data), [data]);
 
 
   if (comingUp.length === 0 && attention.length === 0) {
     return (
       <>
-      <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Button
-          hidesSharedBackground
-          icon="person.crop.circle"
-          onPress={() => router.push('/settings')}
-        />
-      </Stack.Toolbar>
+      <TodayToolbar />
         <AppHost style={{ flex: 1 }}>
         <ContentUnavailableView
           title="Nothing Coming Up"
@@ -61,13 +67,7 @@ export default function TodayScreen() {
 
   return (
     <>
-      <Stack.Toolbar placement="right" tintColor={accent}>
-        <Stack.Toolbar.Button
-          hidesSharedBackground
-          icon="person.crop.circle"
-          onPress={() => router.push('/settings')}
-        />
-      </Stack.Toolbar>
+      <TodayToolbar />
       <AppHost style={{ flex: 1 }}>
       <List modifiers={[listStyle('insetGrouped')]}>
         {attention.length > 0 ? (
