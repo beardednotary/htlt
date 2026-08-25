@@ -178,14 +178,11 @@ export default function TripScreen() {
           </Section>
 
           <Section>
-            <Text
-              modifiers={[
-                foregroundStyle('red'),
-                contentShape(shapes.rectangle()),
-                onTapGesture(() => setConfirmingDelete(true)),
-              ]}>
-              Delete Trip
-            </Text>
+            <Button
+              label="Delete Trip"
+              role="destructive"
+              onPress={() => setConfirmingDelete(true)}
+            />
           </Section>
         </List>
 

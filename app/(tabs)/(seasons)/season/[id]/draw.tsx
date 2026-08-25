@@ -1,4 +1,14 @@
-import { DatePicker, Form, Picker, Section, Text, TextField, Toggle, useNativeState } from '@expo/ui/swift-ui';
+import {
+  Button,
+  DatePicker,
+  Form,
+  Picker,
+  Section,
+  Text,
+  TextField,
+  Toggle,
+  useNativeState,
+} from '@expo/ui/swift-ui';
 import {
   contentShape,
   datePickerStyle,
@@ -172,14 +182,11 @@ export default function SeasonDrawScreen() {
 
           {existing ? (
             <Section>
-              <Text
-                modifiers={[
-                  foregroundStyle('red'),
-                  contentShape(shapes.rectangle()),
-                  onTapGesture(remove),
-                ]}>
-                Remove Draw
-              </Text>
+              <Button
+              label="Remove Draw"
+              role="destructive"
+              onPress={remove}
+            />
             </Section>
           ) : null}
         </Form>

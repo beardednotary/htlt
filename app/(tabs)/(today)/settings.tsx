@@ -10,6 +10,7 @@ import {
   syncCalendar,
 } from '../../../src/calendar/calendar';
 import { exportData, pickImportFile } from '../../../src/data/backup';
+import { loadDemoData } from '../../../src/data/demo';
 import type { AppData } from '../../../src/data/store';
 import {
   replaceAllData,
@@ -167,6 +168,18 @@ export default function SettingsScreen() {
             }>
             <Toggle label="Add to Calendar" isOn={calendarOn} onIsOnChange={toggleCalendar} />
           </Section>
+
+          {__DEV__ ? (
+            <Section
+              title="Development"
+              footer={<Text>Replaces everything with a household built for screenshots.</Text>}>
+              <Button
+                label="Load Demo Data"
+                systemImage="wand.and.stars"
+                onPress={loadDemoData}
+              />
+            </Section>
+          ) : null}
 
           <Section
             title="Your Data"

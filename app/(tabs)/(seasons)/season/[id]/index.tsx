@@ -342,14 +342,11 @@ export default function SeasonDetailScreen() {
           </Section>
 
           <Section>
-            <Text
-              modifiers={[
-                foregroundStyle('red'),
-                contentShape(shapes.rectangle()),
-                onTapGesture(() => setConfirmingDelete(true)),
-              ]}>
-              Delete Season
-            </Text>
+            <Button
+              label="Delete Season"
+              role="destructive"
+              onPress={() => setConfirmingDelete(true)}
+            />
           </Section>
         </List>
 

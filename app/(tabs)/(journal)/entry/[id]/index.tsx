@@ -294,14 +294,11 @@ export default function JournalEntryScreen() {
           ) : null}
 
           <Section>
-            <Text
-              modifiers={[
-                foregroundStyle('red'),
-                contentShape(shapes.rectangle()),
-                onTapGesture(() => setConfirmingDelete(true)),
-              ]}>
-              Delete Entry
-            </Text>
+            <Button
+              label="Delete Entry"
+              role="destructive"
+              onPress={() => setConfirmingDelete(true)}
+            />
           </Section>
         </List>
 

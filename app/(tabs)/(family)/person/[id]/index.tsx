@@ -199,14 +199,11 @@ export default function PersonScreen() {
           </Section>
 
           <Section>
-            <Text
-              modifiers={[
-                foregroundStyle('red'),
-                contentShape(shapes.rectangle()),
-                onTapGesture(() => setConfirmingDelete(true)),
-              ]}>
-              Remove Person
-            </Text>
+            <Button
+              label="Remove Person"
+              role="destructive"
+              onPress={() => setConfirmingDelete(true)}
+            />
           </Section>
         </List>
 
