@@ -32,7 +32,21 @@ export function tierForProduct(productId: string): Tier {
   return 'outdoorsman';
 }
 
-/** Public SDK key. Safe to ship, but read from the environment rather than pasted in. */
+/**
+ * Public SDK key. Safe to ship — it goes out inside the binary either way — but read
+ * from the environment rather than pasted in.
+ *
+ * `EXPO_PUBLIC_` variables are inlined by Metro at bundle time, which means the value
+ * has to exist on the machine running the build. A local `.env` is gitignored and is
+ * therefore *not* uploaded to EAS Build, so a release built in the cloud gets
+ * `undefined` here and every purchase silently turns into "not configured" — which is
+ * exactly what TestFlight showed. The key has to be set on EAS as well:
+ *
+ *   eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… \
+ *     --environment production --visibility plaintext
+ *
+ * Repeat for `preview` and `development`. See docs/subscriptions-setup.md.
+ */
 const API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
 
 let configured = false;
@@ -42,7 +56,17 @@ export function isConfigured(): boolean {
 }
 
 export async function configurePurchases(): Promise<void> {
-  if (configured || !API_KEY) return;
+  if (configured) return;
+  if (!API_KEY) {
+    // Loud, because the failure mode is otherwise invisible: the app runs fine and
+    // simply never sells anything. Better to see it in the build log and in the
+    // device console than to find out from a tester.
+    console.error(
+      '[purchases] EXPO_PUBLIC_REVENUECAT_IOS_KEY is not set — purchases are disabled ' +
+        'in this build. Set it with `eas env:set` for the environment this was built in.'
+    );
+    return;
+  }
   Purchases.setLogLevel(__DEV__ ? LOG_LEVEL.WARN : LOG_LEVEL.ERROR);
   await Purchases.configure({ apiKey: API_KEY });
   configured = true;

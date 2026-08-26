@@ -126,6 +126,35 @@ the secret key — that one can issue refunds and must never ship in an app.
 `.env` is gitignored. `EXPO_PUBLIC_` variables are read at bundle time, so restart Metro
 after creating it. No native rebuild is needed.
 
+### The same key has to exist on EAS
+
+**`.env` covers your machine only.** It is gitignored, so it is not uploaded to EAS Build.
+A cloud build inlines `undefined`, `configurePurchases()` returns early, and the app ships
+working but unable to sell anything — the paywall reads "Subscriptions are not configured
+in this build yet". This is what the first TestFlight release did.
+
+Set it once per environment:
+
+```
+eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --environment production --visibility plaintext
+eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --environment preview --visibility plaintext
+eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --environment development --visibility plaintext
+```
+
+`plaintext` is correct, not `secret`. The RevenueCat *public* SDK key is extractable from
+any shipped IPA by design; marking it secret hides it from build logs without making it
+any less public, and secret variables are harder to verify. The one that must never be
+set here is the secret API key.
+
+Confirm before rebuilding:
+
+```
+eas env:list --environment production
+```
+
+`eas env:pull --environment production` writes them into a local `.env.local` if you want
+to reproduce a cloud build's configuration on your machine.
+
 ---
 
 ## 4. Testing before it is live
