@@ -133,27 +133,43 @@ A cloud build inlines `undefined`, `configurePurchases()` returns early, and the
 working but unable to sell anything — the paywall reads "Subscriptions are not configured
 in this build yet". This is what the first TestFlight release did.
 
-Set it once per environment:
+The key is already in `.env`, so push that file rather than retyping it. Once per
+environment, because environments do not inherit from one another:
 
 ```
-eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --environment production --visibility plaintext
-eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --environment preview --visibility plaintext
-eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --environment development --visibility plaintext
+npx eas env:push production --path .env
+npx eas env:push preview --path .env
+npx eas env:push development --path .env
 ```
+
+`--path .env` is not optional — the default is `.env.local`, which this project does not
+have, and without it the command finds nothing to push.
+
+To type the value in instead:
+
+```
+npx eas env:create production --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… --visibility plaintext
+```
+
+Dropping `--value` makes it prompt, which keeps the key out of shell history.
 
 `plaintext` is correct, not `secret`. The RevenueCat *public* SDK key is extractable from
 any shipped IPA by design; marking it secret hides it from build logs without making it
-any less public, and secret variables are harder to verify. The one that must never be
-set here is the secret API key.
+any less public, and secret variables cannot be read back to verify. The one that must
+never be set here is the secret API key.
 
-Confirm before rebuilding:
+Confirm before spending a build:
 
 ```
-eas env:list --environment production
+npx eas env:list production
 ```
 
-`eas env:pull --environment production` writes them into a local `.env.local` if you want
-to reproduce a cloud build's configuration on your machine.
+`npx eas env:pull production` writes them into a local `.env.local` if you want to
+reproduce a cloud build's configuration on your machine.
+
+**Command names move between CLI versions.** This is written for eas-cli 18.x, which uses
+`env:create`. From 22.x it is `env:set`. Check `npx eas env --help` if a command is not
+found rather than assuming the docs are stale.
 
 ---
 

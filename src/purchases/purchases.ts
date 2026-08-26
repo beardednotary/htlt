@@ -42,8 +42,7 @@ export function tierForProduct(productId: string): Tier {
  * `undefined` here and every purchase silently turns into "not configured" — which is
  * exactly what TestFlight showed. The key has to be set on EAS as well:
  *
- *   eas env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_… \
- *     --environment production --visibility plaintext
+ *   npx eas env:push production --path .env
  *
  * Repeat for `preview` and `development`. See docs/subscriptions-setup.md.
  */
