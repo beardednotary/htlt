@@ -285,26 +285,53 @@ const separator: ViewStyle = {
   borderBottomColor: PlatformColor('separator'),
 };
 
+/**
+ * The ground behind the cover type when there is no cover photo yet.
+ *
+ * Deliberately a fixed colour rather than a semantic one. Everything else in the
+ * app follows the system appearance, but this specific surface cannot: the type
+ * over it is white, because its normal backdrop is a photograph. A semantic
+ * background turns near-white in light appearance and the type disappears.
+ */
+const heroGround = '#293B38';
+
+/**
+ * A scrim handles an average photo. It does not handle a bright one — snow, sky,
+ * an overexposed morning — so the type carries its own shadow as well. Cheap
+ * insurance on a surface where we do not control the image.
+ */
+const overPhoto = {
+  textShadowColor: 'rgba(0,0,0,0.45)',
+  textShadowOffset: { width: 0, height: 1 },
+  textShadowRadius: 4,
+} as const;
+
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: PlatformColor('systemBackground') },
   content: { paddingBottom: 64 },
 
   hero: { height: 260, justifyContent: 'flex-end' },
   heroPhoto: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
-  heroBlank: { backgroundColor: PlatformColor('secondarySystemBackground') },
-  heroScrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.28)' },
+  // Fixed, not semantic. The type on top of this is always white, because it is
+  // normally sitting on a photograph — so the ground underneath it has to be dark
+  // in every appearance. `secondarySystemBackground` is #1C1C1E in the dark and
+  // #F2F2F7 in the light, which put white 72pt type on near-white at about 2:1.
+  heroBlank: { backgroundColor: heroGround },
+  heroScrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.45)' },
   heroYear: {
     fontSize: 72,
     fontWeight: '700',
     letterSpacing: -2,
     color: '#fff',
     paddingHorizontal: 20,
+    ...overPhoto,
   },
   heroCaption: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.85)',
+    color: 'rgba(255,255,255,0.92)',
     paddingHorizontal: 20,
     paddingBottom: 20,
+    ...overPhoto,
   },
 
   statRow: { flexDirection: 'row', paddingHorizontal: 20, paddingTop: 28 },
@@ -356,19 +383,20 @@ const styles = StyleSheet.create({
   cardHost: { position: 'absolute', left: -2000, top: 0 },
   card: { width: 360, height: 640, justifyContent: 'flex-end', overflow: 'hidden' },
   cardPhoto: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
-  cardScrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.42)' },
+  cardScrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.5)' },
   cardBody: { padding: 28 },
-  cardYear: { fontSize: 84, fontWeight: '700', letterSpacing: -3, color: '#fff' },
+  cardYear: { fontSize: 84, fontWeight: '700', letterSpacing: -3, color: '#fff', ...overPhoto },
   cardStats: { flexDirection: 'row', paddingTop: 18 },
   cardStat: { flex: 1 },
-  cardStatValue: { fontSize: 30, fontWeight: '600', color: '#fff' },
+  cardStatValue: { fontSize: 30, fontWeight: '600', color: '#fff', ...overPhoto },
   cardStatLabel: {
     fontSize: 11,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.75)',
+    color: 'rgba(255,255,255,0.85)',
     paddingTop: 2,
+    ...overPhoto,
   },
-  cardPlaces: { fontSize: 14, color: 'rgba(255,255,255,0.8)', paddingTop: 18 },
-  cardFirst: { fontSize: 20, fontWeight: '600', color: '#fff', paddingTop: 10 },
+  cardPlaces: { fontSize: 14, color: 'rgba(255,255,255,0.9)', paddingTop: 18, ...overPhoto },
+  cardFirst: { fontSize: 20, fontWeight: '600', color: '#fff', paddingTop: 10, ...overPhoto },
 });
