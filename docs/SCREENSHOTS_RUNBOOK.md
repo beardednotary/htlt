@@ -19,19 +19,30 @@ reasoning is in `ASO_LISTING.md` §7.
 
 ```bash
 npm ci
+npx eas-cli env:pull development --path .env.local --non-interactive
 ```
 
+The second command writes `EXPO_PUBLIC_REVENUECAT_IOS_KEY` to `.env.local` (gitignored).
+Without it the app logs an error that shows up as a toast at the bottom of every screen.
+
 Use the largest current iPhone simulator; its screenshots must be 1320 pixels wide (the
-iPhone 17 Pro Max is 1320×2868). If the only 6.9" simulator available is wider or
-narrower, scale every crop in `frames.mjs` by the width ratio.
+iPhone 17 Pro Max is 1320×2868). If it is not installed, create it:
 
 ```bash
+xcrun simctl create "iPhone 17 Pro Max" com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max
+```
+
+If the only 6.9" simulator available is wider or narrower, set `CAPTURE` in `frames.mjs`
+to its size and scale every crop by the width ratio.
+
+```bash
+export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8   # CocoaPods fails on Homebrew Ruby without it
 npx expo run:ios --device "iPhone 17 Pro Max"
 ```
 
 This is a development build, which is what makes Settings → Development → Load Demo
-Data available. Make sure `.env` has `EXPO_PUBLIC_REVENUECAT_IOS_KEY`; without it the app
-logs an error that shows up as a toast at the bottom of every screen.
+Data available. If `expo run:ios` rewrites the `ios`/`android` scripts in `package.json`,
+do not commit that.
 
 Then fix the simulator's appearance:
 
@@ -86,7 +97,9 @@ The rectangles in `frames.mjs` are first guesses. For each frame:
    frame's `cards`. Include the section header and the rounded group, and stop before the
    next section's header. Keep `x: 0, w: 1320`.
 2. Update `y` and `h` in `frames.mjs`.
-3. Render: `node scripts/screenshots/compose.cjs`.
+3. Render: `node scripts/screenshots/compose.cjs` (or `... compose.cjs 03` for one frame).
+   Drawing is done by `scripts/screenshots/render.swift` through `xcrun swift`; nothing
+   to install.
 4. Read the output and check the card shows exactly that section: nothing clipped and no
    half rows.
 

@@ -41,5 +41,6 @@ yarn-error.*
 /ios
 /android
 
-# App Store screenshot captures and renders (see scripts/screenshots)
-screenshots/
+# App Store screenshot captures and renders (see docs/SCREENSHOTS_RUNBOOK.md).
+# Anchored: an unanchored "screenshots/" also hid scripts/screenshots/.
+/screenshots/
