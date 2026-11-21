@@ -1,6 +1,7 @@
-import { Button, Image as SwiftUIImage } from '@expo/ui/swift-ui';
+import { Button, Host, Image as SwiftUIImage, Menu } from '@expo/ui/swift-ui';
+import { buttonStyle, fixedSize, foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useRef } from 'react';
+import { memo, useMemo, useRef, type RefObject } from 'react';
 import {
   Image,
   PlatformColor,
@@ -20,11 +21,74 @@ import {
 import { summarizeYear, yearsWithActivity, type Tally, type YearRecap } from '../../../../src/model/recap';
 import { shareRecap } from '../../../../src/model/recapExport';
 import { shareCardAvailable, shareRecapImage } from '../../../../src/model/recapCard';
-import { HeaderButton } from '../../../../src/ui/HeaderButton';
-import { HeaderMenu, type HeaderMenuItem } from '../../../../src/ui/HeaderMenu';
 import { useEntitlements } from '../../../../src/purchases/entitlements';
 import { canExportRecap } from '../../../../src/purchases/limits';
 import { AppHost } from '../../../../src/ui/AppHost';
+import { accent } from '../../../../src/ui/theme';
+
+function chooseCover(year: number) {
+  void pickFromLibrary().then((picked) => {
+    if (!picked) return;
+    const document = addPhotoDocument(picked);
+    setRecapCover(year, document.id);
+  });
+}
+
+/**
+ * The recap's bar menu: a native Stack.Toolbar menu, with the shared glass
+ * background hidden — see "Navigation bar buttons" in AGENTS.md. Memoized so it
+ * is only rebuilt when the recap or its cover changes.
+ */
+const RecapToolbar = memo(function RecapToolbar({
+  recap,
+  hasChosenCover,
+  cardRef,
+}: {
+  recap: YearRecap;
+  hasChosenCover: boolean;
+  cardRef: RefObject<View | null>;
+}) {
+  const router = useRouter();
+  const { tier } = useEntitlements();
+
+  function gatedExport(run: () => void) {
+    const gate = canExportRecap(tier);
+    if (!gate.allowed) {
+      router.push(`/paywall?requires=${gate.requires}&reason=${encodeURIComponent(gate.reason)}`);
+      return;
+    }
+    run();
+  }
+
+  return (
+    <Stack.Toolbar placement="right" tintColor={accent}>
+      <Stack.Toolbar.Menu hidesSharedBackground icon="ellipsis.circle">
+        <Stack.Toolbar.MenuAction
+          icon="square.and.arrow.up"
+          onPress={() => gatedExport(() => void shareRecap(recap))}>
+          Share as PDF
+        </Stack.Toolbar.MenuAction>
+        {shareCardAvailable() ? (
+          <Stack.Toolbar.MenuAction
+            icon="photo.badge.arrow.down"
+            onPress={() => gatedExport(() => void shareRecapImage(cardRef, recap.year))}>
+            Share as Image
+          </Stack.Toolbar.MenuAction>
+        ) : null}
+        <Stack.Toolbar.MenuAction icon="photo" onPress={() => chooseCover(recap.year)}>
+          Choose Cover Photo
+        </Stack.Toolbar.MenuAction>
+        {hasChosenCover ? (
+          <Stack.Toolbar.MenuAction
+            icon="wand.and.stars"
+            onPress={() => setRecapCover(recap.year, undefined)}>
+            Use Automatic Cover
+          </Stack.Toolbar.MenuAction>
+        ) : null}
+      </Stack.Toolbar.Menu>
+    </Stack.Toolbar>
+  );
+});
 
 /**
  * The one screen that is ours to design. Everywhere else the app wears Apple's
@@ -36,7 +100,6 @@ export default function RecapScreen() {
   const { year } = useLocalSearchParams<{ year: string }>();
   const { data } = useStore();
   const router = useRouter();
-  const { tier } = useEntitlements();
   const cardRef = useRef<View>(null);
 
   // "latest" lets a static header button link here without knowing the data.
@@ -49,87 +112,35 @@ export default function RecapScreen() {
   const chosenCover = data.documents.find((document) => document.id === chosenCoverId);
   const coverUri = chosenCover?.uri ?? recap.heroPhotoUri;
 
-  function chooseCover() {
-    void pickFromLibrary().then((picked) => {
-      if (!picked) return;
-      const document = addPhotoDocument(picked);
-      setRecapCover(current, document.id);
-    });
-  }
-
   return (
     <>
       <Stack.Screen
         options={{
           title: String(current),
           headerLargeTitle: false,
-          headerRight: () => (
-            <HeaderMenu
-              systemImage="ellipsis.circle"
-              items={[
-                {
-                  label: 'Share as PDF',
-                  systemImage: 'square.and.arrow.up',
-                  onPress: () => {
-                    const gate = canExportRecap(tier);
-                    if (!gate.allowed) {
-                      router.push(
-                        `/paywall?requires=${gate.requires}&reason=${encodeURIComponent(gate.reason)}`
-                      );
-                      return;
-                    }
-                    void shareRecap(recap);
-                  },
-                },
-                ...(shareCardAvailable()
-                  ? ([
-                      {
-                        label: 'Share as Image',
-                        systemImage: 'photo.badge.arrow.down',
-                        onPress: () => {
-                          const gate = canExportRecap(tier);
-                          if (!gate.allowed) {
-                            router.push(
-                              `/paywall?requires=${gate.requires}&reason=${encodeURIComponent(gate.reason)}`
-                            );
-                            return;
-                          }
-                          void shareRecapImage(cardRef, current);
-                        },
-                      },
-                    ] satisfies HeaderMenuItem[])
-                  : []),
-                { label: 'Choose Cover Photo', systemImage: 'photo', onPress: chooseCover },
-                ...(chosenCoverId
-                  ? ([
-                      {
-                        label: 'Use Automatic Cover',
-                        systemImage: 'wand.and.stars',
-                        onPress: () => setRecapCover(current, undefined),
-                      },
-                    ] satisfies HeaderMenuItem[])
-                  : []),
-              ]}
-            />
-          ),
         }}
+      />
+      <RecapToolbar
+        recap={recap}
+        hasChosenCover={Boolean(chosenCoverId)}
+        cardRef={cardRef}
       />
       <ScrollView
         style={styles.screen}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}>
-        <Hero recap={recap} coverUri={coverUri} onChooseCover={chooseCover} />
+        <Hero recap={recap} coverUri={coverUri} onChooseCover={() => chooseCover(current)} />
 
         <View style={styles.statRow}>
-          <Stat value={recap.daysAfield} label="Days afield" />
-          <Stat value={recap.harvests} label="Harvests" />
+          <Stat value={recap.daysAfield} label={plural(recap.daysAfield, 'Day afield', 'Days afield')} />
+          <Stat value={recap.harvests} label={plural(recap.harvests, 'Harvest', 'Harvests')} />
           <Stat value={recap.fish} label="Fish" />
         </View>
 
         <View style={styles.statRow}>
-          <Stat value={recap.hunts} label="Hunts" />
-          <Stat value={recap.fishingTrips} label="Trips" />
-          <Stat value={recap.places.length} label="Places" />
+          <Stat value={recap.hunts} label={plural(recap.hunts, 'Hunt', 'Hunts')} />
+          <Stat value={recap.fishingTrips} label={plural(recap.fishingTrips, 'Trip', 'Trips')} />
+          <Stat value={recap.places.length} label={plural(recap.places.length, 'Place', 'Places')} />
         </View>
 
         {recap.places.length > 0 ? (
@@ -165,14 +176,26 @@ export default function RecapScreen() {
 
         {years.length > 1 ? (
           <View style={styles.switcher}>
-            <HeaderMenu
-              systemImage="calendar"
-              items={years.map((value) => ({
-                label: String(value),
-                // Replacing keeps the back stack shallow while browsing years.
-                onPress: () => router.replace(`/recap/${value}`),
-              }))}
-            />
+            <Host
+              matchContents
+              style={{ minWidth: 44, minHeight: 44, backgroundColor: 'transparent' }}>
+              <Menu
+                label={<SwiftUIImage systemName="calendar" color={accent} />}
+                modifiers={[
+                  buttonStyle('plain'),
+                  foregroundStyle(accent),
+                  fixedSize({ horizontal: true }),
+                ]}>
+                {years.map((value) => (
+                  <Button
+                    key={value}
+                    label={String(value)}
+                    // Replacing keeps the back stack shallow while browsing years.
+                    onPress={() => router.replace(`/recap/${value}`)}
+                  />
+                ))}
+              </Menu>
+            </Host>
           </View>
         ) : null}
       </ScrollView>
@@ -190,8 +213,8 @@ export default function RecapScreen() {
           <View style={styles.cardBody}>
             <Text style={styles.cardYear}>{recap.year}</Text>
             <View style={styles.cardStats}>
-              <CardStat value={recap.daysAfield} label="Days afield" />
-              <CardStat value={recap.harvests} label="Harvests" />
+              <CardStat value={recap.daysAfield} label={plural(recap.daysAfield, 'Day afield', 'Days afield')} />
+              <CardStat value={recap.harvests} label={plural(recap.harvests, 'Harvest', 'Harvests')} />
               <CardStat value={recap.fish} label="Fish" />
             </View>
             {recap.places.length > 0 ? (
@@ -205,6 +228,11 @@ export default function RecapScreen() {
       </View>
     </>
   );
+}
+
+/** "1 Harvest", not "1 Harvests": a recap that counts one of something says so. */
+function plural(value: number, one: string, many: string): string {
+  return value === 1 ? one : many;
 }
 
 function CardStat({ value, label }: { value: number; label: string }) {

@@ -1,7 +1,7 @@
 import { Alert, Button, Form, HStack, Section, Spacer, Text, Toggle } from '@expo/ui/swift-ui';
 import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import {
   calendarAvailable,
@@ -11,6 +11,8 @@ import {
 } from '../../../src/calendar/calendar';
 import { exportData, pickImportFile } from '../../../src/data/backup';
 import { loadDemoData } from '../../../src/data/demo';
+import { confirmStyle } from '../../../src/ui/SheetToolbar';
+import { WHATS_NEW_RELEASE } from '../../../src/release/whatsNew';
 import type { AppData } from '../../../src/data/store';
 import {
   replaceAllData,
@@ -20,7 +22,8 @@ import {
 } from '../../../src/data/store';
 import { useEntitlements } from '../../../src/purchases/entitlements';
 import { canSyncCalendar } from '../../../src/purchases/limits';
-import { restore } from '../../../src/purchases/purchases';
+import { isConfigured, restore } from '../../../src/purchases/purchases';
+import { restoreMessage, restoreOutcome, tierName } from '../../../src/purchases/tiers';
 import { planReminders } from '../../../src/notifications/plan';
 import {
   cancelAllReminders,
@@ -28,8 +31,24 @@ import {
   requestPermission,
   syncReminders,
 } from '../../../src/notifications/reminders';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
 import { AppHost } from '../../../src/ui/AppHost';
+import { accent } from '../../../src/ui/theme';
+
+/**
+ * Real UIBarButtonItems via Stack.Toolbar, with the shared glass background
+ * hidden — see "Navigation bar buttons" in AGENTS.md. Memoized so the settings
+ * form re-rendering does not re-apply the header.
+ */
+const SettingsToolbar = memo(function SettingsToolbar() {
+  const router = useRouter();
+  return (
+    <Stack.Toolbar placement="left" tintColor={accent}>
+      <Stack.Toolbar.Button hidesSharedBackground style={confirmStyle} onPress={() => router.back()}>
+        Done
+      </Stack.Toolbar.Button>
+    </Stack.Toolbar>
+  );
+});
 
 export default function SettingsScreen() {
   const { data } = useStore();
@@ -40,12 +59,14 @@ export default function SettingsScreen() {
   const [calendarUnavailable, setCalendarUnavailable] = useState(false);
   const calendarOn = Boolean(data.settings.calendarEnabled);
   const [scheduled, setScheduled] = useState<number | null>(null);
+  const [restoreResult, setRestoreResult] = useState<{ title: string; message: string } | null>(
+    null
+  );
 
   const { tier, live, refresh } = useEntitlements();
   const enabled = data.settings.remindersEnabled;
 
-  const planName =
-    tier === 'family' ? 'Family' : tier === 'outdoorsman' ? 'Outdoorsman' : 'Free';
+  const planName = tierName(tier);
   const wouldSchedule = planReminders(data).length;
 
   useEffect(() => {
@@ -103,6 +124,19 @@ export default function SettingsScreen() {
     setCalendarSync(true, result.calendarId);
   }
 
+  async function restorePurchases() {
+    try {
+      const outcome = restoreOutcome(await restore(), isConfigured());
+      await refresh();
+      setRestoreResult(restoreMessage(outcome));
+    } catch {
+      setRestoreResult({
+        title: 'Restore did not finish',
+        message: 'The App Store could not be reached. Try again in a moment.',
+      });
+    }
+  }
+
   async function startImport() {
     const result = await pickImportFile();
     if (result.status === 'cancelled') return;
@@ -115,12 +149,8 @@ export default function SettingsScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: 'Settings',
-          headerLeft: () => <HeaderButton label="Done" onPress={() => router.back()} prominent />,
-        }}
-      />
+      <Stack.Screen options={{ title: 'Settings' }} />
+      <SettingsToolbar />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
@@ -151,7 +181,7 @@ export default function SettingsScreen() {
                 label="Restore Purchases"
                 systemImage="arrow.clockwise"
                 onPress={() => {
-                  void restore().then(() => refresh());
+                  void restorePurchases();
                 }}
               />
             ) : null}
@@ -254,6 +284,11 @@ export default function SettingsScreen() {
               systemImage="questionmark.circle"
               onPress={() => router.push('/welcome')}
             />
+            <Button
+              label={`What’s New in ${WHATS_NEW_RELEASE}`}
+              systemImage="sparkles"
+              onPress={() => router.push('/whats-new?replay=1')}
+            />
             <HStack>
               <Text>Journal entries</Text>
               <Spacer />
@@ -285,6 +320,20 @@ export default function SettingsScreen() {
               }}
             />
             <Button role="cancel" label="Cancel" onPress={() => setPendingImport(null)} />
+          </Alert.Actions>
+        </Alert>
+
+        <Alert
+          title={restoreResult?.title ?? ''}
+          isPresented={restoreResult !== null}
+          onIsPresentedChange={(presented) => {
+            if (!presented) setRestoreResult(null);
+          }}>
+          <Alert.Message>
+            <Text>{restoreResult?.message ?? ''}</Text>
+          </Alert.Message>
+          <Alert.Actions>
+            <Button label="OK" onPress={() => setRestoreResult(null)} />
           </Alert.Actions>
         </Alert>
 

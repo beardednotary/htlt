@@ -5,32 +5,16 @@ import Purchases, {
   type PurchasesPackage,
 } from 'react-native-purchases';
 
-/**
- * Entitlement identifiers as configured in RevenueCat. These are the contract
- * between this codebase and the dashboard — if they are renamed there, they must
- * be renamed here, and nothing else in the app should reference the raw strings.
- */
-export const ENTITLEMENT_OUTDOORSMAN = 'outdoorsman';
-export const ENTITLEMENT_FAMILY = 'family';
-
-export type Tier = 'free' | 'outdoorsman' | 'family';
-
-/**
- * Product identifiers as configured in App Store Connect. Like the entitlements
- * above, these are a contract with the dashboard — renaming one there means
- * renaming it here, and nowhere else should reference the raw strings.
- */
-export const PRODUCT_OUTDOORSMAN_ANNUAL = 'com.dahvio.htlt.outdoorsman.annual';
-export const PRODUCT_FAMILY_ANNUAL = 'com.dahvio.htlt.family.annual';
-
-/** Which tier a package would grant, so the paywall can show only what qualifies. */
-export function tierForProduct(productId: string): Tier {
-  if (productId === PRODUCT_FAMILY_ANNUAL) return 'family';
-  if (productId === PRODUCT_OUTDOORSMAN_ANNUAL) return 'outdoorsman';
-  // An unrecognised product still unlocks something; treat it as the lower tier
-  // rather than hiding it, so a new SKU is visible before this file knows about it.
-  return 'outdoorsman';
-}
+export {
+  ENTITLEMENT_FAMILY,
+  ENTITLEMENT_OUTDOORSMAN,
+  PRODUCT_FAMILY_ANNUAL,
+  PRODUCT_OUTDOORSMAN_ANNUAL,
+  tierForProduct,
+  tierFrom,
+  type Tier,
+} from './tiers';
+import { PRODUCT_FAMILY_ANNUAL, PRODUCT_OUTDOORSMAN_ANNUAL } from './tiers';
 
 /**
  * Public SDK key. Safe to ship — it goes out inside the binary either way — but read
@@ -98,14 +82,6 @@ async function reportStoreProducts(): Promise<void> {
   }
 }
 
-export function tierFrom(info: CustomerInfo | null): Tier {
-  if (!info) return 'free';
-  const active = info.entitlements.active;
-  if (active[ENTITLEMENT_FAMILY]) return 'family';
-  if (active[ENTITLEMENT_OUTDOORSMAN]) return 'outdoorsman';
-  return 'free';
-}
-
 export async function currentCustomerInfo(): Promise<CustomerInfo | null> {
   if (!configured) return null;
   try {
@@ -122,6 +98,28 @@ export async function currentOffering(): Promise<PurchasesOffering | null> {
     return offerings.current ?? null;
   } catch {
     return null;
+  }
+}
+
+/**
+ * Which products this Apple Account can still start a free trial on. Anything the
+ * App Store will not vouch for — ineligible, unknown, or an error — reads as false,
+ * so the paywall never promises a trial that would actually bill on day one.
+ */
+export async function trialEligibility(productIds: string[]): Promise<Record<string, boolean>> {
+  const none = Object.fromEntries(productIds.map((id) => [id, false]));
+  if (!configured || productIds.length === 0) return none;
+  try {
+    const result = await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
+    return Object.fromEntries(
+      productIds.map((id) => [
+        id,
+        result[id]?.status ===
+          Purchases.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE,
+      ])
+    );
+  } catch {
+    return none;
   }
 }
 
@@ -142,6 +140,11 @@ export async function restore(): Promise<CustomerInfo | null> {
   return Purchases.restorePurchases();
 }
 
+/**
+ * Must be called after `configurePurchases` has resolved: before that there is no SDK
+ * instance to listen to, and the listener is silently dropped. EntitlementsProvider
+ * sequences this; see `startEntitlementSync`.
+ */
 export function onCustomerInfoChange(listener: (info: CustomerInfo) => void): () => void {
   if (!configured) return () => {};
   Purchases.addCustomerInfoUpdateListener(listener);

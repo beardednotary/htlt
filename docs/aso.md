@@ -5,16 +5,14 @@ verified against Apple's limits (name 30, subtitle 30, keywords 100).
 
 ## United States
 
-| Field | Value | Chars |
-|---|---|---|
-| Name | `Hunting Tags & License Tracker` | 30/30 |
-| Subtitle | `Hunt Regs, Seasons & Journal` | 28/30 |
-| Keywords | `regulations,fishing,elk,duck,turkey,deer,moose,bear,permit,draw,preference,points,calendar,harvest` | 98/100 |
+Current copy and the reasoning for every field are in `ASO_LISTING.md` and
+`ASO_LOCALIZATIONS.md` (generated, length-checked). The 1.1 changes: the name stays (it
+ranks #3 for "hunting tags" and #33 for "hunting license"); the subtitle becomes
+`Hunt Regs & Season Planner` to form "hunting season" (41/45); "journal" moves to the
+keyword field; "regulations", "preference" and "fishing" leave it.
 
-The title carries the strongest U.S. terms — hunting tags (24/21/1.14), hunting license
-(22/20/1.10) — and the subtitle takes hunt regs (43/13/3.31). The keyword field never
-repeats a word already in the name or subtitle, and never a plural of one, because Apple
-treats those as duplicates. 98 relevant characters beat 100 padded with junk.
+The keyword field never repeats a word already in the name or subtitle, and never a
+plural of one, because Apple treats those as duplicates. The generator enforces this.
 
 ## Canada (English)
 
@@ -46,9 +44,11 @@ their accreditation instead of hunters managing a season.
 
 ## Québec
 
-An untouched French search market — `permis de chasse`, `certificat du chasseur`,
-`carnet de chasse`, `tirage`. Run a French Applyra pass before writing any of it, and
-have the listing localized properly rather than machine-translated.
+A first French Applyra pass (Nov 2026): `permis de chasse` is 25/25, KEI 1.0, but its top
+three are exam-prep apps, the same trap as Ontario. `chasse` alone is 54/59 and mostly
+games; autocomplete offers `chasse quebec` and `chasse et peche`. The fr-CA listing in
+`ASO_LOCALIZATIONS.md` is built from that and ships in 1.1 without a native review, by
+the owner's choice; fix any term a Québécois speaker flags.
 
 ## What this means for the product
 

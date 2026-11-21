@@ -1,4 +1,5 @@
 import type { AppData } from '../data/store';
+import { licenceWord } from '../data/vocabulary';
 import { formatShortDate, seasonTitle } from './derive';
 import type { ISODate, Trip } from './types';
 
@@ -39,7 +40,9 @@ export function tripReadiness(data: AppData, trip: Trip): TripReadiness {
       );
 
       if (theirs.length === 0) {
-        issues.push(`No license or tag on file for ${seasonTitle(season)}`);
+        // An Ontario season reads "licence", the way Ontario writes it.
+        const word = licenceWord(season.jurisdictionId).toLowerCase();
+        issues.push(`No ${word} or tag on file for ${seasonTitle(season)}`);
         continue;
       }
 

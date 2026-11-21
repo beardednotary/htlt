@@ -5,6 +5,7 @@ import { syncCalendar } from '../src/calendar/calendar';
 import { loadStore, useStore } from '../src/data/store';
 import { syncReminders } from '../src/notifications/reminders';
 import { EntitlementsProvider } from '../src/purchases/entitlements';
+import { shouldShowWhatsNew } from '../src/release/whatsNew';
 import { navigationTheme } from '../src/ui/navigationTheme';
 
 /**
@@ -20,11 +21,14 @@ export default function RootLayout() {
     void loadStore();
   }, []);
 
-  // Shown once, the first time the app opens with nothing in it.
+  // The welcome, once, the first time the app opens with nothing in it. Otherwise
+  // What's New, once, for someone who was here before this release.
+  const { welcomeSeen, whatsNewSeen } = data.settings;
   useEffect(() => {
-    if (!loaded || data.settings.welcomeSeen) return;
-    router.push('/welcome');
-  }, [loaded, data.settings.welcomeSeen, router]);
+    if (!loaded) return;
+    if (!welcomeSeen) router.push('/welcome');
+    else if (shouldShowWhatsNew({ welcomeSeen, whatsNewSeen })) router.push('/whats-new');
+  }, [loaded, welcomeSeen, whatsNewSeen, router]);
 
   // The schedule is rebuilt from the records whenever they change, so a deleted
   // season stops nagging and a new opener starts. Debounced so a burst of edits
@@ -56,6 +60,15 @@ export default function RootLayout() {
         options={{
           presentation: 'formSheet',
           sheetGrabberVisible: true,
+          sheetAllowedDetents: [0.999],
+        }}
+      />
+      <Stack.Screen
+        name="whats-new"
+        options={{
+          presentation: 'formSheet',
+          sheetGrabberVisible: false,
+          gestureEnabled: false,
           sheetAllowedDetents: [0.999],
         }}
       />

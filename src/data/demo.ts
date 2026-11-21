@@ -2,6 +2,7 @@ import { newId } from './ids';
 import { replaceAllData, type AppData } from './store';
 import { todayISO } from '../model/derive';
 import type { ISODate } from '../model/types';
+import { WHATS_NEW_RELEASE } from '../release/whatsNew';
 
 /**
  * A household that looks like a real one, for App Store screenshots.
@@ -228,7 +229,7 @@ export function buildDemoData(): AppData {
     seasonIds: [caDeer.id],
   };
 
-  // A season that reads honestly: seven hunts, two harvests, plenty of blank days.
+  // A season that reads honestly: six hunts, one harvest, plenty of blank days.
   const days: { at: number; pursuit: 'hunting' | 'fishing'; where: string; season?: string; method?: 'rifle' | 'compoundBow' | 'shotgun'; notes?: string }[] = [
     { at: -38, pursuit: 'hunting', where: 'Cache Creek', season: caDeer.id, method: 'compoundBow', notes: 'Two does at 60 yards, never closed the distance.' },
     { at: -34, pursuit: 'hunting', where: 'Cache Creek', season: caDeer.id, method: 'compoundBow' },
@@ -287,7 +288,7 @@ export function buildDemoData(): AppData {
   return {
     schemaVersion: 1,
     householdId,
-    settings: { remindersEnabled: true, welcomeSeen: true },
+    settings: { remindersEnabled: true, welcomeSeen: true, whatsNewSeen: WHATS_NEW_RELEASE },
     people: [ray, ethan, jim],
     credentials: [caLicense, deerTag, duckStamp, coElkTag, ethanLicense, ethanDeerTag, jimLicense],
     seasons: [caDeer, coElk, azElk, caWaterfowl],

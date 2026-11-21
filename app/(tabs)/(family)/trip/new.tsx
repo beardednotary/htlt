@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { addTrip, useStore } from '../../../../src/data/store';
 import { todayISO } from '../../../../src/model/derive';
-import { HeaderButton } from '../../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../../src/ui/AppHost';
 
 export default function NewTripScreen() {
@@ -41,16 +41,12 @@ export default function NewTripScreen() {
       <Stack.Screen
         options={{
           title: 'Plan a Trip',
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => (
-            <HeaderButton
-              label="Add"
-              onPress={save}
-              prominent
-              disabled={name.trim().length === 0}
-            />
-          ),
         }}
+      />
+      <SheetToolbar
+        confirmLabel="Add"
+        onConfirm={save}
+        confirmDisabled={name.trim().length === 0}
       />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>

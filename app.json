@@ -3,7 +3,7 @@
     "name": "Hunting Tags & License Tracker",
     "slug": "htlt",
     "scheme": "htlt",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -17,7 +17,7 @@
     "android": {
       "package": "com.dahvio.htlt",
       "adaptiveIcon": {
-        "backgroundColor": "#293B38",
+        "backgroundColor": "#F66310",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -52,7 +52,9 @@
           "isIosBackgroundLocationEnabled": false,
           "isAndroidBackgroundLocationEnabled": false
         }
-      ]
+      ],
+      "./plugins/withSceneLifecycle",
+      "expo-font"
     ],
     "extra": {
       "router": {},

@@ -129,7 +129,22 @@ export default function SeasonDetailScreen() {
             ) : (
               credentials.map((credential) => (
                 <HStack key={credential.id}>
-                  <Text>{credential.name}</Text>
+                  {/* In a household, two people's licenses often share a name; the
+                      holder is what tells the rows apart. */}
+                  {data.people.length > 1 ? (
+                    <VStack alignment="leading" spacing={2}>
+                      <Text>{credential.name}</Text>
+                      <Text
+                        modifiers={[
+                          font({ textStyle: 'subheadline' }),
+                          foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                        ]}>
+                        {data.people.find((person) => person.id === credential.personId)?.name ?? ''}
+                      </Text>
+                    </VStack>
+                  ) : (
+                    <Text>{credential.name}</Text>
+                  )}
                   <Spacer />
                   <Image
                     systemName="checkmark"

@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import {
   Image,
   Linking,
@@ -17,8 +17,36 @@ import { addPhotoToHarvest, useStore } from '../../../../src/data/store';
 import { credentialKindLabel } from '../../../../src/data/vocabulary';
 import { METHOD_LABELS } from '../../../../src/data/constants';
 import { formatEntryDate, seasonTitle } from '../../../../src/model/derive';
-import { HeaderMenu } from '../../../../src/ui/HeaderMenu';
 import { accent } from '../../../../src/ui/theme';
+
+function addPhoto(harvestId: string, source: 'camera' | 'library') {
+  const pick = source === 'camera' ? captureWithCamera() : pickFromLibrary();
+  void pick.then((picked) => {
+    if (picked) addPhotoToHarvest(harvestId, picked);
+  });
+}
+
+/**
+ * A native bar menu from Stack.Toolbar, with the shared glass background hidden —
+ * see "Navigation bar buttons" in AGENTS.md. Memoized on the harvest so the page
+ * re-rendering does not re-apply the header.
+ */
+const HarvestToolbar = memo(function HarvestToolbar({ harvestId }: { harvestId: string }) {
+  return (
+    <Stack.Toolbar placement="right" tintColor={accent}>
+      <Stack.Toolbar.Menu hidesSharedBackground icon="ellipsis.circle">
+        <Stack.Toolbar.MenuAction icon="camera" onPress={() => addPhoto(harvestId, 'camera')}>
+          Take Photo
+        </Stack.Toolbar.MenuAction>
+        <Stack.Toolbar.MenuAction
+          icon="photo.on.rectangle"
+          onPress={() => addPhoto(harvestId, 'library')}>
+          Choose Photo
+        </Stack.Toolbar.MenuAction>
+      </Stack.Toolbar.Menu>
+    </Stack.Toolbar>
+  );
+});
 
 /**
  * Ours to design, along with the recap. Everywhere else the app is a filing
@@ -86,13 +114,6 @@ export default function HarvestScreen() {
       : []),
   ];
 
-  function addPhoto(source: 'camera' | 'library') {
-    const pick = source === 'camera' ? captureWithCamera() : pickFromLibrary();
-    void pick.then((picked) => {
-      if (picked && harvest) addPhotoToHarvest(harvest.id, picked);
-    });
-  }
-
   return (
     <>
       <Stack.Screen
@@ -100,21 +121,9 @@ export default function HarvestScreen() {
           title: harvest.species,
           headerLargeTitle: false,
           headerTransparent: Boolean(hero),
-          headerRight: () => (
-            <HeaderMenu
-              systemImage="ellipsis.circle"
-              items={[
-                { label: 'Take Photo', systemImage: 'camera', onPress: () => addPhoto('camera') },
-                {
-                  label: 'Choose Photo',
-                  systemImage: 'photo.on.rectangle',
-                  onPress: () => addPhoto('library'),
-                },
-              ]}
-            />
-          ),
         }}
       />
+      <HarvestToolbar harvestId={harvest.id} />
       <ScrollView
         style={styles.screen}
         contentInsetAdjustmentBehavior={hero ? 'never' : 'automatic'}
