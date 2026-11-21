@@ -62,7 +62,7 @@ Everything in Outdoorsman, for up to six people in one household, including the 
 
 Know who is actually ready before you drive four hours. Trips check every person going against the trip's own dates, so a license that lapses mid-trip shows up on a Tuesday, not in a parking lot.
 
-Both plans start with a 7-day free trial for new subscribers. Cancel any plan and nothing you entered is deleted.
+New subscribers get a 7-day free trial, once. Cancel any plan and nothing you entered is deleted.
 
 FREQUENTLY ASKED
 
@@ -108,7 +108,7 @@ FAMILY
 
 Everything in Outdoorsman, for up to six people in one household, with trip readiness: every person going checked against the trip's own dates.
 
-Both plans are annual and start with a 7-day free trial for new subscribers. Cancel any plan and nothing you entered is deleted.
+Both plans are annual. New subscribers get a 7-day free trial, once. Cancel any plan and nothing you entered is deleted.
 
 Is this an official licence I can show a conservation officer?
 No. Documents you store are reference copies for your own use. Follow your province's rules for what has to be carried or displayed.
@@ -139,7 +139,7 @@ Sorteos y puntos de preferencia, licencias ilimitadas, sincronización con el ca
 FAMILY (ANUAL)
 Todo lo de Outdoorsman para hasta seis personas, y la preparación de cada viaje: quién tiene todo en regla y quién no.
 
-Ambos planes incluyen 7 días de prueba gratis para nuevos suscriptores. Si cancelas, no se borra nada de lo que ingresaste.
+Los nuevos suscriptores tienen una prueba gratis de 7 días. Si cancelas, no se borra nada de lo que ingresaste.
 
 Nota sobre el idioma: la app está en inglés. Los botones se llaman Seasons, Today, Journal y Family.
 
@@ -169,7 +169,7 @@ Tirages et points de préférence, permis illimités, ajout au calendrier, et vo
 FAMILY (ANNUEL)
 Tout Outdoorsman pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle, et qui ne l'est pas.
 
-Les deux forfaits commencent par un essai gratuit de 7 jours pour les nouveaux abonnés. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.
+Les nouveaux abonnés profitent d'un essai gratuit de 7 jours. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.
 
 Note sur la langue : l'app est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.
 
@@ -185,6 +185,13 @@ Conditions d'utilisation : https://www.apple.com/legal/internet-services/itunes/
 export const LISTINGS = [
   {
     locale: 'en-US',
+    whatsNew: `• The 7-day free trial is now shown before you subscribe, with the yearly price that follows it.
+• The upgrade screen lists only what each plan adds. Reminders, every state and province, and the journal stay free.
+• Restore Purchases tells you what it found.
+• Your plan updates as soon as you come back to the app, including when a trial ends.
+• The license and tag form shows how many of your three free slots are in use before you fill it in.
+• New seasons start in the state you used last.
+• A new icon.`,
     store: 'United States (primary)',
     status: 'live',
     name: 'Hunting Tags & License Tracker',
@@ -204,6 +211,12 @@ export const LISTINGS = [
   },
   {
     locale: 'es-MX',
+    whatsNew: `• Ahora se muestra la prueba gratis de 7 días antes de suscribirte, con el precio anual que sigue.
+• La pantalla de planes muestra solo lo que agrega cada plan. Los recordatorios, todos los estados y el diario siguen siendo gratis.
+• Restaurar compras te dice qué encontró.
+• Tu plan se actualiza en cuanto vuelves a la app, también cuando termina una prueba.
+• Las temporadas nuevas empiezan en el último estado que usaste.
+• Un ícono nuevo.`,
     store: 'Mexico, and the second listing the U.S. store searches',
     status: 'new',
     name: 'Licencias y Permisos de Caza',
@@ -221,6 +234,14 @@ export const LISTINGS = [
   },
   {
     locale: 'en-CA',
+    whatsNew: `• The 7-day free trial is now shown before you subscribe, with the yearly price that follows it.
+• The upgrade screen lists only what each plan adds. Reminders, every province and state, and the journal stay free.
+• Restore Purchases tells you what it found.
+• Your plan updates as soon as you come back to the app, including when a trial ends.
+• The licence and tag form shows how many of your three free slots are in use before you fill it in.
+• New seasons start in the province you used last, and in Canada on a Canadian iPhone.
+• Trip readiness spells licence the Canadian way.
+• A new icon.`,
     store: 'Canada (English)',
     status: 'live',
     name: 'Hunt Journal, Tags, Licences',
@@ -238,6 +259,12 @@ export const LISTINGS = [
   },
   {
     locale: 'fr-CA',
+    whatsNew: `• L'essai gratuit de 7 jours est maintenant affiché avant l'abonnement, avec le prix annuel qui suit.
+• L'écran des forfaits montre seulement ce que chaque forfait ajoute. Les rappels, toutes les provinces et le carnet restent gratuits.
+• Restaurer les achats vous dit ce qui a été trouvé.
+• Votre forfait se met à jour dès que vous revenez dans l'app, y compris à la fin d'un essai.
+• Les nouvelles saisons commencent dans la dernière province utilisée, et au Canada sur un iPhone canadien.
+• Une nouvelle icône.`,
     store: 'Canada (French), searched alongside English (Canada)',
     status: 'draft',
     name: 'Permis de chasse et saisons',

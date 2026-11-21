@@ -27,7 +27,7 @@ Status: **live** is in App Store Connect now and is being changed; **new** has t
 | Subtitle | `Hunt Regs & Season Planner` | 26/30 |
 | Keywords | `elk,deer,turkey,duck,moose,bear,draw,points,permit,journal,harvest,calendar,reminder,waterfowl,log` | 98/100 |
 | Promotional text | see below | 163/170 |
-| Description | see below | 3974/4000 |
+| Description | see below | 3958/4000 |
 
 **Why**
 
@@ -100,7 +100,7 @@ Everything in Outdoorsman, for up to six people in one household, including the 
 
 Know who is actually ready before you drive four hours. Trips check every person going against the trip's own dates, so a license that lapses mid-trip shows up on a Tuesday, not in a parking lot.
 
-Both plans start with a 7-day free trial for new subscribers. Cancel any plan and nothing you entered is deleted.
+New subscribers get a 7-day free trial, once. Cancel any plan and nothing you entered is deleted.
 
 FREQUENTLY ASKED
 
@@ -113,6 +113,18 @@ Privacy Policy: https://dahvio.com/hunting-tags-license-tracker-privacy
 Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
+**What's New in 1.1** (507/4000)
+
+```text
+• The 7-day free trial is now shown before you subscribe, with the yearly price that follows it.
+• The upgrade screen lists only what each plan adds. Reminders, every state and province, and the journal stay free.
+• Restore Purchases tells you what it found.
+• Your plan updates as soon as you come back to the app, including when a trial ends.
+• The license and tag form shows how many of your three free slots are in use before you fill it in.
+• New seasons start in the state you used last.
+• A new icon.
+```
+
 ## es-MX — Mexico, and the second listing the U.S. store searches
 
 | Field | Value | Length |
@@ -121,7 +133,7 @@ Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 | Subtitle | `Temporadas, Sorteos y Diario` | 28/30 |
 | Keywords | `hunting,whitetail,mule,pronghorn,antelope,pheasant,goose,dove,upland,archery,bow,muzzleloader,expiry` | 100/100 |
 | Promotional text | see below | 161/170 |
-| Description | see below | 1745/4000 |
+| Description | see below | 1733/4000 |
 
 **Why**
 
@@ -159,7 +171,7 @@ Sorteos y puntos de preferencia, licencias ilimitadas, sincronización con el ca
 FAMILY (ANUAL)
 Todo lo de Outdoorsman para hasta seis personas, y la preparación de cada viaje: quién tiene todo en regla y quién no.
 
-Ambos planes incluyen 7 días de prueba gratis para nuevos suscriptores. Si cancelas, no se borra nada de lo que ingresaste.
+Los nuevos suscriptores tienen una prueba gratis de 7 días. Si cancelas, no se borra nada de lo que ingresaste.
 
 Nota sobre el idioma: la app está en inglés. Los botones se llaman Seasons, Today, Journal y Family.
 
@@ -167,6 +179,17 @@ App independiente, sin afiliación con ninguna agencia de vida silvestre. No emi
 
 Política de privacidad: https://dahvio.com/hunting-tags-license-tracker-privacy
 Términos de uso: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+```
+
+**What's New in 1.1** (442/4000)
+
+```text
+• Ahora se muestra la prueba gratis de 7 días antes de suscribirte, con el precio anual que sigue.
+• La pantalla de planes muestra solo lo que agrega cada plan. Los recordatorios, todos los estados y el diario siguen siendo gratis.
+• Restaurar compras te dice qué encontró.
+• Tu plan se actualiza en cuanto vuelves a la app, también cuando termina una prueba.
+• Las temporadas nuevas empiezan en el último estado que usaste.
+• Un ícono nuevo.
 ```
 
 ## en-CA — Canada (English)
@@ -177,7 +200,7 @@ Términos de uso: https://www.apple.com/legal/internet-services/itunes/dev/stdeu
 | Subtitle | `Seasons, Regulations & Logs` | 27/30 |
 | Keywords | `hunting,license,ontario,fishing,elk,moose,bear,deer,duck,turkey,tracker,permit,draw,calendar,harvest` | 100/100 |
 | Promotional text | see below | 159/170 |
-| Description | see below | 2696/4000 |
+| Description | see below | 2688/4000 |
 
 **Why**
 
@@ -228,7 +251,7 @@ FAMILY
 
 Everything in Outdoorsman, for up to six people in one household, with trip readiness: every person going checked against the trip's own dates.
 
-Both plans are annual and start with a 7-day free trial for new subscribers. Cancel any plan and nothing you entered is deleted.
+Both plans are annual. New subscribers get a 7-day free trial, once. Cancel any plan and nothing you entered is deleted.
 
 Is this an official licence I can show a conservation officer?
 No. Documents you store are reference copies for your own use. Follow your province's rules for what has to be carried or displayed.
@@ -239,6 +262,19 @@ Privacy Policy: https://dahvio.com/hunting-tags-license-tracker-privacy
 Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
+**What's New in 1.1** (596/4000)
+
+```text
+• The 7-day free trial is now shown before you subscribe, with the yearly price that follows it.
+• The upgrade screen lists only what each plan adds. Reminders, every province and state, and the journal stay free.
+• Restore Purchases tells you what it found.
+• Your plan updates as soon as you come back to the app, including when a trial ends.
+• The licence and tag form shows how many of your three free slots are in use before you fill it in.
+• New seasons start in the province you used last, and in Canada on a Canadian iPhone.
+• Trip readiness spells licence the Canadian way.
+• A new icon.
+```
+
 ## fr-CA — Canada (French), searched alongside English (Canada)
 
 | Field | Value | Length |
@@ -247,7 +283,7 @@ Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 | Subtitle | `Carnet, tirages et règlements` | 29/30 |
 | Keywords | `quebec,peche,orignal,chevreuil,ours,dindon,canard,oie,coupon,rappel,calendrier,recolte,pourvoirie` | 97/100 |
 | Promotional text | see below | 162/170 |
-| Description | see below | 1831/4000 |
+| Description | see below | 1805/4000 |
 
 **Why**
 
@@ -286,7 +322,7 @@ Tirages et points de préférence, permis illimités, ajout au calendrier, et vo
 FAMILY (ANNUEL)
 Tout Outdoorsman pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle, et qui ne l'est pas.
 
-Les deux forfaits commencent par un essai gratuit de 7 jours pour les nouveaux abonnés. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.
+Les nouveaux abonnés profitent d'un essai gratuit de 7 jours. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.
 
 Note sur la langue : l'app est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.
 
@@ -294,5 +330,16 @@ App indépendante, sans lien avec aucun organisme provincial ou fédéral de la 
 
 Politique de confidentialité : https://dahvio.com/hunting-tags-license-tracker-privacy
 Conditions d'utilisation : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+```
+
+**What's New in 1.1** (513/4000)
+
+```text
+• L'essai gratuit de 7 jours est maintenant affiché avant l'abonnement, avec le prix annuel qui suit.
+• L'écran des forfaits montre seulement ce que chaque forfait ajoute. Les rappels, toutes les provinces et le carnet restent gratuits.
+• Restaurer les achats vous dit ce qui a été trouvé.
+• Votre forfait se met à jour dès que vous revenez dans l'app, y compris à la fin d'un essai.
+• Les nouvelles saisons commencent dans la dernière province utilisée, et au Canada sur un iPhone canadien.
+• Une nouvelle icône.
 ```
 
