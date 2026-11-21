@@ -174,13 +174,12 @@ ${JSON.stringify(metadata, null, 2)}
 
 iPhone 6.9" (1290×2796) is the only required size; there is no iPad build.
 
-- If \`screenshots/out/\` exists in the repo checkout (made by
-  \`node scripts/screenshots/compose.cjs\` from simulator captures), upload its PNGs to
-  en-US in file-name order: 01 to 08.
+- If \`screenshots/out/\` exists in the repo checkout (made by following
+  \`docs/SCREENSHOTS_RUNBOOK.md\`), upload its PNGs to en-US in file-name order: 01 to 08.
 - ⛔ Replacing screenshots deletes the current ones. Ask first.
 - en-CA and es-MX: use the same set unless the human says otherwise.
 - If \`screenshots/out/\` does not exist, leave the current screenshots alone and tell the
-  human that the new set still has to be captured (see \`docs/ASO_LISTING.md\` §7).
+  human that the new set still has to be captured with \`docs/SCREENSHOTS_RUNBOOK.md\`.
 
 ## Phase 5 — Subscriptions (read and report; change nothing unless asked)
 

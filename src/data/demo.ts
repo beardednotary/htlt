@@ -228,7 +228,7 @@ export function buildDemoData(): AppData {
     seasonIds: [caDeer.id],
   };
 
-  // A season that reads honestly: seven hunts, two harvests, plenty of blank days.
+  // A season that reads honestly: six hunts, one harvest, plenty of blank days.
   const days: { at: number; pursuit: 'hunting' | 'fishing'; where: string; season?: string; method?: 'rifle' | 'compoundBow' | 'shotgun'; notes?: string }[] = [
     { at: -38, pursuit: 'hunting', where: 'Cache Creek', season: caDeer.id, method: 'compoundBow', notes: 'Two does at 60 yards, never closed the distance.' },
     { at: -34, pursuit: 'hunting', where: 'Cache Creek', season: caDeer.id, method: 'compoundBow' },
