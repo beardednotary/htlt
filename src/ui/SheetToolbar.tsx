@@ -41,6 +41,9 @@ export function SheetToolbar({
   );
 }
 
+/** The confirming action reads as primary by weight, as bar buttons did before iOS 26. */
+export const confirmStyle = { fontWeight: '600' } as const;
+
 const SheetToolbarItems = memo(function SheetToolbarItems({
   confirmLabel,
   onConfirm,
@@ -59,9 +62,12 @@ const SheetToolbarItems = memo(function SheetToolbarItems({
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
       <Stack.Toolbar placement="right" tintColor={accent}>
+        {/* Plain and semibold, not variant="done": on iOS 26+ "done" is a filled
+            capsule with white text, and hidesSharedBackground removes the capsule,
+            leaving white text on a white bar. */}
         <Stack.Toolbar.Button
           hidesSharedBackground
-          variant="done"
+          style={confirmStyle}
           disabled={confirmDisabled}
           onPress={onConfirm}>
           {confirmLabel}

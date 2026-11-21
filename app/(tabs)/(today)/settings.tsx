@@ -11,6 +11,7 @@ import {
 } from '../../../src/calendar/calendar';
 import { exportData, pickImportFile } from '../../../src/data/backup';
 import { loadDemoData } from '../../../src/data/demo';
+import { confirmStyle } from '../../../src/ui/SheetToolbar';
 import { WHATS_NEW_RELEASE } from '../../../src/release/whatsNew';
 import type { AppData } from '../../../src/data/store';
 import {
@@ -42,7 +43,7 @@ const SettingsToolbar = memo(function SettingsToolbar() {
   const router = useRouter();
   return (
     <Stack.Toolbar placement="left" tintColor={accent}>
-      <Stack.Toolbar.Button hidesSharedBackground variant="done" onPress={() => router.back()}>
+      <Stack.Toolbar.Button hidesSharedBackground style={confirmStyle} onPress={() => router.back()}>
         Done
       </Stack.Toolbar.Button>
     </Stack.Toolbar>
