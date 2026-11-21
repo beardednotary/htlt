@@ -27,12 +27,13 @@ const out = join(root, 'screenshots', 'out');
   const only = process.argv.slice(2);
   const frames = FRAMES.filter((f) => only.length === 0 || only.some((p) => f.out.startsWith(p)));
 
-  const missing = frames.filter((f) => !existsSync(join(raw, f.source)));
+  const missing = frames.flatMap((f) =>
+    [f.source, ...(f.cards ?? []).map((c) => c.source)]
+      .filter((name) => name && !existsSync(join(raw, name)))
+      .map((name) => `  ${name} (for ${f.out})`)
+  );
   if (missing.length) {
-    console.error(
-      'Missing captures in screenshots/raw/:\n' +
-        missing.map((f) => `  ${f.source} (for ${f.out})`).join('\n')
-    );
+    console.error('Missing captures in screenshots/raw/:\n' + [...new Set(missing)].join('\n'));
     process.exit(1);
   }
 
@@ -62,7 +63,7 @@ const out = join(root, 'screenshots', 'out');
       sub: f.sub ?? null,
       plan: f.plan ?? null,
       full: Boolean(f.full),
-      cards: f.cards ?? [],
+      cards: (f.cards ?? []).map((c) => ({ ...c, source: c.source ? join(raw, c.source) : null })),
     })),
   };
   const specPath = join(tmpdir(), `htlt-frames-${process.pid}.json`);

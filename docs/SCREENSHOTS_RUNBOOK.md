@@ -62,7 +62,7 @@ xcrun simctl status_bar booted override --time "9:41" --batteryState charged --b
    xcrun simctl addmedia booted /path/to/photo.jpg
    ```
 
-   Human: Seasons → chart icon (top left) → **Choose Cover Photo** → pick it.
+   Seasons → chart icon (top left) → the photo button on the cover → pick it.
 
 The demo dates are relative to today, so the household always reads the same: Jim's
 license expires 16 days out, two days before Opening Weekend ends (trip shows 1 of 3 not
@@ -78,23 +78,29 @@ mkdir -p screenshots/raw
 xcrun simctl io booted screenshot screenshots/raw/<file>
 ```
 
-| File | Where the human goes | What must be visible |
+| File | Where to go | What must be visible |
 |---|---|---|
-| `today.png` | Today tab, scrolled to the top | Needs Attention (Jim's license, the deer tags) and Coming Up (draw due in 6 days, rifle opener, Opening Weekend) |
-| `season.png` | Seasons → Upcoming → **California Deer** | Dates, Licenses & Tags, and the Regulations row reading "Reviewed 9 days ago" |
-| `season-draw.png` | Seasons → Upcoming → **Arizona Elk**, scrolled so the Draw section is fully on screen | Applied, deadline, results date, Preference points 4 |
-| `trip.png` | Family → **Opening Weekend** | 1 of 3 not ready, and Jim's line saying his license expires before the trip ends |
-| `recap.png` | Seasons → chart icon | The cover photo and the first row of stats |
-| `journal.png` | Journal tab | Several entries, including ones marked No harvest |
-| `family.png` | Family tab | Ray, Ethan and Jim with their statuses |
-| `settings.png` | Today → person icon, scrolled to **Your Data** | Export and Import, with the footer |
+| `today.png` | Today tab, scrolled to the top | Needs Attention: Jim's license, Opening Weekend 1 of 3 not ready |
+| `today-coming.png` | Today tab, scrolled until Coming Up is fully above the tab bar | Coming Up: Arizona Elk application due in 6 days, rifle opener, Opening Weekend |
+| `season.png` | Seasons → Upcoming → **California Deer** | Dates, and Licenses & Tags with each holder's name |
+| `season-regs.png` | Same season, scrolled to **Regulations** | The regulation row reading "Reviewed 9 days ago" |
+| `season-draw.png` | Seasons → Upcoming → **Arizona Elk** | The Draw section fully on screen: Applied, deadline, results date, Preference points 4 |
+| `trip.png` | Family → **Opening Weekend** | Ready: Jim's line saying his license expires before the trip ends |
+| `recap.png` | Seasons → chart icon (top left) | The cover photo and the first two rows of stats |
+| `journal.png` | Journal tab, **Hunting** filter | Five deer days, four marked No harvest |
+| `family.png` | Family tab | Upcoming Together, and Ray, Ethan and Jim with their statuses |
+| `settings.png` | Today → person icon | **Your Data** with Export, Import and the footer (visible without scrolling) |
+
+Wait for a scroll or a sheet to settle before capturing: a tap or capture during a transition
+is lost, and the scroll indicator shows for about a second.
 
 ## 4. Crops
 
 The rectangles in `frames.mjs` are first guesses. For each frame:
 
-1. Read the capture and find the top and bottom pixel rows of each section named in that
-   frame's `cards`. Include the section header and the rounded group, and stop before the
+1. Run `xcrun swift scripts/screenshots/bands.swift screenshots/raw/<file>` to print where
+   each rounded group starts and ends, then find the top and bottom pixel rows of each
+   section named in that frame's `cards`. Include the section header and the rounded group, and stop before the
    next section's header. Keep `x: 0, w: 1320`.
 2. Update `y` and `h` in `frames.mjs`.
 3. Render: `node scripts/screenshots/compose.cjs` (or `... compose.cjs 03` for one frame).

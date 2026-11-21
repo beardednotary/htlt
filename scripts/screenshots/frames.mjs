@@ -4,7 +4,9 @@
  * Read by compose.cjs. The reasoning is in docs/ASO_LISTING.md §7 and the capture
  * steps in docs/SCREENSHOTS_RUNBOOK.md. Crops are in pixels of a 1320×2868 capture
  * (iPhone 17 Pro Max). Each `cards` entry is one section of the screen: its header
- * and its rounded group, and nothing of the next section.
+ * and its rounded group, and nothing of the next section. A card can name its own
+ * `source` capture, for a section that only fits on screen once scrolled.
+ * `xcrun swift scripts/screenshots/bands.swift <capture>` prints where each group is.
  *
  * Voice rules from AGENTS.md apply: no exclamation marks, US spelling, state it.
  */
@@ -27,21 +29,24 @@ export const FRAMES = [
     out: '01-deadlines.png',
     source: 'today.png',
     headline: 'Never miss\na deadline',
-    sub: 'Openers, expiries and draw deadlines, before they arrive.',
+    sub: 'Openers, expiries and draws, ahead of time.',
     cards: [
-      { name: 'Needs Attention', x: 0, y: 330, w: 1320, h: 760 },
-      { name: 'Coming Up', x: 0, y: 1110, w: 1320, h: 760 },
+      // The first three rows: an expiring license and the trip that is not ready.
+      { name: 'Needs Attention', x: 0, y: 510, w: 1320, h: 740 },
+      { name: 'Coming Up', source: 'today-coming.png', x: 0, y: 1100, w: 1320, h: 1190 },
     ],
   },
   {
     out: '02-season.png',
     source: 'season.png',
     headline: 'Every tag,\none season',
-    sub: 'Dates, licenses and the agency’s own regulation link, together.',
+    sub: 'Dates, licenses and the official regulation link.',
     cards: [
-      { name: 'Dates', x: 0, y: 330, w: 1320, h: 520 },
-      { name: 'Licenses & Tags', x: 0, y: 870, w: 1320, h: 560 },
-      { name: 'Regulations', x: 0, y: 1450, w: 1320, h: 360 },
+      { name: 'Dates', x: 0, y: 765, w: 1320, h: 575 },
+      // Every holder's license and tag; stops before the Add row.
+      { name: 'Licenses & Tags', x: 0, y: 1400, w: 1320, h: 1145 },
+      // The agency link and "Reviewed 9 days ago"; stops before the Add row.
+      { name: 'Regulations', source: 'season-regs.png', x: 0, y: 985, w: 1320, h: 400 },
     ],
   },
   {
@@ -50,15 +55,25 @@ export const FRAMES = [
     plan: 'Outdoorsman',
     headline: 'Draws and points,\ntracked',
     sub: 'Deadlines, results dates and preference points.',
-    cards: [{ name: 'Draw', x: 0, y: 900, w: 1320, h: 900 }],
+    cards: [
+      { name: 'Season', x: 0, y: 420, w: 1320, h: 290 },
+      // Status, deadline, results date and points; stops before Edit Draw.
+      { name: 'Draw', x: 0, y: 1735, w: 1320, h: 713 },
+      // And the reminder it produces on Today.
+      { name: 'Coming Up', source: 'today-coming.png', x: 0, y: 1100, w: 1320, h: 312 },
+    ],
   },
   {
     out: '04-trip.png',
     source: 'trip.png',
     plan: 'Family',
     headline: 'Trip readiness,\nchecked',
-    sub: 'Know who is missing a license before you drive four hours.',
-    cards: [{ name: 'Readiness', x: 0, y: 330, w: 1320, h: 1100 }],
+    sub: 'Every license checked against the trip’s own dates.',
+    cards: [
+      { name: 'Trip', x: 0, y: 430, w: 1320, h: 355 },
+      // Who is ready, Jim's lapsing license, and the footer that explains why.
+      { name: 'Ready', x: 0, y: 845, w: 1320, h: 790 },
+    ],
   },
   {
     out: '05-recap.png',
@@ -72,7 +87,8 @@ export const FRAMES = [
     source: 'journal.png',
     headline: 'The blank days\ncount',
     sub: 'Every hunt is kept, harvest or not.',
-    cards: [{ name: 'Entries', x: 0, y: 330, w: 1320, h: 1500 }],
+    // The Hunting filter: four of five days ended without a harvest.
+    cards: [{ name: 'Entries', x: 0, y: 500, w: 1320, h: 1320 }],
   },
   {
     out: '07-family.png',
@@ -80,13 +96,15 @@ export const FRAMES = [
     plan: 'Family',
     headline: 'Everyone’s tags,\ntogether',
     sub: 'Up to six people, including the ones who will never install an app.',
-    cards: [{ name: 'People', x: 0, y: 330, w: 1320, h: 900 }],
+    // The trip together, everyone's status, and the no-account footer.
+    cards: [{ name: 'Family', x: 0, y: 525, w: 1320, h: 1280 }],
   },
   {
     out: '08-data.png',
     source: 'settings.png',
     headline: 'No account.\nNo server.',
     sub: 'Everything stays on your iPhone. Export all of it whenever you want.',
-    cards: [{ name: 'Your Data', x: 0, y: 1200, w: 1320, h: 560 }],
+    // Export and Import, with the footer that says what the file holds.
+    cards: [{ name: 'Your Data', x: 0, y: 2075, w: 1320, h: 590 }],
   },
 ];

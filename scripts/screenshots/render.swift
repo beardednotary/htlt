@@ -8,7 +8,15 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-struct Crop: Decodable { let name: String; let x: Double; let y: Double; let w: Double; let h: Double }
+struct Crop: Decodable {
+  let name: String
+  /// A different capture for this card (a scrolled one, say); nil means the frame's own.
+  let source: String?
+  let x: Double
+  let y: Double
+  let w: Double
+  let h: Double
+}
 struct Frame: Decodable {
   let out: String
   let source: String
@@ -158,7 +166,8 @@ for frame in spec.frames {
     roundedCard(capture, in: rect, radius: 160 * scale, ctx)
   } else {
     let crops = frame.cards.compactMap { c -> (CGImage, Crop)? in
-      guard let piece = capture.cropping(to: CGRect(x: c.x, y: c.y, width: c.w, height: c.h)) else { return nil }
+      let from = c.source.map(loadImage) ?? capture
+      guard let piece = from.cropping(to: CGRect(x: c.x, y: c.y, width: c.w, height: c.h)) else { return nil }
       return (piece, c)
     }
     let gap: CGFloat = 44
@@ -170,6 +179,10 @@ for frame in spec.frames {
       let shrink = (available - gap * CGFloat(max(crops.count - 1, 0))) / (natural - gap * CGFloat(max(crops.count - 1, 0)))
       scale *= shrink
       width *= shrink
+    } else {
+      // A short stack sits a little above centre in the space under the headline,
+      // rather than leaving an empty field of orange at the bottom.
+      y += (available - natural) * 0.4
     }
     for (piece, crop) in crops {
       let rect = CGRect(x: (W - CGFloat(crop.w) * scale) / 2, y: y, width: CGFloat(crop.w) * scale, height: CGFloat(crop.h) * scale)
