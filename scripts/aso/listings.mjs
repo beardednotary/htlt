@@ -222,7 +222,7 @@ export const LISTINGS = [
   {
     locale: 'en-CA',
     store: 'Canada (English)',
-    status: 'new',
+    status: 'live',
     name: 'Hunt Journal, Tags, Licences',
     subtitle: 'Seasons, Regulations & Logs',
     keywords:
@@ -231,7 +231,8 @@ export const LISTINGS = [
       'Licences, tags, seasons and a hunt journal in one place, with reminders before every opener and expiry. For hunters who are already licensed. Free, no account.',
     description: CA_DESCRIPTION,
     whyItChanged: [
-      'Unchanged from the research in docs/aso.md: Canadian search favours the journal and log terms over the administrative ones.',
+      'Name, subtitle and keywords unchanged from the live listing and the research in docs/aso.md: Canadian search favours the journal and log terms over the administrative ones.',
+      'Only the description and promo text change: they now say "licence" throughout, label what each plan adds, and mention the trial.',
       'The description leads with "already licensed", because the top result for "ontario hunting licence" is an exam-prep app and the listing must not attract people studying for their accreditation.',
     ],
   },
