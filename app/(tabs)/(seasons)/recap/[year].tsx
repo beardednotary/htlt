@@ -132,15 +132,15 @@ export default function RecapScreen() {
         <Hero recap={recap} coverUri={coverUri} onChooseCover={() => chooseCover(current)} />
 
         <View style={styles.statRow}>
-          <Stat value={recap.daysAfield} label="Days afield" />
-          <Stat value={recap.harvests} label="Harvests" />
+          <Stat value={recap.daysAfield} label={plural(recap.daysAfield, 'Day afield', 'Days afield')} />
+          <Stat value={recap.harvests} label={plural(recap.harvests, 'Harvest', 'Harvests')} />
           <Stat value={recap.fish} label="Fish" />
         </View>
 
         <View style={styles.statRow}>
-          <Stat value={recap.hunts} label="Hunts" />
-          <Stat value={recap.fishingTrips} label="Trips" />
-          <Stat value={recap.places.length} label="Places" />
+          <Stat value={recap.hunts} label={plural(recap.hunts, 'Hunt', 'Hunts')} />
+          <Stat value={recap.fishingTrips} label={plural(recap.fishingTrips, 'Trip', 'Trips')} />
+          <Stat value={recap.places.length} label={plural(recap.places.length, 'Place', 'Places')} />
         </View>
 
         {recap.places.length > 0 ? (
@@ -213,8 +213,8 @@ export default function RecapScreen() {
           <View style={styles.cardBody}>
             <Text style={styles.cardYear}>{recap.year}</Text>
             <View style={styles.cardStats}>
-              <CardStat value={recap.daysAfield} label="Days afield" />
-              <CardStat value={recap.harvests} label="Harvests" />
+              <CardStat value={recap.daysAfield} label={plural(recap.daysAfield, 'Day afield', 'Days afield')} />
+              <CardStat value={recap.harvests} label={plural(recap.harvests, 'Harvest', 'Harvests')} />
               <CardStat value={recap.fish} label="Fish" />
             </View>
             {recap.places.length > 0 ? (
@@ -228,6 +228,11 @@ export default function RecapScreen() {
       </View>
     </>
   );
+}
+
+/** "1 Harvest", not "1 Harvests": a recap that counts one of something says so. */
+function plural(value: number, one: string, many: string): string {
+  return value === 1 ? one : many;
 }
 
 function CardStat({ value, label }: { value: number; label: string }) {
