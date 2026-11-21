@@ -35,7 +35,7 @@ API, or a CLI). Work through the phases in order.
 | App | Hunting Tags & License Tracker |
 | Apple ID | 6802948675 |
 | Bundle ID | `com.dahvio.htlt` |
-| Platform | iOS, iPhone only (`supportsTablet: false`) |
+| Platform | iOS, iPhone and iPad (`supportsTablet: true`; 1.0 shipped with iPad, and an update cannot drop a device family: ITMS-90101) |
 | Live version | 1.0 |
 | New version | **1.1.0** |
 | Localizations live today | en-US (primary), en-CA |
@@ -159,7 +159,8 @@ URL, Privacy Policy URL, category and age rating as they are.
 
 ## Phase 4 — Screenshots
 
-iPhone 6.9" (1290×2796) is the only required size; there is no iPad build.
+Required sizes: iPhone 6.9" (1290×2796) and iPad 13" (2064×2752 or 2048×2732), because the app
+supports iPad. 1.1.0 inherits the iPad set from 1.0; leave it unless the human supplies a new one.
 
 - If `screenshots/out/` exists in the repo checkout (made by following
   `docs/SCREENSHOTS_RUNBOOK.md`), upload its PNGs to en-US in file-name order: 01 to 08.
