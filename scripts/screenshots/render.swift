@@ -1,21 +1,29 @@
 // Renders App Store frames from the spec compose.cjs writes. Run through compose.cjs.
 //
-// Output is an opaque RGB PNG at exactly the canvas size, which is what App Store
-// Connect asks for (no alpha channel).
+// Each frame: a headline and subline set large enough to read in search results, the
+// full capture inside a phone that runs off the bottom of the frame, and optionally
+// one section of that screen lifted out of the phone, wider than it, so the claim in
+// the headline is readable at a glance.
+//
+// Output is an opaque RGB PNG at exactly the canvas size (no alpha channel), which is
+// what App Store Connect asks for.
 
 import AppKit
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-struct Crop: Decodable {
+struct Pop: Decodable {
   let name: String
-  /// A different capture for this card (a scrolled one, say); nil means the frame's own.
+  /// A different capture for the pop-out (a scrolled one, say); nil means the frame's own.
   let source: String?
-  let x: Double
   let y: Double
-  let w: Double
   let h: Double
+}
+struct FrameText: Decodable {
+  let headline: String
+  let sub: String?
+  let plan: String?
 }
 struct Frame: Decodable {
   let out: String
@@ -23,29 +31,28 @@ struct Frame: Decodable {
   let headline: String
   let sub: String?
   let plan: String?
-  let full: Bool
-  let cards: [Crop]
+  let pop: Pop?
 }
 struct Spec: Decodable {
   let width: Int
   let height: Int
-  let captureWidth: Int
   let background: String
   let ink: String
   let subInk: String
   let planBackground: String
   let planInk: String
+  let headlineMax: Double
+  let subSize: Double
+  let allText: [FrameText]
   let frames: [Frame]
 }
 
 func color(_ hex: String) -> NSColor {
   var value: UInt64 = 0
-  Scanner(string: String(hex.dropFirst())).scanHexInt64(&value)
+  Scanner(string: String(hex.dropFirst(hex.hasPrefix("#") ? 1 : 0))).scanHexInt64(&value)
   return NSColor(
-    srgbRed: CGFloat((value >> 16) & 0xFF) / 255,
-    green: CGFloat((value >> 8) & 0xFF) / 255,
-    blue: CGFloat(value & 0xFF) / 255,
-    alpha: 1)
+    srgbRed: CGFloat((value >> 16) & 0xFF) / 255, green: CGFloat((value >> 8) & 0xFF) / 255,
+    blue: CGFloat(value & 0xFF) / 255, alpha: 1)
 }
 
 func loadImage(_ path: String) -> CGImage {
@@ -58,8 +65,34 @@ func loadImage(_ path: String) -> CGImage {
   return image
 }
 
-/// Draws a CGImage into a top-left-origin rect of a flipped context, right way up.
-func draw(_ image: CGImage, in rect: CGRect, _ ctx: CGContext) {
+/// SF Pro Rounded: the system font, in the design the 1.0 listing's headlines used.
+func roundedFont(_ size: CGFloat, _ weight: NSFont.Weight) -> NSFont {
+  let base = NSFont.systemFont(ofSize: size, weight: weight)
+  return NSFont(descriptor: base.fontDescriptor.withDesign(.rounded) ?? base.fontDescriptor, size: size) ?? base
+}
+
+func text(_ string: String, font: NSFont, color: NSColor, lineHeight: CGFloat, kern: CGFloat) -> NSAttributedString {
+  let paragraph = NSMutableParagraphStyle()
+  paragraph.alignment = .center
+  paragraph.minimumLineHeight = lineHeight
+  paragraph.maximumLineHeight = lineHeight
+  paragraph.lineBreakMode = .byWordWrapping
+  return NSAttributedString(
+    string: string,
+    attributes: [.font: font, .foregroundColor: color, .kern: kern, .paragraphStyle: paragraph])
+}
+
+/// Draws centred text from `top` within `width`; returns the bottom edge.
+func draw(_ string: NSAttributedString, top: CGFloat, width: CGFloat, canvas: CGFloat) -> CGFloat {
+  let bounds = string.boundingRect(
+    with: NSSize(width: width, height: 10_000), options: [.usesLineFragmentOrigin, .usesFontLeading])
+  let rect = NSRect(x: (canvas - width) / 2, y: top, width: width, height: ceil(bounds.height))
+  string.draw(with: rect, options: [.usesLineFragmentOrigin, .usesFontLeading])
+  return rect.maxY
+}
+
+/// Draws a CGImage into a top-left-origin rect of the flipped context, right way up.
+func drawImage(_ image: CGImage, in rect: CGRect, _ ctx: CGContext) {
   ctx.saveGState()
   ctx.translateBy(x: rect.minX, y: rect.maxY)
   ctx.scaleBy(x: 1, y: -1)
@@ -68,53 +101,57 @@ func draw(_ image: CGImage, in rect: CGRect, _ ctx: CGContext) {
   ctx.restoreGState()
 }
 
-func attributed(_ text: String, size: CGFloat, weight: NSFont.Weight, color: NSColor, tracking: CGFloat, lineHeight: CGFloat) -> NSAttributedString {
-  let paragraph = NSMutableParagraphStyle()
-  paragraph.alignment = .center
-  paragraph.minimumLineHeight = lineHeight
-  paragraph.maximumLineHeight = lineHeight
-  paragraph.lineBreakMode = .byWordWrapping
-  return NSAttributedString(
-    string: text,
-    attributes: [
-      .font: NSFont.systemFont(ofSize: size, weight: weight),
-      .foregroundColor: color,
-      .kern: tracking,
-      .paragraphStyle: paragraph,
-    ])
+func roundedRect(_ rect: CGRect, _ radius: CGFloat) -> CGPath {
+  CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
 }
 
-/// Draws text centred in a column starting at `top`; returns the bottom edge.
-func drawText(_ text: NSAttributedString, top: CGFloat, width: CGFloat, canvasWidth: CGFloat) -> CGFloat {
-  let bounds = text.boundingRect(
-    with: NSSize(width: width, height: 10_000),
-    options: [.usesLineFragmentOrigin, .usesFontLeading])
-  let rect = NSRect(x: (canvasWidth - width) / 2, y: top, width: width, height: ceil(bounds.height))
-  text.draw(with: rect, options: [.usesLineFragmentOrigin, .usesFontLeading])
-  return rect.maxY
-}
-
-func roundedCard(_ image: CGImage, in rect: CGRect, radius: CGFloat, _ ctx: CGContext) {
-  let path = CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
-  ctx.saveGState()
-  ctx.setShadow(offset: CGSize(width: 0, height: 22), blur: 60, color: NSColor.black.withAlphaComponent(0.28).cgColor)
-  ctx.addPath(path)
-  ctx.setFillColor(NSColor.white.cgColor)
-  ctx.fillPath()
-  ctx.restoreGState()
-
-  ctx.saveGState()
-  ctx.addPath(path)
-  ctx.clip()
-  draw(image, in: rect, ctx)
-  ctx.restoreGState()
-}
-
-let specURL = URL(fileURLWithPath: CommandLine.arguments[1])
-let spec = try JSONDecoder().decode(Spec.self, from: Data(contentsOf: specURL))
+let spec = try JSONDecoder().decode(
+  Spec.self, from: Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[1])))
 let W = CGFloat(spec.width)
 let H = CGFloat(spec.height)
-let margin: CGFloat = 64
+let textWidth = W - 110
+
+// One headline size for the whole set: the largest that fits every line of every frame
+// on one line, so no headline wraps on its own and the eight read as a series.
+var headlineSize = CGFloat(spec.headlineMax)
+let headlineLines = spec.allText.flatMap { $0.headline.components(separatedBy: "\n") }
+while headlineSize > 80 {
+  let font = roundedFont(headlineSize, .bold)
+  let widest = headlineLines.map {
+    NSAttributedString(string: $0, attributes: [.font: font, .kern: -1.5]).size().width
+  }.max() ?? 0
+  if widest <= textWidth { break }
+  headlineSize -= 2
+}
+print("headline \(Int(headlineSize)) pt, subline \(Int(spec.subSize)) pt")
+
+let pillHeight: CGFloat = 76
+let pillGap: CGFloat = 24
+let subGap: CGFloat = 22
+
+func headlineText(_ s: String) -> NSAttributedString {
+  text(s, font: roundedFont(headlineSize, .bold), color: color(spec.ink), lineHeight: headlineSize * 1.04, kern: -1.5)
+}
+func subText(_ s: String) -> NSAttributedString {
+  let size = CGFloat(spec.subSize)
+  return text(s, font: roundedFont(size, .semibold), color: color(spec.subInk), lineHeight: size * 1.18, kern: -0.3)
+}
+func height(_ string: NSAttributedString, width: CGFloat) -> CGFloat {
+  ceil(string.boundingRect(with: NSSize(width: width, height: 10_000), options: [.usesLineFragmentOrigin, .usesFontLeading]).height)
+}
+/// Plan label, headline and subline, stacked.
+func blockHeight(_ t: FrameText) -> CGFloat {
+  var h = height(headlineText(t.headline), width: textWidth)
+  if t.plan != nil { h += pillHeight + pillGap }
+  if let sub = t.sub { h += subGap + height(subText(sub), width: textWidth - 40) }
+  return h
+}
+
+// Every phone sits at the same height, below the tallest text block in the set; a
+// shorter block is centred in the space above it, so the phones line up across frames.
+let textTop: CGFloat = 110
+let tallestBlock = spec.allText.map(blockHeight).max() ?? 0
+let phoneTop = textTop + tallestBlock + 70
 
 for frame in spec.frames {
   guard
@@ -123,8 +160,6 @@ for frame in spec.frames {
       space: CGColorSpace(name: CGColorSpace.sRGB)!,
       bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
   else { fatalError("no context") }
-
-  // Top-left origin for everything below.
   ctx.translateBy(x: 0, y: H)
   ctx.scaleBy(x: 1, y: -1)
   NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: true)
@@ -132,70 +167,97 @@ for frame in spec.frames {
   ctx.setFillColor(color(spec.background).cgColor)
   ctx.fill(CGRect(x: 0, y: 0, width: W, height: H))
 
-  var y: CGFloat = 150
+  var y = textTop + (tallestBlock - blockHeight(FrameText(headline: frame.headline, sub: frame.sub, plan: frame.plan))) / 2
 
   if let plan = frame.plan {
-    let label = attributed(plan.uppercased(), size: 34, weight: .semibold, color: color(spec.planInk), tracking: 3, lineHeight: 40)
+    let label = text(
+      plan.uppercased(), font: roundedFont(40, .heavy), color: color(spec.planInk), lineHeight: 48, kern: 3)
     let size = label.size()
-    let pill = CGRect(x: (W - size.width - 56) / 2, y: y - 12, width: size.width + 56, height: 64)
+    let pill = CGRect(x: (W - size.width - 64) / 2, y: y, width: size.width + 64, height: pillHeight)
+    ctx.addPath(roundedRect(pill, 38))
     ctx.setFillColor(color(spec.planBackground).cgColor)
-    ctx.addPath(CGPath(roundedRect: pill, cornerWidth: 32, cornerHeight: 32, transform: nil))
     ctx.fillPath()
-    label.draw(at: NSPoint(x: pill.minX + 28, y: pill.minY + 12))
-    y = pill.maxY + 36
-  } else {
-    y += 40
+    label.draw(at: NSPoint(x: pill.minX + 32, y: pill.minY + 14))
+    y = pill.maxY + pillGap
   }
 
-  let headline = attributed(frame.headline, size: 124, weight: .bold, color: color(spec.ink), tracking: -2.5, lineHeight: 132)
-  y = drawText(headline, top: y, width: W - margin * 2, canvasWidth: W)
+  y = draw(headlineText(frame.headline), top: y, width: textWidth, canvas: W)
 
   if let sub = frame.sub {
-    let line = attributed(sub, size: 50, weight: .medium, color: color(spec.subInk), tracking: -0.4, lineHeight: 62)
-    y = drawText(line, top: y + 28, width: W - margin * 2 - 40, canvasWidth: W)
+    _ = draw(subText(sub), top: y + subGap, width: textWidth - 40, canvas: W)
   }
-  y += 80
 
+  // The phone: titanium body, black bezel, the capture as its screen, the island on top.
   let capture = loadImage(frame.source)
+  let phoneW: CGFloat = 1000
+  let bezel: CGFloat = 24
+  let screenW = phoneW - bezel * 2
+  let scale = screenW / CGFloat(capture.width)
+  let screenH = CGFloat(capture.height) * scale
+  let phone = CGRect(x: (W - phoneW) / 2, y: phoneTop, width: phoneW, height: screenH + bezel * 2)
+  let bodyRadius: CGFloat = 160
+  let screenRadius: CGFloat = 140
 
-  if frame.full {
-    // One full screen, like a phone held up to the camera, running off the bottom.
-    let width: CGFloat = W - 220
-    let scale = width / CGFloat(capture.width)
-    let rect = CGRect(x: (W - width) / 2, y: y, width: width, height: CGFloat(capture.height) * scale)
-    roundedCard(capture, in: rect, radius: 160 * scale, ctx)
-  } else {
-    let crops = frame.cards.compactMap { c -> (CGImage, Crop)? in
-      let from = c.source.map(loadImage) ?? capture
-      guard let piece = from.cropping(to: CGRect(x: c.x, y: c.y, width: c.w, height: c.h)) else { return nil }
-      return (piece, c)
-    }
-    let gap: CGFloat = 44
-    var width = W - margin * 2
-    var scale = width / CGFloat(spec.captureWidth)
-    let available = H - y - 110
-    let natural = crops.reduce(0) { $0 + CGFloat($1.1.h) * scale } + gap * CGFloat(max(crops.count - 1, 0))
-    if natural > available {
-      let shrink = (available - gap * CGFloat(max(crops.count - 1, 0))) / (natural - gap * CGFloat(max(crops.count - 1, 0)))
-      scale *= shrink
-      width *= shrink
-    } else {
-      // A short stack sits a little above centre in the space under the headline,
-      // rather than leaving an empty field of orange at the bottom.
-      y += (available - natural) * 0.4
-    }
-    for (piece, crop) in crops {
-      let rect = CGRect(x: (W - CGFloat(crop.w) * scale) / 2, y: y, width: CGFloat(crop.w) * scale, height: CGFloat(crop.h) * scale)
-      roundedCard(piece, in: rect, radius: 52, ctx)
-      y = rect.maxY + gap
-    }
+  ctx.saveGState()
+  ctx.setShadow(offset: CGSize(width: 0, height: 30), blur: 90, color: NSColor.black.withAlphaComponent(0.35).cgColor)
+  ctx.addPath(roundedRect(phone, bodyRadius))
+  ctx.setFillColor(color("#2C2C2E").cgColor)
+  ctx.fillPath()
+  ctx.restoreGState()
+  ctx.addPath(roundedRect(phone.insetBy(dx: 3, dy: 3), bodyRadius - 3))
+  ctx.setStrokeColor(color("#6E6E73").cgColor)
+  ctx.setLineWidth(4)
+  ctx.strokePath()
+  ctx.addPath(roundedRect(phone.insetBy(dx: 10, dy: 10), bodyRadius - 10))
+  ctx.setFillColor(NSColor.black.cgColor)
+  ctx.fillPath()
+
+  let screen = phone.insetBy(dx: bezel, dy: bezel)
+  ctx.saveGState()
+  ctx.addPath(roundedRect(screen, screenRadius))
+  ctx.clip()
+  drawImage(capture, in: screen, ctx)
+  ctx.restoreGState()
+
+  // Simulator captures leave the Dynamic Island out; draw it where it sits.
+  let island = CGRect(x: W / 2 - 190 * scale, y: screen.minY + 33 * scale, width: 380 * scale, height: 112 * scale)
+  ctx.addPath(roundedRect(island, island.height / 2))
+  ctx.setFillColor(NSColor.black.cgColor)
+  ctx.fillPath()
+
+  if let pop = frame.pop {
+    // The section, lifted out of the screen at its own place, wider than the phone. The
+    // crop keeps a little of the grouped background around the rounded group.
+    let from = pop.source.map(loadImage) ?? capture
+    let inset: CGFloat = 30
+    guard
+      let piece = from.cropping(
+        to: CGRect(x: inset, y: pop.y, width: CGFloat(from.width) - inset * 2, height: pop.h))
+    else { fatalError("\(frame.out): pop-out \(pop.name) falls outside its capture") }
+    let popW = W - 64
+    let popH = CGFloat(piece.height) * popW / CGFloat(piece.width)
+    // At its own place on the screen, but never off the bottom of the frame.
+    let top = min(screen.minY + CGFloat(pop.y) * scale - 10, H - 90 - popH)
+    let rect = CGRect(x: (W - popW) / 2, y: top, width: popW, height: popH)
+    ctx.saveGState()
+    ctx.setShadow(offset: CGSize(width: 0, height: 36), blur: 110, color: NSColor.black.withAlphaComponent(0.4).cgColor)
+    ctx.addPath(roundedRect(rect, 56))
+    ctx.setFillColor(NSColor.white.cgColor)
+    ctx.fillPath()
+    ctx.restoreGState()
+    ctx.saveGState()
+    ctx.addPath(roundedRect(rect, 56))
+    ctx.clip()
+    drawImage(piece, in: rect, ctx)
+    ctx.restoreGState()
   }
 
   guard let image = ctx.makeImage(),
     let destination = CGImageDestinationCreateWithURL(
       URL(fileURLWithPath: frame.out) as CFURL, UTType.png.identifier as CFString, 1, nil)
   else { fatalError("cannot write \(frame.out)") }
-  CGImageDestinationAddImage(destination, image, [kCGImagePropertyDPIWidth: 72, kCGImagePropertyDPIHeight: 72] as CFDictionary)
+  CGImageDestinationAddImage(
+    destination, image, [kCGImagePropertyDPIWidth: 72, kCGImagePropertyDPIHeight: 72] as CFDictionary)
   CGImageDestinationFinalize(destination)
   print("wrote \(frame.out)")
 }

@@ -89,29 +89,37 @@ xcrun simctl io booted screenshot screenshots/raw/<file>
 | `recap.png` | Seasons → chart icon (top left) | The cover photo and the first two rows of stats |
 | `journal.png` | Journal tab, **Hunting** filter | Five deer days, four marked No harvest |
 | `family.png` | Family tab | Upcoming Together, and Ray, Ethan and Jim with their statuses |
-| `settings.png` | Today → person icon | **Your Data** with Export, Import and the footer (visible without scrolling) |
+| `settings.png` | Today → person icon, with the Development section hidden (see below) | **Your Data** with Export, Import and the footer |
+
+Settings in a development build shows a Development section (Load Demo Data) that release
+builds do not have, and it cannot be scrolled out of view. For `settings.png` only,
+change `{__DEV__ ? (` to `{false && __DEV__ ? (` in `app/(tabs)/(today)/settings.tsx`,
+reopen Settings, capture, then `git checkout` the file. Never commit that edit.
 
 Wait for a scroll or a sheet to settle before capturing: a tap or capture during a transition
 is lost, and the scroll indicator shows for about a second.
 
-## 4. Crops
+## 4. Layout and pop-outs
 
-The rectangles in `frames.mjs` are first guesses. For each frame:
+Each frame is a headline and a subline in white on blaze orange, the full capture inside
+a phone that runs off the bottom, and one section of the screen popped out of the phone,
+wider than it, with a shadow (the recap frame has no pop-out; its cover photo is the
+point). The type is sized for search results, where a frame is about 230 px wide:
+`render.swift` picks one headline size for the whole set, the largest that fits every
+line (at most `HEADLINE_MAX`), and sets the subline at `SUB_SIZE` semibold. Sublines are
+broken by hand so neither line is a single word.
+
+For each frame:
 
 1. Run `xcrun swift scripts/screenshots/bands.swift screenshots/raw/<file>` to print where
-   each rounded group starts and ends, then find the top and bottom pixel rows of each
-   section named in that frame's `cards`. Include the section header and the rounded group, and stop before the
-   next section's header. Keep `x: 0, w: 1320`.
-2. Update `y` and `h` in `frames.mjs`.
+   each rounded group starts and ends.
+2. Set the frame's `pop` in `frames.mjs`: `y` at the top of the section header, `h` down
+   to the last row worth showing, ending on a row boundary or after the section footer.
 3. Render: `node scripts/screenshots/compose.cjs` (or `... compose.cjs 03` for one frame).
    Drawing is done by `scripts/screenshots/render.swift` through `xcrun swift`; nothing
    to install.
-4. Read the output and check the card shows exactly that section: nothing clipped and no
-   half rows.
-
-The stacked cards for one frame should fill roughly the top two thirds of the frame
-below the headline. If they are much shorter, include one more row of context in the
-crop rather than leaving an empty orange field.
+4. Read the output and check the pop-out shows exactly that section: nothing clipped, no
+   half rows, and the pop-out inside the frame.
 
 ## 5. Review checklist
 
