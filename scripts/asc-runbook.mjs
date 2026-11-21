@@ -25,8 +25,7 @@ const ACTIONS = {
   'en-CA':
     'UPDATE description, promotionalText and whatsNew. name, subtitle and keywords should already match the values below: read them, and change them only if they differ.',
   'es-MX': 'CREATE this localization, then set every field below.',
-  'fr-CA':
-    'SKIP unless the human confirms a Québécois speaker has reviewed this copy. If they confirm, CREATE the localization and set every field.',
+  'fr-CA': 'CREATE this localization, then set every field below.',
 };
 
 const SEASONAL_PROMO = [
@@ -48,7 +47,7 @@ const REVIEW_NOTES = `The app is fully usable without paying. Two optional annua
 
 To reach the paywall: Settings (person icon, top right of Today) > See What's Included. Or add a fourth license or tag to a season, or tap Add Draw on a season.
 
-The app asks for a rating with the system StoreKit prompt after a person has saved three things (a license, season dates, a draw or a journal entry), at most once every 120 days.
+The app asks for a rating with the system StoreKit prompt after a person has saved three things (a license, season dates, a draw or a journal entry), at most once every 120 days. People updating from 1.0 see a one-time What's New sheet; if they had already saved three such things in 1.0, closing it is the moment the prompt is requested. New installs never see that sheet.
 
 No account or sign-in. All data stays on the device. The app is not affiliated with any wildlife agency and does not issue licenses; stored license images are reference copies only.`;
 
@@ -125,7 +124,7 @@ API, or a CLI). Work through the phases in order.
 | Live version | 1.0 |
 | New version | **${app.version}** |
 | Localizations live today | en-US (primary), en-CA |
-| Localizations added in 1.1 | es-MX; fr-CA only after native review |
+| Localizations added in 1.1 | es-MX, fr-CA |
 | Subscription group | Membership (display name: Hunting Tags & License Tracker) |
 | Outdoorsman | \`com.dahvio.htlt.outdoorsman.annual\`, $19.99/year, group level 2 |
 | Family | \`com.dahvio.htlt.family.annual\`, $34.99/year, group level 1 |
@@ -240,7 +239,7 @@ Fill this in and show it to the human at the end.
 | en-US: all six fields read back exactly | |
 | en-CA: description, promo, What's New read back; name/subtitle/keywords unchanged | |
 | es-MX: created, all six fields read back exactly | |
-| fr-CA: skipped, or created after confirmed native review | |
+| fr-CA: created, all six fields read back exactly | |
 | Screenshots: replaced (8, in order) or left as-is, and which | |
 | Subscriptions report (Phase 5) | |
 | Review notes set | |

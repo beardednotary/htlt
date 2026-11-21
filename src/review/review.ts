@@ -1,6 +1,8 @@
+import type { AppData } from '../data/store';
 import { getReviewState, setReviewState } from '../data/store';
 import { todayISO } from '../model/derive';
-import { afterAccomplishment } from './policy';
+import { priorUse } from '../release/whatsNew';
+import { afterAccomplishment, afterUpgrade } from './policy';
 
 type StoreReviewModule = typeof import('expo-store-review');
 
@@ -25,16 +27,8 @@ function storeReview(): StoreReviewModule | null {
 /** How long to wait for a sheet to finish dismissing before the system prompt. */
 const AFTER_DISMISS_MS = 700;
 
-/**
- * Call after something has been saved and its sheet dismissed. Counts the moment, and
- * on the right one asks the system to show its rating prompt. iOS decides whether it
- * actually appears.
- */
-export function noteAccomplishment(): void {
-  const { next, ask } = afterAccomplishment(getReviewState(), todayISO());
-  setReviewState(next);
-  if (!ask) return;
-
+/** Ask the system for its rating prompt once the sheet is gone. iOS decides whether it appears. */
+function askAfterDismiss(): void {
   const module = storeReview();
   if (!module) return;
   setTimeout(() => {
@@ -43,4 +37,24 @@ export function noteAccomplishment(): void {
       .then((available) => (available ? module.requestReview() : undefined))
       .catch(() => undefined);
   }, AFTER_DISMISS_MS);
+}
+
+/**
+ * Call after something has been saved and its sheet dismissed. Counts the moment, and
+ * on the right one asks for the rating prompt.
+ */
+export function noteAccomplishment(): void {
+  const { next, ask } = afterAccomplishment(getReviewState(), todayISO());
+  setReviewState(next);
+  if (ask) askAfterDismiss();
+}
+
+/**
+ * Call as someone updating from an earlier version closes What's New. Their earlier
+ * saves count toward the same policy; see afterUpgrade.
+ */
+export function noteUpgrade(data: AppData): void {
+  const { next, ask } = afterUpgrade(getReviewState(), priorUse(data), todayISO());
+  setReviewState(next);
+  if (ask) askAfterDismiss();
 }

@@ -46,9 +46,9 @@ their accreditation instead of hunters managing a season.
 
 A first French Applyra pass (Nov 2026): `permis de chasse` is 25/25, KEI 1.0, but its top
 three are exam-prep apps, the same trap as Ontario. `chasse` alone is 54/59 and mostly
-games; autocomplete offers `chasse quebec` and `chasse et peche`. The fr-CA draft in
-`ASO_LOCALIZATIONS.md` is built from that and is **not** ready to ship until a
-Québécois speaker has checked it.
+games; autocomplete offers `chasse quebec` and `chasse et peche`. The fr-CA listing in
+`ASO_LOCALIZATIONS.md` is built from that and ships in 1.1 without a native review, by
+the owner's choice; fix any term a Québécois speaker flags.
 
 ## What this means for the product
 

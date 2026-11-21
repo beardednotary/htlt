@@ -47,3 +47,32 @@ export function afterAccomplishment(
   }
   return { next: { ...current, accomplishments }, ask: false };
 }
+
+/**
+ * Someone updating from a version without the prompt has been saving things all
+ * along, and none of it was counted. The people with the most history are the ones
+ * best placed to rate the app, and the most likely to only open it around an opener,
+ * so making them start from zero would mean most of them are never asked.
+ *
+ * Called once, as they finish reading what changed. If they have already done what
+ * the policy asks for, this is the moment; otherwise their earlier use is carried
+ * over, short of a full ask, so the next ordinary save is the one that counts.
+ */
+export function afterUpgrade(
+  state: ReviewState | undefined,
+  earlierAccomplishments: number,
+  today: ISODate
+): { next: ReviewState; ask: boolean } {
+  const current = state ?? EMPTY_REVIEW_STATE;
+  const rested =
+    !current.lastAskedOn || daysBetween(current.lastAskedOn, today) >= DAYS_BETWEEN_ASKS;
+
+  if (rested && earlierAccomplishments >= ASK_AFTER_ACCOMPLISHMENTS) {
+    return { next: { accomplishments: 0, lastAskedOn: today }, ask: true };
+  }
+  const carried = Math.min(earlierAccomplishments, ASK_AFTER_ACCOMPLISHMENTS - 1);
+  return {
+    next: { ...current, accomplishments: Math.max(current.accomplishments, carried) },
+    ask: false,
+  };
+}

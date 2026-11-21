@@ -79,13 +79,13 @@ The reasoning per field is in `ASO_LOCALIZATIONS.md`. In short:
 
 ## 3. Localizations
 
-Live today: **en-US** and **en-CA**. 1.1 adds es-MX and, once checked, fr-CA.
+Live today: **en-US** and **en-CA**. 1.1 adds es-MX and fr-CA.
 
 | Locale | Why |
 |---|---|
 | **es-MX** (new) | The U.S. store also indexes Spanish (Mexico). Real Spanish name and subtitle for Spanish-language iPhones; English long-tail words (pheasant, bow, whitetail, muzzleloader) in its keyword field. Applyra measures no Spanish hunting search volume in the U.S., so treat this as a free bonus. |
 | **en-CA** (live) | Canada has its own search behaviour, documented in `aso.md`. Indexed fields stay as they are; the description and promo text are rewritten to lead with the journal, say "already licensed", spell licence the Canadian way and label each plan. |
-| **fr-CA** (new, draft) | Canada also searches French (Canada). "permis de chasse" is traffic 25 / difficulty 25. **Draft: needs a Québécois speaker before it ships.** |
+| **fr-CA** (new) | Canada also searches French (Canada). "permis de chasse" is traffic 25 / difficulty 25. Uses Québec terms (chevreuil, orignal, coupon, tirage, pourvoirie). Not checked by a native speaker; shipped in 1.1 by the owner's choice. Fix any term a Québécois speaker flags in `listings.mjs`. |
 
 All three say plainly that the app's interface is in English, where relevant, and name
 the tabs by their English labels.

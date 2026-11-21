@@ -2,6 +2,7 @@ import { newId } from './ids';
 import { replaceAllData, type AppData } from './store';
 import { todayISO } from '../model/derive';
 import type { ISODate } from '../model/types';
+import { WHATS_NEW_RELEASE } from '../release/whatsNew';
 
 /**
  * A household that looks like a real one, for App Store screenshots.
@@ -287,7 +288,7 @@ export function buildDemoData(): AppData {
   return {
     schemaVersion: 1,
     householdId,
-    settings: { remindersEnabled: true, welcomeSeen: true },
+    settings: { remindersEnabled: true, welcomeSeen: true, whatsNewSeen: WHATS_NEW_RELEASE },
     people: [ray, ethan, jim],
     credentials: [caLicense, deerTag, duckStamp, coElkTag, ethanLicense, ethanDeerTag, jimLicense],
     seasons: [caDeer, coElk, azElk, caWaterfowl],

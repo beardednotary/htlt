@@ -62,6 +62,21 @@ experience; test the paywall on N and U, never on your own phone.
 | 23 | Further saves the same day do not prompt again |  |
 | 24 | Hitting a paywall does not count as an accomplishment |  |
 
+## What's New (returning users)
+
+Install the 1.0 App Store build, add at least three things (a license, season dates, a
+logged day), then install the 1.1 development build over it.
+
+| # | Check | ✓ |
+|---|---|---|
+| 24a | What's New sheet appears once on first launch of 1.1, over Today; it cannot be swiped away |  |
+| 24b | Continue closes it; with three or more saves from 1.0 the system rating prompt appears about 0.7 s later (development build) |  |
+| 24c | With fewer than three saves from 1.0: no prompt on Continue; the next save prompts |  |
+| 24d | Relaunch: What's New does not appear again |  |
+| 24e | Fresh install of 1.1: Welcome appears, What's New never does |  |
+| 24f | Settings → What's New in 1.1 opens the notes; Continue closes them with no prompt |  |
+| 24g | Settings → Development → Load Demo Data does not trigger What's New |  |
+
 ## Regional defaults
 
 | # | Check | ✓ |
@@ -87,7 +102,7 @@ experience; test the paywall on N and U, never on your own phone.
 ## App Store Connect
 
 - [ ] Paste metadata for en-US and en-CA (description and promo only; its name, subtitle and keywords stay) from `ASO_LOCALIZATIONS.md`; add es-MX
-- [ ] fr-CA only after a Québécois speaker has checked it
+- [ ] Add fr-CA (shipping without a native review, by the owner's choice)
 - [ ] Upload iPhone 6.9" screenshots in story order (`scripts/screenshots`)
 - [ ] Confirm both annual products have the 7-day free trial introductory offer
 - [ ] IAP display names read "Outdoorsman" and "Family" (the paywall no longer shows the

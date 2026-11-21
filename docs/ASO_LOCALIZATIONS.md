@@ -14,7 +14,7 @@ Paste each block exactly. Copy from the fenced blocks, not from a wrapped previe
 | en-US | United States (primary) | live |
 | es-MX | Mexico, and the second listing the U.S. store searches | new |
 | en-CA | Canada (English) | live |
-| fr-CA | Canada (French), searched alongside English (Canada) | draft |
+| fr-CA | Canada (French), searched alongside English (Canada) | new |
 
 Status: **live** is in App Store Connect now and is being changed; **new** has to be added;
 **draft** must be checked by a native speaker before it ships.
@@ -283,14 +283,15 @@ Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 | Subtitle | `Carnet, tirages et règlements` | 29/30 |
 | Keywords | `quebec,peche,orignal,chevreuil,ours,dindon,canard,oie,coupon,rappel,calendrier,recolte,pourvoirie` | 97/100 |
 | Promotional text | see below | 162/170 |
-| Description | see below | 1805/4000 |
+| Description | see below | 1841/4000 |
 
 **Why**
 
 - Canada searches two listings: English (Canada) and French (Canada). Without this one, Québec French searches find nothing.
 - "permis de chasse" is traffic 25, difficulty 25 (KEI 1.0), but its top three results are exam-prep apps. Like the Ontario listing, the copy says "already licensed".
 - "chasse" alone (54/59) is mostly games; "chasse quebec" and "chasse et peche" appear in autocomplete, so "quebec" and "peche" lead the keyword field.
-- DRAFT: have a Québécois speaker check every field before it ships, especially "coupon" (tag) and "pourvoirie".
+- Uses Québec terms: "chevreuil" (white-tailed deer), "orignal", "coupon" (the tag on a Québec licence), "tirage" (the special-permit draw) and "pourvoirie" (outfitter). "L'application", not "l'app", and a space before each colon.
+- Not checked by a native speaker. The owner chose to ship it in 1.1 anyway; if a Québécois speaker later flags a term, fix it here and regenerate. Only the keyword field needs a new version; the description and promo can change with any submission.
 
 **Promotional text**
 
@@ -305,7 +306,7 @@ Vos permis, vos saisons et votre carnet de chasse, au même endroit.
 
 Pour les chasseurs qui ont déjà leur permis. Enregistrez vos permis et vos coupons, les dates de vos saisons, le lien officiel des règlements et votre carnet de chasse avec photos. Recevez un rappel avant chaque ouverture, chaque expiration et chaque date limite de tirage.
 
-L'app ne prétend jamais connaître vos dates ni vos règlements : elle garde ce que vous avez saisi et vous indique quand vous avez relu les règlements pour la dernière fois.
+L'application ne prétend jamais connaître vos dates ni vos règlements : elle garde ce que vous avez saisi et vous indique quand vous avez relu les règlements pour la dernière fois.
 
 Gratuite, sans compte et sans publicité. Le carnet de chasse n'est jamais payant.
 
@@ -314,31 +315,32 @@ GRATUIT DANS TOUS LES FORFAITS
 • Rappels d'ouverture et d'expiration
 • Liens vers les règlements officiels de chaque organisme
 • Trois permis ou coupons actifs à la fois
-• Tout reste sur votre iPhone et fonctionne sans réseau
+• Tout reste sur votre iPhone et fonctionne hors réseau
 
 OUTDOORSMAN (ANNUEL)
 Tirages et points de préférence, permis illimités, ajout au calendrier, et votre saison en PDF ou en image.
 
 FAMILY (ANNUEL)
-Tout Outdoorsman pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle, et qui ne l'est pas.
+Tout ce qu'offre Outdoorsman, pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle et qui ne l'est pas.
 
 Les nouveaux abonnés profitent d'un essai gratuit de 7 jours. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.
 
-Note sur la langue : l'app est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.
+Note sur la langue : l'application est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.
 
-App indépendante, sans lien avec aucun organisme provincial ou fédéral de la faune. Elle ne délivre ni ne remplace aucun permis. Vérifiez toujours les règlements et les dates auprès de l'organisme qui les publie.
+Application indépendante, sans lien avec aucun organisme provincial ou fédéral de la faune. Elle ne délivre ni ne remplace aucun permis. Vérifiez toujours les règlements et les dates auprès de l'organisme qui les publie.
 
 Politique de confidentialité : https://dahvio.com/hunting-tags-license-tracker-privacy
 Conditions d'utilisation : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-**What's New in 1.1** (513/4000)
+**What's New in 1.1** (663/4000)
 
 ```text
 • L'essai gratuit de 7 jours est maintenant affiché avant l'abonnement, avec le prix annuel qui suit.
 • L'écran des forfaits montre seulement ce que chaque forfait ajoute. Les rappels, toutes les provinces et le carnet restent gratuits.
-• Restaurer les achats vous dit ce qui a été trouvé.
-• Votre forfait se met à jour dès que vous revenez dans l'app, y compris à la fin d'un essai.
+• La restauration des achats indique maintenant ce qu'elle a trouvé.
+• Votre forfait se met à jour dès que vous revenez dans l'application, y compris à la fin d'un essai.
+• Le formulaire des permis et coupons indique combien de vos trois places gratuites sont utilisées, avant même de le remplir.
 • Les nouvelles saisons commencent dans la dernière province utilisée, et au Canada sur un iPhone canadien.
 • Une nouvelle icône.
 ```

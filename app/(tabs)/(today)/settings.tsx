@@ -11,6 +11,7 @@ import {
 } from '../../../src/calendar/calendar';
 import { exportData, pickImportFile } from '../../../src/data/backup';
 import { loadDemoData } from '../../../src/data/demo';
+import { WHATS_NEW_RELEASE } from '../../../src/release/whatsNew';
 import type { AppData } from '../../../src/data/store';
 import {
   replaceAllData,
@@ -281,6 +282,11 @@ export default function SettingsScreen() {
               label="How This App Works"
               systemImage="questionmark.circle"
               onPress={() => router.push('/welcome')}
+            />
+            <Button
+              label={`What’s New in ${WHATS_NEW_RELEASE}`}
+              systemImage="sparkles"
+              onPress={() => router.push('/whats-new?replay=1')}
             />
             <HStack>
               <Text>Journal entries</Text>

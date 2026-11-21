@@ -20,6 +20,7 @@ import type {
   Season,
   Trip,
 } from '../model/types';
+import { WHATS_NEW_RELEASE } from '../release/whatsNew';
 import type { ReviewState } from '../review/policy';
 import { newId } from './ids';
 import { readItem, writeItem } from './storage';
@@ -45,6 +46,8 @@ export interface AppSettings {
   calendarId?: string;
   /** When the rating prompt was last asked for, and how much use since. */
   review?: ReviewState;
+  /** The last release whose What's New this household has seen. */
+  whatsNewSeen?: string;
 }
 
 export interface AppData {
@@ -675,8 +678,23 @@ export function setReviewState(review: ReviewState) {
   mutate((data) => ({ ...data, settings: { ...data.settings, review } }));
 }
 
+/**
+ * Finishing the welcome also settles the current What's New: for someone new,
+ * everything in it is simply how the app works.
+ */
 export function setWelcomeSeen(seen: boolean) {
-  mutate((data) => ({ ...data, settings: { ...data.settings, welcomeSeen: seen } }));
+  mutate((data) => ({
+    ...data,
+    settings: {
+      ...data.settings,
+      welcomeSeen: seen,
+      whatsNewSeen: seen ? WHATS_NEW_RELEASE : data.settings.whatsNewSeen,
+    },
+  }));
+}
+
+export function setWhatsNewSeen(release: string) {
+  mutate((data) => ({ ...data, settings: { ...data.settings, whatsNewSeen: release } }));
 }
 
 export interface DrawInput {

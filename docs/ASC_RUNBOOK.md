@@ -39,7 +39,7 @@ API, or a CLI). Work through the phases in order.
 | Live version | 1.0 |
 | New version | **1.1.0** |
 | Localizations live today | en-US (primary), en-CA |
-| Localizations added in 1.1 | es-MX; fr-CA only after native review |
+| Localizations added in 1.1 | es-MX, fr-CA |
 | Subscription group | Membership (display name: Hunting Tags & License Tracker) |
 | Outdoorsman | `com.dahvio.htlt.outdoorsman.annual`, $19.99/year, group level 2 |
 | Family | `com.dahvio.htlt.family.annual`, $34.99/year, group level 1 |
@@ -138,20 +138,20 @@ URL, Privacy Policy URL, category and age rating as they are.
   },
   {
     "locale": "fr-CA",
-    "action": "SKIP unless the human confirms a Québécois speaker has reviewed this copy. If they confirm, CREATE the localization and set every field.",
+    "action": "CREATE this localization, then set every field below.",
     "name": "Permis de chasse et saisons",
     "subtitle": "Carnet, tirages et règlements",
     "keywords": "quebec,peche,orignal,chevreuil,ours,dindon,canard,oie,coupon,rappel,calendrier,recolte,pourvoirie",
     "promotionalText": "Permis, coupons, saisons et carnet de chasse au même endroit, avec un rappel avant chaque ouverture et expiration. Pour les chasseurs déjà titulaires d’un permis.",
-    "description": "Vos permis, vos saisons et votre carnet de chasse, au même endroit.\n\nPour les chasseurs qui ont déjà leur permis. Enregistrez vos permis et vos coupons, les dates de vos saisons, le lien officiel des règlements et votre carnet de chasse avec photos. Recevez un rappel avant chaque ouverture, chaque expiration et chaque date limite de tirage.\n\nL'app ne prétend jamais connaître vos dates ni vos règlements : elle garde ce que vous avez saisi et vous indique quand vous avez relu les règlements pour la dernière fois.\n\nGratuite, sans compte et sans publicité. Le carnet de chasse n'est jamais payant.\n\nGRATUIT DANS TOUS LES FORFAITS\n• Carnet de chasse avec photos, y compris les journées sans récolte\n• Rappels d'ouverture et d'expiration\n• Liens vers les règlements officiels de chaque organisme\n• Trois permis ou coupons actifs à la fois\n• Tout reste sur votre iPhone et fonctionne sans réseau\n\nOUTDOORSMAN (ANNUEL)\nTirages et points de préférence, permis illimités, ajout au calendrier, et votre saison en PDF ou en image.\n\nFAMILY (ANNUEL)\nTout Outdoorsman pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle, et qui ne l'est pas.\n\nLes nouveaux abonnés profitent d'un essai gratuit de 7 jours. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.\n\nNote sur la langue : l'app est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.\n\nApp indépendante, sans lien avec aucun organisme provincial ou fédéral de la faune. Elle ne délivre ni ne remplace aucun permis. Vérifiez toujours les règlements et les dates auprès de l'organisme qui les publie.\n\nPolitique de confidentialité : https://dahvio.com/hunting-tags-license-tracker-privacy\nConditions d'utilisation : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
-    "whatsNew": "• L'essai gratuit de 7 jours est maintenant affiché avant l'abonnement, avec le prix annuel qui suit.\n• L'écran des forfaits montre seulement ce que chaque forfait ajoute. Les rappels, toutes les provinces et le carnet restent gratuits.\n• Restaurer les achats vous dit ce qui a été trouvé.\n• Votre forfait se met à jour dès que vous revenez dans l'app, y compris à la fin d'un essai.\n• Les nouvelles saisons commencent dans la dernière province utilisée, et au Canada sur un iPhone canadien.\n• Une nouvelle icône.",
+    "description": "Vos permis, vos saisons et votre carnet de chasse, au même endroit.\n\nPour les chasseurs qui ont déjà leur permis. Enregistrez vos permis et vos coupons, les dates de vos saisons, le lien officiel des règlements et votre carnet de chasse avec photos. Recevez un rappel avant chaque ouverture, chaque expiration et chaque date limite de tirage.\n\nL'application ne prétend jamais connaître vos dates ni vos règlements : elle garde ce que vous avez saisi et vous indique quand vous avez relu les règlements pour la dernière fois.\n\nGratuite, sans compte et sans publicité. Le carnet de chasse n'est jamais payant.\n\nGRATUIT DANS TOUS LES FORFAITS\n• Carnet de chasse avec photos, y compris les journées sans récolte\n• Rappels d'ouverture et d'expiration\n• Liens vers les règlements officiels de chaque organisme\n• Trois permis ou coupons actifs à la fois\n• Tout reste sur votre iPhone et fonctionne hors réseau\n\nOUTDOORSMAN (ANNUEL)\nTirages et points de préférence, permis illimités, ajout au calendrier, et votre saison en PDF ou en image.\n\nFAMILY (ANNUEL)\nTout ce qu'offre Outdoorsman, pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle et qui ne l'est pas.\n\nLes nouveaux abonnés profitent d'un essai gratuit de 7 jours. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.\n\nNote sur la langue : l'application est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.\n\nApplication indépendante, sans lien avec aucun organisme provincial ou fédéral de la faune. Elle ne délivre ni ne remplace aucun permis. Vérifiez toujours les règlements et les dates auprès de l'organisme qui les publie.\n\nPolitique de confidentialité : https://dahvio.com/hunting-tags-license-tracker-privacy\nConditions d'utilisation : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+    "whatsNew": "• L'essai gratuit de 7 jours est maintenant affiché avant l'abonnement, avec le prix annuel qui suit.\n• L'écran des forfaits montre seulement ce que chaque forfait ajoute. Les rappels, toutes les provinces et le carnet restent gratuits.\n• La restauration des achats indique maintenant ce qu'elle a trouvé.\n• Votre forfait se met à jour dès que vous revenez dans l'application, y compris à la fin d'un essai.\n• Le formulaire des permis et coupons indique combien de vos trois places gratuites sont utilisées, avant même de le remplir.\n• Les nouvelles saisons commencent dans la dernière province utilisée, et au Canada sur un iPhone canadien.\n• Une nouvelle icône.",
     "lengths": {
       "name": "27/30",
       "subtitle": "29/30",
       "keywords": "97/100",
       "promotionalText": "162/170",
-      "description": "1805/4000",
-      "whatsNew": "513/4000"
+      "description": "1841/4000",
+      "whatsNew": "663/4000"
     }
   }
 ]
@@ -190,7 +190,7 @@ The app is fully usable without paying. Two optional annual subscriptions (Outdo
 
 To reach the paywall: Settings (person icon, top right of Today) > See What's Included. Or add a fourth license or tag to a season, or tap Add Draw on a season.
 
-The app asks for a rating with the system StoreKit prompt after a person has saved three things (a license, season dates, a draw or a journal entry), at most once every 120 days.
+The app asks for a rating with the system StoreKit prompt after a person has saved three things (a license, season dates, a draw or a journal entry), at most once every 120 days. People updating from 1.0 see a one-time What's New sheet; if they had already saved three such things in 1.0, closing it is the moment the prompt is requested. New installs never see that sheet.
 
 No account or sign-in. All data stays on the device. The app is not affiliated with any wildlife agency and does not issue licenses; stored license images are reference copies only.
 ```
@@ -235,7 +235,7 @@ Fill this in and show it to the human at the end.
 | en-US: all six fields read back exactly | |
 | en-CA: description, promo, What's New read back; name/subtitle/keywords unchanged | |
 | es-MX: created, all six fields read back exactly | |
-| fr-CA: skipped, or created after confirmed native review | |
+| fr-CA: created, all six fields read back exactly | |
 | Screenshots: replaced (8, in order) or left as-is, and which | |
 | Subscriptions report (Phase 5) | |
 | Review notes set | |
