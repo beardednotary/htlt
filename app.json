@@ -17,7 +17,7 @@
     "android": {
       "package": "com.dahvio.htlt",
       "adaptiveIcon": {
-        "backgroundColor": "#293B38",
+        "backgroundColor": "#F66310",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
