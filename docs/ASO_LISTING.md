@@ -11,42 +11,46 @@ refuses them.
 
 ## 1. Funnel
 
-App Store Connect, Sep 1 – Nov 19 2026 (live since Sep 1). Downloads are derived from
-App Store Connect's conversion rate × impressions, because the export has no download
-column; treat them as ±1 per day.
+App Store Connect, Sep 1 – Nov 19 2026 (live since Sep 1). Downloads are App Store
+Connect's total downloads by source.
 
-| Period | Impressions | Page views | Downloads | Trials | Paid |
-|---|---:|---:|---:|---:|---:|
-| Sep 1 – Oct 7 (launch) | 233 | 33 | 13 | 1 (Sep 4) | 1 (Sep 11, $17) |
-| Oct 8 – Oct 14 (spike) | 692 | 54 | 5 | 0 | 0 |
-| **Oct 21 – Nov 19 (last 30 days)** | **964** | **50** | **18** | **0** | **0** |
-| All | 2,051 | 141 | 40 | 1 | 1 |
+| Period | Impressions | Page views | Downloads | Of which search | Trials | Paid |
+|---|---:|---:|---:|---:|---:|---:|
+| Sep 1 – Oct 7 (launch) | 233 | 33 | 8 | 2 (4 from the web) | 1 (Sep 4) | 1 (Sep 11, $17) |
+| Oct 8 – Oct 14 (spike) | 692 | 54 | 3 | 2 | 0 | 0 |
+| **Oct 21 – Nov 19 (last 30 days)** | **964** | **50** | **15** | **15** | **0** | **0** |
+| All | 2,051 | 141 | 30 | 21 | 1 | 1 |
 
 Last 30 days, stage by stage:
 
 | Stage | Rate | Rough healthy range | Reads as |
 |---|---:|---|---|
-| Impression → page view | 5.2% | 5–10% from search | Bottom of the range. The icon, name and first three screenshots are what decide this. |
-| Impression → download | 1.9% | | Most downloads come straight from the search result, without a page view. |
-| Download → trial | 0 of 27 since Oct 8 | 1–5% paid | Too few downloads to tell. At a healthy 3%, 27 downloads predicts 0.8 subscribers, so zero is noise, not a finding. |
+| Impression → page view | 5.2% | 5–10% from search | Bottom of the range. The icon, name and first three screenshots decide this. |
+| Impression → download | 1.6% | | Most downloads come straight from the search result, without a page view. |
+| Download → trial | 0 of 22 since Oct 8 | 1–5% paid | Too few downloads to tell. At a healthy 3%, 22 downloads predicts 0.7 subscribers, so zero is noise, not a finding. |
 
-**Diagnosis: traffic, not conversion.** About 18 downloads a month cannot produce
-revenue at any conversion rate. At a healthy 5% paid, that is one subscriber a month,
-about $17. Every lever that matters is upstream of the paywall:
+Weekly downloads since Oct 15: 4, 1, 2, 4, 8, all from search. The rise lines up with
+November rifle openers, which is the seasonality this app should expect.
 
-1. **Impressions grew 5× after Oct 8 and stayed up**: about 32 a day, against 6 a day
-   before. That is search ranking ("hunting tags" #3), not the spike. More ranking is the
-   main lever, and ratings drive ranking. The 1.1 review prompt is the most important
-   change in this release.
+**Diagnosis: traffic, not conversion.** Fifteen downloads a month cannot produce revenue
+at any conversion rate. At a healthy 5% paid, that is under one subscriber a month. Every
+lever that matters is upstream of the paywall:
+
+1. **Search is the whole business right now.** Every download in the last 30 days came
+   from App Store search. Impressions grew 5× after Oct 8 and stayed up, about 32 a day
+   against 6 before, as the app started ranking ("hunting tags" #3). Ranking is the main
+   lever and ratings drive it, so the 1.1 review prompt is the most important change in
+   this release.
 2. **Tap-through is at the floor of the range.** The icon and first three screenshots
-   (§6, §7) are the next lever. Test the alternate icon with Product Page Optimization as
-   soon as there is enough traffic to read it.
-3. **The Oct 9 spike converted badly**: 48 page views, 3 downloads (6%). Page views
-   without matching search impressions point to a link from outside the store, probably
-   the Reddit launch. Visitors from a link land on the full product page, and a page with
-   no ratings and six screenshots lost 94% of them. Check Sources to confirm where it
-   came from before planning another post.
-4. **Timing.** Draws are the main paid feature, and Western draw applications open
+   (§6, §7) are the next lever. Test an alternate icon with Product Page Optimization once
+   there is enough traffic to read it.
+3. **The Oct 9 spike did not convert**: 231 impressions and 48 page views, 2 downloads,
+   none from a web referrer. Whatever sent those visitors, the page lost them. A product
+   page with no ratings and six screenshots is the likely cause. Check App Analytics →
+   Sources for page views on Oct 9 before planning another post.
+4. **Web and Reddit have not been a channel.** Five web-referrer downloads in total, four
+   of them in launch week.
+5. **Timing.** Draws are the main paid feature, and Western draw applications open
    January to April. Ship 1.1 before then so the ratings, the trial button and the honest
    paywall are live when the people who need draws arrive. Switch the promo text to the
    draw-season version (§8) in the first week of January.
@@ -118,19 +122,59 @@ The 1.0 icon combines four ideas: a leather wallet, a stack of cards, antlers an
 shield with a tree. It is textured and dark-on-dark, and at 29 pt it is a brown smudge,
 especially in dark mode. "Wallet" is also the one thing the product says it is not.
 
-Two flat candidates are in `assets/icon-candidates/`, each one idea, the tag:
+Two flat tag candidates were tried and rejected: any tag with a string loop and a
+grommet reads as a retail price tag. The brief below is for an image generator.
 
-- **A, `tag.png`:** blaze-orange tag on spruce. Keeps the existing green family and the
-  app's accent.
-- **B, `tag-check.png`:** white tag with a check on blaze orange. Brightest in a search
-  row full of greens, browns and camo. Keep it as the Product Page Optimization
-  alternate.
+**What it has to do**
 
-`comparison.png` shows both at 60, 40 and 29 pt on light and dark next to the current
-icon. Both are 1024×1024 RGB with no alpha. Blaze orange is the safety colour, not a
-camo or flag motif, so it stays inside the voice rules. Pick one and the app icon, splash
-icon and Android adaptive foreground get regenerated from its SVG. They have not been
-swapped yet.
+- One idea, readable at 29 pt on light and dark.
+- Say "hunting" and "the paperwork side of it" without a wallet, a price tag, a gun or
+  camo.
+- Stand apart from the row it sits in: state agency apps (seals, fish and deer
+  silhouettes), map apps (topo lines) and journals (deer heads).
+
+**Prompt**
+
+```text
+App icon for an iPhone app that keeps a hunter's tags, licenses, season dates and
+hunt journal organized. Square 1024x1024, full-bleed, no rounded corners, no text,
+no letters, no numbers.
+
+Subject: a single bold shed antler (one antler, not a pair), drawn as a clean flat
+graphic mark with 4 to 5 tines. Exactly one tine ends in a small solid blaze-orange
+circle, like a marked date on a calendar. That orange dot is the only accent.
+
+Style: flat vector, solid fills, no outlines, no gradients, no texture, no shadows,
+no 3D, no photorealism. Modern Apple-style icon, geometric and calm, closer to an
+Apple system app icon than a sporting-goods logo.
+
+Colour: deep spruce green background (#1E3A2F). Antler in warm bone white
+(#EDE8DC). One blaze-orange dot (#F26B1D). Nothing else.
+
+Composition: antler centred, filling about 60% of the canvas, slight diagonal lean,
+generous empty space around it. Must stay recognisable shrunk to 58 pixels.
+
+Avoid: price tags, string, grommets, wallets, cards, deer heads, full racks, guns,
+crosshairs, camouflage, flags, maps, topo lines, badges, shields, mountains, sunsets,
+text.
+```
+
+**Variants to generate alongside it**
+
+- Same prompt, background `#F26B1D` and the dot spruce: the bright alternate for Product
+  Page Optimization.
+- Replace the subject with: *"a single vertical game tag seen straight on, a narrow
+  rectangle with a row of small date boxes along one edge, one box punched out as a
+  solid orange square; no string, no hole, no loop"*. A real state game tag is notched on
+  the date of harvest, which is the opposite of a shop tag.
+
+**Before choosing**
+
+Shrink each result to 58 px on white and on black. Reject anything that turns into a
+blob or needs the orange dot explained. For iOS 26, keep the mark and the background as
+separate layers (ask for the mark alone on a transparent background too) so it can go
+into Icon Composer. Then the app icon, the splash icon and the Android adaptive
+foreground can be regenerated from it.
 
 ## 7. Screenshots
 
