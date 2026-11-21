@@ -122,59 +122,50 @@ The 1.0 icon combines four ideas: a leather wallet, a stack of cards, antlers an
 shield with a tree. It is textured and dark-on-dark, and at 29 pt it is a brown smudge,
 especially in dark mode. "Wallet" is also the one thing the product says it is not.
 
-Two flat tag candidates were tried and rejected: any tag with a string loop and a
-grommet reads as a retail price tag. The brief below is for an image generator.
+**1.1 icon:** one cream license card with a single bold olive antler printed on it, on
+spruce. It keeps the 1.0 palette and warmth, and drops the wallet, the card stack and
+the shield. At 29 pt it is still a card with an antler on it, on light and on dark.
 
-**What it has to do**
+Generated from the prompt below. `assets/icon-source.png` is the 1254 px original;
+`assets/icon.png` (1024, RGB, no alpha), `favicon.png` and the three Android adaptive
+layers are derived from it. The Android layers were previously Expo's template
+defaults.
 
-- One idea, readable at 29 pt on light and dark.
-- Say "hunting" and "the paperwork side of it" without a wallet, a price tag, a gun or
-  camo.
-- Stand apart from the row it sits in: state agency apps (seals, fish and deer
-  silhouettes), map apps (topo lines) and journals (deer heads).
+What did not work, so it is not tried again:
 
-**Prompt**
+- Flat tags with a string and grommet read as retail price tags.
+- A flat antler with an orange dot on one tine read as Rudolph's nose, and the dot became
+  a stray speck at 58 px.
+- A game-tag stub with date boxes read as a ticket. Nothing said hunting.
+- Flat, minimal styling in general felt generic next to the warmth chosen for 1.0.
 
 ```text
 App icon for an iPhone app that keeps a hunter's tags, licenses, season dates and
 hunt journal organized. Square 1024x1024, full-bleed, no rounded corners, no text,
 no letters, no numbers.
 
-Subject: a single bold shed antler (one antler, not a pair), drawn as a clean flat
-graphic mark with 4 to 5 tines. Exactly one tine ends in a small solid blaze-orange
-circle, like a marked date on a calendar. That orange dot is the only accent.
+Subject: ONE hunting license card, nothing else. A cream, heavy-paper card, slightly
+rotated (about 8 degrees), filling about 70% of the canvas. Printed large in the
+centre of the card is a single bold antler mark in deep olive green, simple enough
+to read at a glance. A thin border inset around the card edge, like an official
+permit. The card's corners are slightly rounded.
 
-Style: flat vector, solid fills, no outlines, no gradients, no texture, no shadows,
-no 3D, no photorealism. Modern Apple-style icon, geometric and calm, closer to an
-Apple system app icon than a sporting-goods logo.
+Style: the warmth and material of a premium iOS icon, kept simple. Soft, even
+lighting from above, a gentle drop shadow under the card so it lifts off the
+background, a faint paper grain on the card. Clean shapes, no clutter, no fine
+detail that would vanish at small sizes. Not flat clip art, not photorealistic.
 
-Colour: deep spruce green background (#1E3A2F). Antler in warm bone white
-(#EDE8DC). One blaze-orange dot (#F26B1D). Nothing else.
+Colour: deep spruce green background (#293B39). Card in warm cream (#EFE6D2).
+Antler and border in deep olive (#3A3F2E). No other colours.
 
-Composition: antler centred, filling about 60% of the canvas, slight diagonal lean,
-generous empty space around it. Must stay recognisable shrunk to 58 pixels.
-
-Avoid: price tags, string, grommets, wallets, cards, deer heads, full racks, guns,
-crosshairs, camouflage, flags, maps, topo lines, badges, shields, mountains, sunsets,
-text.
+Avoid: wallets, leather, pouches, stacks of cards, more than one card, shields,
+badges, trees, deer heads, full racks, guns, crosshairs, camouflage, flags, maps,
+mountains, string, holes, price tags, text, numbers.
 ```
 
-**Variants to generate alongside it**
-
-- Same prompt, background `#F26B1D` and the dot spruce: the bright alternate for Product
-  Page Optimization.
-- Replace the subject with: *"a single vertical game tag seen straight on, a narrow
-  rectangle with a row of small date boxes along one edge, one box punched out as a
-  solid orange square; no string, no hole, no loop"*. A real state game tag is notched on
-  the date of harvest, which is the opposite of a shop tag.
-
-**Before choosing**
-
-Shrink each result to 58 px on white and on black. Reject anything that turns into a
-blob or needs the orange dot explained. For iOS 26, keep the mark and the background as
-separate layers (ask for the mark alone on a transparent background too) so it can go
-into Icon Composer. Then the app icon, the splash icon and the Android adaptive
-foreground can be regenerated from it.
+For a Product Page Optimization alternate later, rerun the same prompt with a
+blaze-orange background (#F26B1D). That keeps the object and tests only the colour,
+which is the variable worth testing.
 
 ## 7. Screenshots
 
