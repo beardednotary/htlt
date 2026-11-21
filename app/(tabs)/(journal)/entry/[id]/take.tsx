@@ -7,7 +7,7 @@ import { HUNTING_SPECIES } from '../../../../../src/data/constants';
 import { addCatch, addHarvest, tagForSeason, useStore } from '../../../../../src/data/store';
 import type { Harvest } from '../../../../../src/model/types';
 import { captureCoordinate, locationAvailable } from '../../../../../src/data/location';
-import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
 const SEXES: { value: NonNullable<Harvest['sex']>; label: string }[] = [
@@ -67,10 +67,9 @@ export default function AddTakeScreen() {
       <Stack.Screen
         options={{
           title: hunting ? 'Add Harvest' : 'Add Catch',
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => <HeaderButton label="Add" onPress={() => { void save(); }} prominent />,
         }}
       />
+      <SheetToolbar confirmLabel="Add" onConfirm={() => { void save(); }} />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section

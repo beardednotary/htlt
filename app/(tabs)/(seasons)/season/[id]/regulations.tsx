@@ -4,12 +4,12 @@ import {
   keyboardType,
   textInputAutocapitalization,
 } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { JURISDICTIONS } from '../../../../../src/data/constants';
 import { addRegulation, useStore } from '../../../../../src/data/store';
-import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
 /**
@@ -41,18 +41,10 @@ export default function SeasonRegulationsScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => (
-            <HeaderButton
-              label="Add"
-              onPress={save}
-              prominent
-              disabled={title.trim().length === 0}
-            />
-          ),
-        }}
+      <SheetToolbar
+        confirmLabel="Add"
+        onConfirm={save}
+        confirmDisabled={title.trim().length === 0}
       />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>

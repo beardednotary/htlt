@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { addPerson, useStore } from '../../../../src/data/store';
 import { useEntitlements } from '../../../../src/purchases/entitlements';
 import { canAddPerson } from '../../../../src/purchases/limits';
-import { HeaderButton } from '../../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../../src/ui/AppHost';
 
 /**
@@ -51,16 +51,12 @@ export default function NewPersonScreen() {
       <Stack.Screen
         options={{
           title: 'Add Person',
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => (
-            <HeaderButton
-              label="Add"
-              onPress={save}
-              prominent
-              disabled={name.trim().length === 0}
-            />
-          ),
         }}
+      />
+      <SheetToolbar
+        confirmLabel="Add"
+        onConfirm={save}
+        confirmDisabled={name.trim().length === 0}
       />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>

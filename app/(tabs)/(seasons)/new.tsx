@@ -1,6 +1,6 @@
 import { Form, Picker, Section, Text } from '@expo/ui/swift-ui';
 import { pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import {
@@ -11,7 +11,7 @@ import {
 } from '../../../src/data/constants';
 import { addSeason } from '../../../src/data/store';
 import type { MethodOfTake, Pursuit } from '../../../src/model/types';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../src/ui/AppHost';
 
 const THIS_YEAR = new Date().getFullYear();
@@ -44,12 +44,7 @@ export default function NewSeasonScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => <HeaderButton label="Add" onPress={save} prominent />,
-        }}
-      />
+      <SheetToolbar confirmLabel="Add" onConfirm={save} />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section>

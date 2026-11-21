@@ -14,7 +14,7 @@ import { addActivity, addCatch, addHarvest, tagForSeason, useStore } from '../..
 import { seasonTitle, todayISO } from '../../../src/model/derive';
 import type { FishingTechnique, Harvest, MethodOfTake, Pursuit } from '../../../src/model/types';
 import { captureCoordinate, locationAvailable } from '../../../src/data/location';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../src/ui/AppHost';
 
 const NO_SEASON = 'none';
@@ -110,10 +110,9 @@ export default function LogActivityScreen() {
       <Stack.Screen
         options={{
           title: hunting ? 'Log Hunt' : 'Log Fishing Trip',
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => <HeaderButton label="Save" onPress={() => { void save(); }} prominent />,
         }}
       />
+      <SheetToolbar confirmLabel="Save" onConfirm={() => { void save(); }} />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section>

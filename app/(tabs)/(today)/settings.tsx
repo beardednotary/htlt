@@ -1,7 +1,7 @@
 import { Alert, Button, Form, HStack, Section, Spacer, Text, Toggle } from '@expo/ui/swift-ui';
 import { foregroundStyle } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import {
   calendarAvailable,
@@ -28,8 +28,24 @@ import {
   requestPermission,
   syncReminders,
 } from '../../../src/notifications/reminders';
-import { HeaderButton } from '../../../src/ui/HeaderButton';
 import { AppHost } from '../../../src/ui/AppHost';
+import { accent } from '../../../src/ui/theme';
+
+/**
+ * Real UIBarButtonItems via Stack.Toolbar, with the shared glass background
+ * hidden — see "Navigation bar buttons" in AGENTS.md. Memoized so the settings
+ * form re-rendering does not re-apply the header.
+ */
+const SettingsToolbar = memo(function SettingsToolbar() {
+  const router = useRouter();
+  return (
+    <Stack.Toolbar placement="left" tintColor={accent}>
+      <Stack.Toolbar.Button hidesSharedBackground variant="done" onPress={() => router.back()}>
+        Done
+      </Stack.Toolbar.Button>
+    </Stack.Toolbar>
+  );
+});
 
 export default function SettingsScreen() {
   const { data } = useStore();
@@ -115,12 +131,8 @@ export default function SettingsScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: 'Settings',
-          headerLeft: () => <HeaderButton label="Done" onPress={() => router.back()} prominent />,
-        }}
-      />
+      <Stack.Screen options={{ title: 'Settings' }} />
+      <SettingsToolbar />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
