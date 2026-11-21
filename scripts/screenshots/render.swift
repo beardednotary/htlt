@@ -20,6 +20,11 @@ struct Pop: Decodable {
   let y: Double
   let h: Double
 }
+struct FrameText: Decodable {
+  let headline: String
+  let sub: String?
+  let plan: String?
+}
 struct Frame: Decodable {
   let out: String
   let source: String
@@ -38,7 +43,7 @@ struct Spec: Decodable {
   let planInk: String
   let headlineMax: Double
   let subSize: Double
-  let allHeadlines: [String]
+  let allText: [FrameText]
   let frames: [Frame]
 }
 
@@ -109,7 +114,7 @@ let textWidth = W - 110
 // One headline size for the whole set: the largest that fits every line of every frame
 // on one line, so no headline wraps on its own and the eight read as a series.
 var headlineSize = CGFloat(spec.headlineMax)
-let headlineLines = spec.allHeadlines.flatMap { $0.components(separatedBy: "\n") }
+let headlineLines = spec.allText.flatMap { $0.headline.components(separatedBy: "\n") }
 while headlineSize > 80 {
   let font = roundedFont(headlineSize, .bold)
   let widest = headlineLines.map {
@@ -119,6 +124,34 @@ while headlineSize > 80 {
   headlineSize -= 2
 }
 print("headline \(Int(headlineSize)) pt, subline \(Int(spec.subSize)) pt")
+
+let pillHeight: CGFloat = 76
+let pillGap: CGFloat = 24
+let subGap: CGFloat = 22
+
+func headlineText(_ s: String) -> NSAttributedString {
+  text(s, font: roundedFont(headlineSize, .bold), color: color(spec.ink), lineHeight: headlineSize * 1.04, kern: -1.5)
+}
+func subText(_ s: String) -> NSAttributedString {
+  let size = CGFloat(spec.subSize)
+  return text(s, font: roundedFont(size, .semibold), color: color(spec.subInk), lineHeight: size * 1.18, kern: -0.3)
+}
+func height(_ string: NSAttributedString, width: CGFloat) -> CGFloat {
+  ceil(string.boundingRect(with: NSSize(width: width, height: 10_000), options: [.usesLineFragmentOrigin, .usesFontLeading]).height)
+}
+/// Plan label, headline and subline, stacked.
+func blockHeight(_ t: FrameText) -> CGFloat {
+  var h = height(headlineText(t.headline), width: textWidth)
+  if t.plan != nil { h += pillHeight + pillGap }
+  if let sub = t.sub { h += subGap + height(subText(sub), width: textWidth - 40) }
+  return h
+}
+
+// Every phone sits at the same height, below the tallest text block in the set; a
+// shorter block is centred in the space above it, so the phones line up across frames.
+let textTop: CGFloat = 110
+let tallestBlock = spec.allText.map(blockHeight).max() ?? 0
+let phoneTop = textTop + tallestBlock + 70
 
 for frame in spec.frames {
   guard
@@ -134,31 +167,24 @@ for frame in spec.frames {
   ctx.setFillColor(color(spec.background).cgColor)
   ctx.fill(CGRect(x: 0, y: 0, width: W, height: H))
 
-  var y: CGFloat = 110
+  var y = textTop + (tallestBlock - blockHeight(FrameText(headline: frame.headline, sub: frame.sub, plan: frame.plan))) / 2
 
   if let plan = frame.plan {
     let label = text(
       plan.uppercased(), font: roundedFont(40, .heavy), color: color(spec.planInk), lineHeight: 48, kern: 3)
     let size = label.size()
-    let pill = CGRect(x: (W - size.width - 64) / 2, y: y, width: size.width + 64, height: 76)
+    let pill = CGRect(x: (W - size.width - 64) / 2, y: y, width: size.width + 64, height: pillHeight)
     ctx.addPath(roundedRect(pill, 38))
     ctx.setFillColor(color(spec.planBackground).cgColor)
     ctx.fillPath()
     label.draw(at: NSPoint(x: pill.minX + 32, y: pill.minY + 14))
-    y = pill.maxY + 24
+    y = pill.maxY + pillGap
   }
 
-  y = draw(
-    text(frame.headline, font: roundedFont(headlineSize, .bold), color: color(spec.ink),
-      lineHeight: headlineSize * 1.04, kern: -1.5),
-    top: y, width: textWidth, canvas: W)
+  y = draw(headlineText(frame.headline), top: y, width: textWidth, canvas: W)
 
   if let sub = frame.sub {
-    let subSize = CGFloat(spec.subSize)
-    y = draw(
-      text(sub, font: roundedFont(subSize, .semibold), color: color(spec.subInk),
-        lineHeight: subSize * 1.18, kern: -0.3),
-      top: y + 22, width: textWidth - 40, canvas: W)
+    _ = draw(subText(sub), top: y + subGap, width: textWidth - 40, canvas: W)
   }
 
   // The phone: titanium body, black bezel, the capture as its screen, the island on top.
@@ -168,7 +194,7 @@ for frame in spec.frames {
   let screenW = phoneW - bezel * 2
   let scale = screenW / CGFloat(capture.width)
   let screenH = CGFloat(capture.height) * scale
-  let phone = CGRect(x: (W - phoneW) / 2, y: y + 70, width: phoneW, height: screenH + bezel * 2)
+  let phone = CGRect(x: (W - phoneW) / 2, y: phoneTop, width: phoneW, height: screenH + bezel * 2)
   let bodyRadius: CGFloat = 160
   let screenRadius: CGFloat = 140
 

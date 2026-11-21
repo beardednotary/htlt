@@ -59,8 +59,9 @@ const out = join(root, 'screenshots', 'out');
     ...STYLE,
     headlineMax: HEADLINE_MAX,
     subSize: SUB_SIZE,
-    // Every headline, so one frame rendered alone gets the same size as the set.
-    allHeadlines: FRAMES.map((f) => f.headline),
+    // Every frame's text, so one frame rendered alone gets the same headline size and
+    // the same phone position as the rest of the set.
+    allText: FRAMES.map((f) => ({ headline: f.headline, sub: f.sub ?? null, plan: f.plan ?? null })),
     frames: frames.map((f) => ({
       out: join(out, f.out),
       source: join(raw, f.source),
