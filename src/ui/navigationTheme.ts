@@ -30,3 +30,19 @@ export const navigationTheme = {
     notification: PlatformColor('systemRed'),
   },
 } as typeof DarkTheme;
+
+/**
+ * Screen options every stack shares.
+ *
+ * The router turns the theme's `dark` flag into the navigation bar's
+ * `overrideUserInterfaceStyle`, so `dark: true` above pinned every bar to dark: in
+ * light appearance the large titles, bar buttons and status bar all resolved to
+ * white on a white bar. Leaving the style unspecified lets each bar inherit the
+ * system appearance natively, with no first-render guess from JavaScript, which is
+ * the same reason the colours above are PlatformColors.
+ */
+export const stackScreenOptions = {
+  unstable_nativeProps: {
+    headerConfig: { experimental_userInterfaceStyle: 'unspecified' as const },
+  },
+};
