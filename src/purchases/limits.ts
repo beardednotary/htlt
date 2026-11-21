@@ -38,6 +38,23 @@ export function canAddCredential(data: AppData, tier: Tier): Gate {
   };
 }
 
+/**
+ * The free limit, said before someone fills in a form rather than after. Meeting a
+ * paywall on Save — with the fields already typed — reads as a trap; seeing "2 of 3"
+ * on the way in reads as a plan.
+ *
+ * Deliberately avoids the word license/licence: this sits on a sheet whose own title
+ * follows the season's jurisdiction, and fixed copy must not contradict it.
+ */
+export function credentialAllowance(data: AppData, tier: Tier): string | null {
+  if (tier !== 'free') return null;
+  const used = activeCredentialCount(data);
+  const left = Math.max(0, FREE_ACTIVE_CREDENTIALS - used);
+  const lead = `Free keeps ${FREE_ACTIVE_CREDENTIALS} active at a time, and expired ones do not count.`;
+  if (left === 0) return `${lead} All ${FREE_ACTIVE_CREDENTIALS} are in use; Outdoorsman keeps as many as you need.`;
+  return `${lead} ${used} of ${FREE_ACTIVE_CREDENTIALS} in use.`;
+}
+
 export function canAddPerson(data: AppData, tier: Tier): Gate {
   if (tier === 'family') return allow;
   if (data.people.length < FREE_PEOPLE) return allow;

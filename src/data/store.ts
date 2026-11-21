@@ -20,6 +20,7 @@ import type {
   Season,
   Trip,
 } from '../model/types';
+import type { ReviewState } from '../review/policy';
 import { newId } from './ids';
 import { readItem, writeItem } from './storage';
 
@@ -42,6 +43,8 @@ export interface AppSettings {
   /** One-way export into a calendar the app owns. */
   calendarEnabled?: boolean;
   calendarId?: string;
+  /** When the rating prompt was last asked for, and how much use since. */
+  review?: ReviewState;
 }
 
 export interface AppData {
@@ -662,6 +665,14 @@ export function recapCoverUri(year: number): string | undefined {
   const id = state.data.settings.recapCovers?.[String(year)];
   if (!id) return undefined;
   return state.data.documents.find((document) => document.id === id)?.uri;
+}
+
+export function getReviewState(): ReviewState | undefined {
+  return state.data.settings.review;
+}
+
+export function setReviewState(review: ReviewState) {
+  mutate((data) => ({ ...data, settings: { ...data.settings, review } }));
 }
 
 export function setWelcomeSeen(seen: boolean) {

@@ -20,7 +20,8 @@ import {
 } from '../../../src/data/store';
 import { useEntitlements } from '../../../src/purchases/entitlements';
 import { canSyncCalendar } from '../../../src/purchases/limits';
-import { restore } from '../../../src/purchases/purchases';
+import { isConfigured, restore } from '../../../src/purchases/purchases';
+import { restoreMessage, restoreOutcome, tierName } from '../../../src/purchases/tiers';
 import { planReminders } from '../../../src/notifications/plan';
 import {
   cancelAllReminders,
@@ -40,12 +41,14 @@ export default function SettingsScreen() {
   const [calendarUnavailable, setCalendarUnavailable] = useState(false);
   const calendarOn = Boolean(data.settings.calendarEnabled);
   const [scheduled, setScheduled] = useState<number | null>(null);
+  const [restoreResult, setRestoreResult] = useState<{ title: string; message: string } | null>(
+    null
+  );
 
   const { tier, live, refresh } = useEntitlements();
   const enabled = data.settings.remindersEnabled;
 
-  const planName =
-    tier === 'family' ? 'Family' : tier === 'outdoorsman' ? 'Outdoorsman' : 'Free';
+  const planName = tierName(tier);
   const wouldSchedule = planReminders(data).length;
 
   useEffect(() => {
@@ -103,6 +106,19 @@ export default function SettingsScreen() {
     setCalendarSync(true, result.calendarId);
   }
 
+  async function restorePurchases() {
+    try {
+      const outcome = restoreOutcome(await restore(), isConfigured());
+      await refresh();
+      setRestoreResult(restoreMessage(outcome));
+    } catch {
+      setRestoreResult({
+        title: 'Restore did not finish',
+        message: 'The App Store could not be reached. Try again in a moment.',
+      });
+    }
+  }
+
   async function startImport() {
     const result = await pickImportFile();
     if (result.status === 'cancelled') return;
@@ -151,7 +167,7 @@ export default function SettingsScreen() {
                 label="Restore Purchases"
                 systemImage="arrow.clockwise"
                 onPress={() => {
-                  void restore().then(() => refresh());
+                  void restorePurchases();
                 }}
               />
             ) : null}
@@ -285,6 +301,20 @@ export default function SettingsScreen() {
               }}
             />
             <Button role="cancel" label="Cancel" onPress={() => setPendingImport(null)} />
+          </Alert.Actions>
+        </Alert>
+
+        <Alert
+          title={restoreResult?.title ?? ''}
+          isPresented={restoreResult !== null}
+          onIsPresentedChange={(presented) => {
+            if (!presented) setRestoreResult(null);
+          }}>
+          <Alert.Message>
+            <Text>{restoreResult?.message ?? ''}</Text>
+          </Alert.Message>
+          <Alert.Actions>
+            <Button label="OK" onPress={() => setRestoreResult(null)} />
           </Alert.Actions>
         </Alert>
 

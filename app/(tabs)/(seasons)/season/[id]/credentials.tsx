@@ -23,7 +23,8 @@ import {
 import { todayISO } from '../../../../../src/model/derive';
 import type { CredentialKind } from '../../../../../src/model/types';
 import { useEntitlements } from '../../../../../src/purchases/entitlements';
-import { canAddCredential } from '../../../../../src/purchases/limits';
+import { canAddCredential, credentialAllowance } from '../../../../../src/purchases/limits';
+import { noteAccomplishment } from '../../../../../src/review/review';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
@@ -43,6 +44,7 @@ export default function SeasonCredentialsScreen() {
   const jurisdictionId = season?.jurisdictionId ?? 'us-ca';
   const available = data.credentials.filter((c) => !season?.credentialIds.includes(c.id));
 
+  const allowance = credentialAllowance(data, tier);
   const people = data.people;
   const [personId, setPersonId] = useState<string>(() => people[0]?.id ?? '');
   const [kind, setKind] = useState<CredentialKind>('license');
@@ -72,6 +74,7 @@ export default function SeasonCredentialsScreen() {
     });
     linkCredential(season.id, credential.id);
     router.back();
+    noteAccomplishment();
   }
 
   function link(credentialId: string) {
@@ -98,7 +101,7 @@ export default function SeasonCredentialsScreen() {
       />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
-          <Section title="New">
+          <Section title="New" footer={allowance ? <Text>{allowance}</Text> : undefined}>
             {people.length > 1 ? (
               <Picker
                 label="Whose"

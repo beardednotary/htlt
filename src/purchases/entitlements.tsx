@@ -1,4 +1,5 @@
 import { createContext, use, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { AppState } from 'react-native';
 
 import {
   configurePurchases,
@@ -8,6 +9,7 @@ import {
   tierFrom,
   type Tier,
 } from './purchases';
+import { startEntitlementSync } from './sync';
 
 interface EntitlementsValue {
   tier: Tier;
@@ -43,8 +45,31 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    void refresh();
-    return onCustomerInfoChange((info) => setTier(tierFrom(info)));
+    const stop = startEntitlementSync(
+      {
+        configure: configurePurchases,
+        isConfigured,
+        currentInfo: currentCustomerInfo,
+        subscribe: onCustomerInfoChange,
+      },
+      (state) => {
+        setTier(state.tier);
+        setLive(state.live);
+        setReady(true);
+      }
+    );
+
+    // A trial that ended, or a subscription renewed or cancelled from Settings while
+    // the app sat in the background, shows up the next time the app comes forward —
+    // not after someone thinks to force-quit it.
+    const foreground = AppState.addEventListener('change', (next) => {
+      if (next === 'active') void refresh();
+    });
+
+    return () => {
+      stop();
+      foreground.remove();
+    };
   }, []);
 
   const value = useMemo<EntitlementsValue>(

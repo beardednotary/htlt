@@ -9,7 +9,8 @@ import {
   METHOD_LABELS,
   METHOD_ORDER,
 } from '../../../src/data/constants';
-import { addSeason } from '../../../src/data/store';
+import { addSeason, useStore } from '../../../src/data/store';
+import { defaultJurisdictionId, deviceRegion } from '../../../src/model/seasonDefaults';
 import type { MethodOfTake, Pursuit } from '../../../src/model/types';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
 import { AppHost } from '../../../src/ui/AppHost';
@@ -23,9 +24,12 @@ const YEARS = [THIS_YEAR - 1, THIS_YEAR, THIS_YEAR + 1];
  */
 export default function NewSeasonScreen() {
   const router = useRouter();
+  const { data } = useStore();
   const [pursuit, setPursuit] = useState<Pursuit>('hunting');
   const [species, setSpecies] = useState(HUNTING_SPECIES[0]);
-  const [jurisdictionId, setJurisdictionId] = useState('us-ca');
+  const [jurisdictionId, setJurisdictionId] = useState(() =>
+    defaultJurisdictionId(data.seasons, deviceRegion())
+  );
   const [year, setYear] = useState(THIS_YEAR);
   const [method, setMethod] = useState<MethodOfTake>('rifle');
 

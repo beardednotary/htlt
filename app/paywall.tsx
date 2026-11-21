@@ -13,28 +13,22 @@ import {
 import type { PurchasesPackage } from 'react-native-purchases';
 
 import { useEntitlements } from '../src/purchases/entitlements';
+import { planCopy } from '../src/purchases/offer';
+import { FAMILY_FEATURES, FREE_LINE, OUTDOORSMAN_FEATURES } from '../src/purchases/paywallCopy';
+import {
+  currentOffering,
+  isConfigured,
+  purchase,
+  restore,
+  tierForProduct,
+  trialEligibility,
+} from '../src/purchases/purchases';
+import { restoreMessage, restoreOutcome, tierName } from '../src/purchases/tiers';
 import { accent, onAccent } from '../src/ui/theme';
-import { currentOffering, purchase, restore, tierForProduct } from '../src/purchases/purchases';
 
 /** Apple requires both to be reachable from any screen that sells a subscription. */
 const TERMS_URL = 'https://dahvio.com/hunting-tags-license-tracker-terms';
 const PRIVACY_URL = 'https://dahvio.com/hunting-tags-license-tracker-privacy';
-
-const OUTDOORSMAN_FEATURES = [
-  'Unlimited licenses, tags and permits',
-  'Every state and province you hunt',
-  'Draw applications and preference points',
-  'Reminders for openers, deadlines and expiries',
-  'Your season as a printable PDF',
-];
-
-const FAMILY_FEATURES = [
-  'Everything in Outdoorsman',
-  'Up to six people in one household',
-  'Licenses and tags for people without accounts',
-  'Who is ready for the trip, and who is not',
-  'A shared history that outlasts the season',
-];
 
 export default function PaywallScreen() {
   const { reason, requires } = useLocalSearchParams<{ reason?: string; requires?: string }>();
@@ -44,11 +38,21 @@ export default function PaywallScreen() {
   const family = requires === 'family';
   const requiredTier = family ? 'family' : 'outdoorsman';
   const [packages, setPackages] = useState<PurchasesPackage[] | null>(null);
+  const [eligible, setEligible] = useState<Record<string, boolean>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  async function loadOffering() {
+    setPackages(null);
+    const offering = await currentOffering();
+    const available = offering?.availablePackages ?? [];
+    setEligible(await trialEligibility(available.map((pkg) => pkg.product.identifier)));
+    setPackages(available);
+  }
 
   useEffect(() => {
-    void currentOffering().then((offering) => setPackages(offering?.availablePackages ?? []));
+    void loadOffering();
   }, []);
 
   async function buy(pkg: PurchasesPackage) {
@@ -70,12 +74,17 @@ export default function PaywallScreen() {
   async function restorePurchases() {
     setBusy(true);
     setError(null);
+    setNotice(null);
     try {
-      await restore();
+      const outcome = restoreOutcome(await restore(), isConfigured());
       await refresh();
-      router.back();
+      if (outcome.status === 'restored') {
+        router.back();
+        return;
+      }
+      setNotice(restoreMessage(outcome).message);
     } catch {
-      setError('Nothing to restore on this Apple Account.');
+      setError('The App Store could not be reached. Try again in a moment.');
     } finally {
       setBusy(false);
     }
@@ -89,6 +98,21 @@ export default function PaywallScreen() {
   const offered = (packages ?? []).filter((pkg) =>
     family ? tierForProduct(pkg.product.identifier) === 'family' : true
   );
+
+  const plans = offered.map((pkg) => {
+    const tier = tierForProduct(pkg.product.identifier);
+    return {
+      pkg,
+      isPrimary: tier === requiredTier,
+      copy: planCopy({
+        tierName: tierName(tier),
+        priceString: pkg.product.priceString,
+        intro: pkg.product.introPrice,
+        trialEligible: eligible[pkg.product.identifier] === true,
+      }),
+    };
+  });
+  const trialTerms = plans.find((plan) => plan.isPrimary)?.copy.terms ?? null;
 
   return (
     <>
@@ -116,17 +140,25 @@ export default function PaywallScreen() {
         {packages === null ? (
           <ActivityIndicator style={styles.loading} />
         ) : offered.length === 0 ? (
-          <Text style={styles.unavailable}>
-            {live
-              ? 'Subscriptions are not available right now. Try again in a moment.'
-              : 'Subscriptions are not configured in this build yet.'}
-          </Text>
+          <>
+            <Text style={styles.unavailable}>
+              {live
+                ? 'The App Store did not return prices just now. This is usually a weak connection.'
+                : 'Subscriptions are not configured in this build yet.'}
+            </Text>
+            {live ? (
+              // A sheet that can only say "not available" is a dead end; give the
+              // person something to press.
+              <Pressable onPress={() => void loadOffering()} disabled={busy}>
+                <Text style={styles.secondary}>Try Again</Text>
+              </Pressable>
+            ) : null}
+          </>
         ) : (
-          offered.map((pkg) => {
+          plans.map(({ pkg, isPrimary, copy }) => {
             // The tier they came for is the primary action. Anything above it is an
             // upsell and reads as one — two filled buttons make the eye pick neither,
             // and put the more expensive option in competition with the intended one.
-            const isPrimary = tierForProduct(pkg.product.identifier) === requiredTier;
             return (
               <Pressable
                 key={pkg.identifier}
@@ -140,17 +172,20 @@ export default function PaywallScreen() {
                   void buy(pkg);
                 }}>
                 <Text style={[styles.buyLabel, !isPrimary && styles.buyLabelSecondary]}>
-                  {pkg.product.title || 'Subscribe'}
+                  {copy.label}
                 </Text>
                 <Text style={[styles.buyPrice, !isPrimary && styles.buyPriceSecondary]}>
-                  {pkg.product.priceString} / year
+                  {copy.detail}
                 </Text>
               </Pressable>
             );
           })
         )}
 
+        {trialTerms ? <Text style={styles.terms}>{trialTerms}</Text> : null}
+
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {notice ? <Text style={styles.notice}>{notice}</Text> : null}
 
         <Pressable onPress={() => void restorePurchases()} disabled={busy}>
           <Text style={styles.secondary}>Restore Purchases</Text>
@@ -159,6 +194,8 @@ export default function PaywallScreen() {
         <Pressable onPress={() => router.back()}>
           <Text style={styles.secondary}>Not now</Text>
         </Pressable>
+
+        <Text style={styles.free}>{FREE_LINE}</Text>
 
         <Text style={styles.legal}>
           Subscriptions renew annually until cancelled. Manage or cancel in your Apple Account
@@ -231,8 +268,30 @@ const styles = StyleSheet.create({
   buyPressed: { opacity: 0.85 },
   buyLabel: { fontSize: 17, fontWeight: '600', color: onAccent },
   buyLabelSecondary: { color: accent },
-  buyPrice: { fontSize: 14, color: onAccent, opacity: 0.85, paddingTop: 2 },
+  buyPrice: { fontSize: 15, color: onAccent, opacity: 0.9, paddingTop: 2 },
   buyPriceSecondary: { color: accent, opacity: 0.8 },
+
+  terms: {
+    paddingTop: 12,
+    fontSize: 13,
+    lineHeight: 18,
+    color: PlatformColor('secondaryLabel'),
+    textAlign: 'center',
+  },
+  notice: {
+    paddingTop: 16,
+    fontSize: 14,
+    lineHeight: 19,
+    color: PlatformColor('secondaryLabel'),
+    textAlign: 'center',
+  },
+  free: {
+    paddingTop: 28,
+    fontSize: 14,
+    lineHeight: 19,
+    color: PlatformColor('secondaryLabel'),
+    textAlign: 'center',
+  },
 
   error: {
     paddingTop: 16,

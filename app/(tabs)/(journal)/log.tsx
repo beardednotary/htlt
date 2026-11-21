@@ -14,6 +14,7 @@ import { addActivity, addCatch, addHarvest, tagForSeason, useStore } from '../..
 import { seasonTitle, todayISO } from '../../../src/model/derive';
 import type { FishingTechnique, Harvest, MethodOfTake, Pursuit } from '../../../src/model/types';
 import { captureCoordinate, locationAvailable } from '../../../src/data/location';
+import { noteAccomplishment } from '../../../src/review/review';
 import { HeaderButton } from '../../../src/ui/HeaderButton';
 import { AppHost } from '../../../src/ui/AppHost';
 
@@ -103,6 +104,7 @@ export default function LogActivityScreen() {
     }
 
     router.back();
+    noteAccomplishment();
   }
 
   return (

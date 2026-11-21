@@ -26,6 +26,7 @@ import { drawForSeason, removeDrawApplication, saveDrawApplication, useStore } f
 import { DRAW_STATUS_LABELS, DRAW_STATUS_ORDER, pointsAreRelevant } from '../../../../../src/model/draw';
 import { todayISO } from '../../../../../src/model/derive';
 import type { DrawStatus } from '../../../../../src/model/types';
+import { noteAccomplishment } from '../../../../../src/review/review';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
@@ -83,6 +84,7 @@ export default function SeasonDrawScreen() {
       notes,
     });
     router.back();
+    noteAccomplishment();
   }
 
   function remove() {

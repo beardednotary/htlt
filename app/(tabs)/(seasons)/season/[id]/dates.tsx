@@ -7,6 +7,7 @@ import { METHOD_LABELS, METHOD_ORDER } from '../../../../../src/data/constants';
 import { addSeasonWindow, useStore } from '../../../../../src/data/store';
 import { todayISO } from '../../../../../src/model/derive';
 import type { MethodOfTake } from '../../../../../src/model/types';
+import { noteAccomplishment } from '../../../../../src/review/review';
 import { HeaderButton } from '../../../../../src/ui/HeaderButton';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
@@ -33,6 +34,7 @@ export default function SeasonDatesScreen() {
       closesOn: closesOn < opensOn ? opensOn : closesOn,
     });
     router.back();
+    noteAccomplishment();
   }
 
   return (
