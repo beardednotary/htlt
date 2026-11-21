@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * Builds the App Store frames in screenshots/out/ from simulator captures in
- * screenshots/raw/, using the story and crops in frames.mjs.
+ * screenshots/raw/, using the story and pop-outs in frames.mjs.
  *
  *   node scripts/screenshots/compose.cjs            all eight
  *   node scripts/screenshots/compose.cjs 03 05      only those
  *
- * Drawing is done by render.swift (AppKit, so the headline is set in the system
- * font, same as the app). Needs a Mac with Xcode; nothing to install from npm.
+ * Drawing is done by render.swift (AppKit, so headlines are set in SF Pro Rounded,
+ * a system font). Needs a Mac with Xcode; nothing to install from npm.
  */
 const { execFileSync } = require('node:child_process');
 const { existsSync, mkdirSync, writeFileSync } = require('node:fs');
@@ -20,7 +20,7 @@ const raw = join(root, 'screenshots', 'raw');
 const out = join(root, 'screenshots', 'out');
 
 (async () => {
-  const { CANVAS, CAPTURE, STYLE, FRAMES } = await import(
+  const { CANVAS, CAPTURE, STYLE, FRAMES, HEADLINE_MAX, SUB_SIZE } = await import(
     pathToFileURL(join(__dirname, 'frames.mjs')).href
   );
 
@@ -28,7 +28,7 @@ const out = join(root, 'screenshots', 'out');
   const frames = FRAMES.filter((f) => only.length === 0 || only.some((p) => f.out.startsWith(p)));
 
   const missing = frames.flatMap((f) =>
-    [f.source, ...(f.cards ?? []).map((c) => c.source)]
+    [f.source, f.pop?.source]
       .filter((name) => name && !existsSync(join(raw, name)))
       .map((name) => `  ${name} (for ${f.out})`)
   );
@@ -42,11 +42,13 @@ const out = join(root, 'screenshots', 'out');
       console.error(`${f.out}: no exclamation marks (AGENTS.md)`);
       process.exit(1);
     }
-    for (const c of f.cards ?? []) {
-      if (c.x < 0 || c.y < 0 || c.x + c.w > CAPTURE.width || c.y + c.h > CAPTURE.height) {
-        console.error(`${f.out}: crop "${c.name}" falls outside a ${CAPTURE.width}×${CAPTURE.height} capture`);
-        process.exit(1);
-      }
+    if (f.pop && (f.pop.y < 0 || f.pop.y + f.pop.h > CAPTURE.height)) {
+      console.error(`${f.out}: pop-out "${f.pop.name}" falls outside a ${CAPTURE.width}×${CAPTURE.height} capture`);
+      process.exit(1);
+    }
+    if (f.headline.split('\n').length > 2 || (f.sub ?? '').split('\n').length > 2) {
+      console.error(`${f.out}: keep the headline and the subline to two lines each`);
+      process.exit(1);
     }
   }
 
@@ -54,16 +56,18 @@ const out = join(root, 'screenshots', 'out');
   const spec = {
     width: CANVAS.width,
     height: CANVAS.height,
-    captureWidth: CAPTURE.width,
     ...STYLE,
+    headlineMax: HEADLINE_MAX,
+    subSize: SUB_SIZE,
+    // Every headline, so one frame rendered alone gets the same size as the set.
+    allHeadlines: FRAMES.map((f) => f.headline),
     frames: frames.map((f) => ({
       out: join(out, f.out),
       source: join(raw, f.source),
       headline: f.headline,
       sub: f.sub ?? null,
       plan: f.plan ?? null,
-      full: Boolean(f.full),
-      cards: (f.cards ?? []).map((c) => ({ ...c, source: c.source ? join(raw, c.source) : null })),
+      pop: f.pop ? { ...f.pop, source: f.pop.source ? join(raw, f.pop.source) : null } : null,
     })),
   };
   const specPath = join(tmpdir(), `htlt-frames-${process.pid}.json`);
