@@ -53,7 +53,8 @@
           "isAndroidBackgroundLocationEnabled": false
         }
       ],
-      "./plugins/withSceneLifecycle"
+      "./plugins/withSceneLifecycle",
+      "expo-font"
     ],
     "extra": {
       "router": {},
