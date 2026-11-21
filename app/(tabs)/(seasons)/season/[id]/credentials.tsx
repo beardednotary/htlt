@@ -25,7 +25,7 @@ import type { CredentialKind } from '../../../../../src/model/types';
 import { useEntitlements } from '../../../../../src/purchases/entitlements';
 import { canAddCredential, credentialAllowance } from '../../../../../src/purchases/limits';
 import { noteAccomplishment } from '../../../../../src/review/review';
-import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
 const KIND_ORDER: CredentialKind[] = ['license', 'tag', 'permit', 'validation'];
@@ -88,16 +88,12 @@ export default function SeasonCredentialsScreen() {
       <Stack.Screen
         options={{
           title: `${licenceWord(jurisdictionId)} or Tag`,
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => (
-            <HeaderButton
-              label="Add"
-              onPress={create}
-              prominent
-              disabled={name.trim().length === 0}
-            />
-          ),
         }}
+      />
+      <SheetToolbar
+        confirmLabel="Add"
+        onConfirm={create}
+        confirmDisabled={name.trim().length === 0}
       />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>

@@ -27,7 +27,7 @@ import { DRAW_STATUS_LABELS, DRAW_STATUS_ORDER, pointsAreRelevant } from '../../
 import { todayISO } from '../../../../../src/model/derive';
 import type { DrawStatus } from '../../../../../src/model/types';
 import { noteAccomplishment } from '../../../../../src/review/review';
-import { HeaderButton } from '../../../../../src/ui/HeaderButton';
+import { SheetToolbar } from '../../../../../src/ui/SheetToolbar';
 import { AppHost } from '../../../../../src/ui/AppHost';
 
 function parseDate(iso: string | undefined, fallback: Date): Date {
@@ -98,10 +98,9 @@ export default function SeasonDrawScreen() {
       <Stack.Screen
         options={{
           title: existing ? 'Draw' : 'Add Draw',
-          headerLeft: () => <HeaderButton label="Cancel" onPress={() => router.back()} />,
-          headerRight: () => <HeaderButton label="Save" onPress={save} prominent />,
         }}
       />
+      <SheetToolbar confirmLabel="Save" onConfirm={save} />
       <AppHost style={{ flex: 1 }} useViewportSizeMeasurement>
         <Form>
           <Section
