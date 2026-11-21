@@ -9,39 +9,51 @@ regenerate, paste from the generated file. Research behind the Canadian listing 
 Voice rules from `AGENTS.md` apply here too. No exclamation marks; the generator
 refuses them.
 
-## 1. Funnel (pending numbers)
+## 1. Funnel
 
-The diagnosis needs App Store Connect numbers this repo cannot see: impressions, product
-page views, first-time downloads and trial-to-paid for the last 30 days, plus Sources.
-Until those arrive, here is what the store data alone says (Applyra, Nov 2026):
+App Store Connect, Sep 1 – Nov 19 2026 (live since Sep 1). Downloads are derived from
+App Store Connect's conversion rate × impressions, because the export has no download
+column; treat them as ±1 per day.
 
-| Signal | Value | Reads as |
-|---|---|---|
-| Ratings in the U.S. | none | Every page view converts worse. Fixed in 1.1 with a review prompt people actually reach. |
-| Screenshots | 6 of 10 | Four empty slots. Applyra counts this against appeal. |
-| Days since update | 78 | Freshness is part of appeal. 1.1 resets it. |
-| Localizations | 1 | One storefront in a two-language country, and no Spanish slot. |
-| ASO health | 49 (coverage 90, targeting 37, appeal 36) | The text is fine; appeal is the hole. |
-| "hunting tags" | rank 3 | Winnable, and won. |
-| "hunting license" | rank 33 | Traffic 25, difficulty 15. Should climb with ratings. |
-| "hunt regs" | unranked | Traffic 43, difficulty 14. The best ratio in the market, still unranked. |
+| Period | Impressions | Page views | Downloads | Trials | Paid |
+|---|---:|---:|---:|---:|---:|
+| Sep 1 – Oct 7 (launch) | 233 | 33 | 13 | 1 (Sep 4) | 1 (Sep 11, $17) |
+| Oct 8 – Oct 14 (spike) | 692 | 54 | 5 | 0 | 0 |
+| **Oct 21 – Nov 19 (last 30 days)** | **964** | **50** | **18** | **0** | **0** |
+| All | 2,051 | 141 | 40 | 1 | 1 |
 
-What-if, from Applyra's own model: the same text with ten screenshots, a fresh update,
-three localizations and a 4.8 rating from ten people takes the listing from **49 to 67**.
-The rewrite of the text alone moves it **0**. This app's listing problem is appeal, not
-keywords. Hunting search volume is small (most terms sit at traffic 8–43), so do not
-expect ASO alone to move installs much. The review prompt and the screenshots are where
-1.1 earns its keep.
+Last 30 days, stage by stage:
 
-Fill this in when the numbers arrive:
+| Stage | Rate | Rough healthy range | Reads as |
+|---|---:|---|---|
+| Impression → page view | 5.2% | 5–10% from search | Bottom of the range. The icon, name and first three screenshots are what decide this. |
+| Impression → download | 1.9% | | Most downloads come straight from the search result, without a page view. |
+| Download → trial | 0 of 27 since Oct 8 | 1–5% paid | Too few downloads to tell. At a healthy 3%, 27 downloads predicts 0.8 subscribers, so zero is noise, not a finding. |
 
-| Stage | Last 30 days | Rate | Rough healthy range |
-|---|---|---|---|
-| Impressions | | | grows with rank |
-| Product page views | | | 5–10% of search impressions |
-| First-time downloads | | | 25–40% of page views |
-| Trial starts | | | |
-| Paid (day 35) | | | 1–5% of downloads |
+**Diagnosis: traffic, not conversion.** About 18 downloads a month cannot produce
+revenue at any conversion rate. At a healthy 5% paid, that is one subscriber a month,
+about $17. Every lever that matters is upstream of the paywall:
+
+1. **Impressions grew 5× after Oct 8 and stayed up**: about 32 a day, against 6 a day
+   before. That is search ranking ("hunting tags" #3), not the spike. More ranking is the
+   main lever, and ratings drive ranking. The 1.1 review prompt is the most important
+   change in this release.
+2. **Tap-through is at the floor of the range.** The icon and first three screenshots
+   (§6, §7) are the next lever. Test the alternate icon with Product Page Optimization as
+   soon as there is enough traffic to read it.
+3. **The Oct 9 spike converted badly**: 48 page views, 3 downloads (6%). Page views
+   without matching search impressions point to a link from outside the store, probably
+   the Reddit launch. Visitors from a link land on the full product page, and a page with
+   no ratings and six screenshots lost 94% of them. Check Sources to confirm where it
+   came from before planning another post.
+4. **Timing.** Draws are the main paid feature, and Western draw applications open
+   January to April. Ship 1.1 before then so the ratings, the trial button and the honest
+   paywall are live when the people who need draws arrive. Switch the promo text to the
+   draw-season version (§8) in the first week of January.
+
+The one paying customer so far started a trial on Sep 4 and was charged on Sep 11,
+exactly seven days later, so the trial-to-paid path works end to end in production. With
+one data point, that is all it shows.
 
 ## 2. Metadata (U.S.)
 
