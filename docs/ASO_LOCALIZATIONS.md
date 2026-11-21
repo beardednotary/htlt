@@ -13,7 +13,7 @@ Paste each block exactly. Copy from the fenced blocks, not from a wrapped previe
 |---|---|---|
 | en-US | United States (primary) | live |
 | es-MX | Mexico, and the second listing the U.S. store searches | new |
-| en-CA | Canada (English) | new |
+| en-CA | Canada (English) | live |
 | fr-CA | Canada (French), searched alongside English (Canada) | draft |
 
 Status: **live** is in App Store Connect now and is being changed; **new** has to be added;
@@ -181,7 +181,8 @@ Términos de uso: https://www.apple.com/legal/internet-services/itunes/dev/stdeu
 
 **Why**
 
-- Unchanged from the research in docs/aso.md: Canadian search favours the journal and log terms over the administrative ones.
+- Name, subtitle and keywords unchanged from the live listing and the research in docs/aso.md: Canadian search favours the journal and log terms over the administrative ones.
+- Only the description and promo text change: they now say "licence" throughout, label what each plan adds, and mention the trial.
 - The description leads with "already licensed", because the top result for "ontario hunting licence" is an exam-prep app and the listing must not attract people studying for their accreditation.
 
 **Promotional text**

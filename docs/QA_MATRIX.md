@@ -86,7 +86,7 @@ experience; test the paywall on N and U, never on your own phone.
 
 ## App Store Connect
 
-- [ ] Paste metadata for en-US from `ASO_LOCALIZATIONS.md`; add es-MX and en-CA
+- [ ] Paste metadata for en-US and en-CA (description and promo only; its name, subtitle and keywords stay) from `ASO_LOCALIZATIONS.md`; add es-MX
 - [ ] fr-CA only after a Québécois speaker has checked it
 - [ ] Upload iPhone 6.9" screenshots in story order (`scripts/screenshots`)
 - [ ] Confirm both annual products have the 7-day free trial introductory offer
