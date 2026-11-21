@@ -43,7 +43,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts && node scripts/aso-localizations.mjs --check",
+    "aso": "node scripts/aso-localizations.mjs"
   },
   "private": true,
   "overrides": {

@@ -1,0 +1,270 @@
+/**
+ * Every App Store localization, in one place. This is the source of truth for
+ * listing copy: docs/ASO_LOCALIZATIONS.md is generated from it by
+ * scripts/aso-localizations.mjs, which also refuses anything over Apple's limits.
+ *
+ * Paste from the generated file, never from here by hand-copying wrapped lines: the
+ * live 1.0 description has hard line breaks in the middle of sentences ("deadline
+ * and⏎expiry") because it was pasted from wrapped Markdown.
+ */
+
+const US_DESCRIPTION = `Every tag, license and deadline for every state you hunt, in one place.
+
+Seasons, tags, licenses, hunt regs, draw applications and preference points, organized around the year you actually hunt, with reminders before every opener, deadline and expiry. Nothing to sign up for and nothing to maintain.
+
+It never claims to know your season dates or your regulations. It stores what you entered, keeps the agency's own link beside it, and tells you when you last read it.
+
+Free to use, with no account and no ads. The hunt journal is never paywalled.
+
+HOW IT WORKS
+
+1. Add a season: one species, one place, one year. California Deer, 2026.
+2. Hang everything off it: the tag, the license that covers it, the dates it runs, the official regulation link, and who is hunting it.
+3. Today assembles itself. Openers count down, licenses warn you before they lapse, and draw deadlines arrive 30, 7 and 1 days out.
+
+WHO IT IS FOR
+
+• Multi-state hunters juggling licenses, tags and validations across three states
+• Western hunters tracking draw applications, results dates and preference points
+• Anyone who has ever found out at a check station that something expired
+• Families who hunt together
+• Hunters who keep a journal and want the blank days in it too
+
+FREE ON EVERY PLAN
+
+Read the regulations before the opener, not after something goes wrong. Save the agency's official link and your own notes, mark when you last reviewed it, and get a nudge two weeks out.
+
+Reminders before openers and before licenses and tags expire, built from what you entered. Nobody misses an opener or an expiry because they did not pay.
+
+Enter a license once, not four times. One state hunting license points at deer, turkey, upland and waterfowl. Tags, permits and validations stay separate, because they are separate.
+
+Every state and every province: all 50 states, federal stamps, and Canada, with the wording each one uses.
+
+A hunt journal that keeps the whole season: where you went, what you carried, what came of it, with photographs. Days with nothing taken are kept with the same weight, because most days are those.
+
+Your year, in one page: days afield, harvests, states, methods, who you went with, and the firsts.
+
+Everything on your device. No account, no server, works with no signal, and you can export all of it to a file whenever you want.
+
+OUTDOORSMAN ($19.99 A YEAR)
+
+Never miss the deadline you cannot get back. Draw applications move through planning, applied, drawn and tag purchased, with reminders 30, 7 and 1 days before each deadline and preference points tracked year over year.
+
+As many active licenses, tags and permits as your season needs. Free keeps three active at a time; expired ones do not count.
+
+Openers, deadlines and trips in a calendar the app creates.
+
+Your season as a PDF or a shareable image.
+
+FAMILY ($34.99 A YEAR)
+
+Everything in Outdoorsman, for up to six people in one household, including the ones who will never install an app.
+
+Know who is actually ready before you drive four hours. Trips check every person going against the trip's own dates, so a license that lapses mid-trip shows up on a Tuesday, not in a parking lot.
+
+Both plans start with a 7-day free trial for new subscribers. Cancel any plan and nothing you entered is deleted.
+
+FREQUENTLY ASKED
+
+Is this an official license I can show a warden?
+No. Documents you store are reference copies for your own use. Follow your state or province's rules for what has to be carried or displayed.
+
+Hunting Tags & License Tracker is an independent record-keeping app, not affiliated with any state, provincial or federal wildlife agency. It does not issue or replace licenses, tags or permits and is not a source of regulations or season dates. Always verify current regulations, dates and carry requirements with the agency that issues them.
+
+Privacy Policy: https://dahvio.com/hunting-tags-license-tracker-privacy
+Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`;
+
+const CA_DESCRIPTION = `Keep your hunting season organized, and keep your hunt history.
+
+Licences, tags, seasons, regulations and a hunt journal, organized around the year you actually hunt, with reminders before every opener, expiry and draw deadline. Nothing to sign up for and nothing to maintain.
+
+For hunters who are already licensed. It never claims to know your season dates or your regulations: it stores what you entered, keeps the agency's own link beside it, and tells you when you last read it.
+
+Free to use, with no account and no ads. The hunt journal is never paywalled.
+
+HOW IT WORKS
+
+1. Add a season: one species, one place, one year. Ontario Moose, 2026.
+2. Hang everything off it: the tag, the licence that covers it, the dates it runs, the official regulation link, and who is hunting it.
+3. Today assembles itself. Openers count down and licences warn you before they lapse.
+
+FREE ON EVERY PLAN
+
+A hunt journal that keeps the whole season: where you went, what you carried, what came of it, with photographs. Days with nothing taken are kept with the same weight, because most days are those.
+
+Your year, in one page: days afield, harvests, places, methods, who you went with, and the firsts.
+
+Reminders before openers and before licences and tags expire, built from what you entered.
+
+Every province and territory, and all 50 states for the trips south of the border, each in its own wording.
+
+Everything on your device. No account, no server, works with no signal, and you can export all of it to a file whenever you want.
+
+OUTDOORSMAN
+
+Draw applications with reminders before each deadline, as many active licences and tags as your season needs, openers in your calendar, and your season as a PDF or a shareable image.
+
+FAMILY
+
+Everything in Outdoorsman, for up to six people in one household, with trip readiness: every person going checked against the trip's own dates.
+
+Both plans are annual and start with a 7-day free trial for new subscribers. Cancel any plan and nothing you entered is deleted.
+
+Is this an official licence I can show a conservation officer?
+No. Documents you store are reference copies for your own use. Follow your province's rules for what has to be carried or displayed.
+
+Hunting Tags & License Tracker is an independent record-keeping app, not affiliated with any provincial, state or federal wildlife agency. It does not issue or replace licences, tags or permits and is not a source of regulations or season dates. Always verify current regulations, dates and carry requirements with the agency that issues them.
+
+Privacy Policy: https://dahvio.com/hunting-tags-license-tracker-privacy
+Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`;
+
+const MX_DESCRIPTION = `Tus licencias, permisos, temporadas y fechas límite de caza, en un solo lugar.
+
+Para cazadores que manejan licencias y permisos en varios estados de EE. UU. y provincias de Canadá. Guarda el enlace oficial de cada agencia, las fechas que tú ingresas y un diario de caza con fotos. Recibe recordatorios antes de cada apertura, vencimiento y fecha límite de sorteo.
+
+La app nunca afirma conocer tus fechas ni tus reglamentos: guarda lo que tú ingresas y te indica cuándo revisaste el reglamento por última vez.
+
+Gratis, sin cuenta y sin anuncios. El diario de caza nunca es de pago.
+
+GRATIS EN TODOS LOS PLANES
+• Diario de caza con fotos, incluidos los días sin captura
+• Recordatorios de aperturas y vencimientos
+• Enlaces a los reglamentos oficiales de cada agencia
+• Tres licencias, permisos o marbetes activos a la vez
+• Todo se guarda en tu iPhone y funciona sin señal
+
+OUTDOORSMAN (ANUAL)
+Sorteos y puntos de preferencia, licencias ilimitadas, sincronización con el calendario y tu temporada en PDF o imagen.
+
+FAMILY (ANUAL)
+Todo lo de Outdoorsman para hasta seis personas, y la preparación de cada viaje: quién tiene todo en regla y quién no.
+
+Ambos planes incluyen 7 días de prueba gratis para nuevos suscriptores. Si cancelas, no se borra nada de lo que ingresaste.
+
+Nota sobre el idioma: la app está en inglés. Los botones se llaman Seasons, Today, Journal y Family.
+
+App independiente, sin afiliación con ninguna agencia de vida silvestre. No emite ni reemplaza licencias, permisos ni marbetes. Verifica siempre los reglamentos y las fechas con la agencia correspondiente.
+
+Política de privacidad: https://dahvio.com/hunting-tags-license-tracker-privacy
+Términos de uso: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`;
+
+const FR_DESCRIPTION = `Vos permis, vos saisons et votre carnet de chasse, au même endroit.
+
+Pour les chasseurs qui ont déjà leur permis. Enregistrez vos permis et vos coupons, les dates de vos saisons, le lien officiel des règlements et votre carnet de chasse avec photos. Recevez un rappel avant chaque ouverture, chaque expiration et chaque date limite de tirage.
+
+L'app ne prétend jamais connaître vos dates ni vos règlements : elle garde ce que vous avez saisi et vous indique quand vous avez relu les règlements pour la dernière fois.
+
+Gratuite, sans compte et sans publicité. Le carnet de chasse n'est jamais payant.
+
+GRATUIT DANS TOUS LES FORFAITS
+• Carnet de chasse avec photos, y compris les journées sans récolte
+• Rappels d'ouverture et d'expiration
+• Liens vers les règlements officiels de chaque organisme
+• Trois permis ou coupons actifs à la fois
+• Tout reste sur votre iPhone et fonctionne sans réseau
+
+OUTDOORSMAN (ANNUEL)
+Tirages et points de préférence, permis illimités, ajout au calendrier, et votre saison en PDF ou en image.
+
+FAMILY (ANNUEL)
+Tout Outdoorsman pour un maximum de six personnes, avec la préparation de chaque voyage de chasse : qui est en règle, et qui ne l'est pas.
+
+Les deux forfaits commencent par un essai gratuit de 7 jours pour les nouveaux abonnés. Si vous annulez, rien de ce que vous avez saisi n'est supprimé.
+
+Note sur la langue : l'app est en anglais. Les onglets s'appellent Today, Seasons, Journal et Family.
+
+App indépendante, sans lien avec aucun organisme provincial ou fédéral de la faune. Elle ne délivre ni ne remplace aucun permis. Vérifiez toujours les règlements et les dates auprès de l'organisme qui les publie.
+
+Politique de confidentialité : https://dahvio.com/hunting-tags-license-tracker-privacy
+Conditions d'utilisation : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`;
+
+/**
+ * status: "live" is in App Store Connect today; "new" has to be added; "draft" needs a
+ * native speaker before it ships (fr-CA, and es-MX's description).
+ */
+export const LISTINGS = [
+  {
+    locale: 'en-US',
+    store: 'United States (primary)',
+    status: 'live',
+    name: 'Hunting Tags & License Tracker',
+    subtitle: 'Hunt Regs & Season Planner',
+    keywords:
+      'elk,deer,turkey,duck,moose,bear,draw,points,permit,journal,harvest,calendar,reminder,waterfowl,log',
+    promo:
+      'Tags, licenses, hunt regs and draw deadlines in one place, with reminders before every opener and expiry. Built for multi-state hunters. Free to start, no account.',
+    description: US_DESCRIPTION,
+    whyItChanged: [
+      'Name unchanged: it already ranks #1 for its own phrase, #3 for "hunting tags" and #33 for "hunting license" (traffic 25, difficulty 15). Never trade away a term you already rank for.',
+      'Subtitle trades "Seasons & Journal" for "Season Planner": forms "hunting season" (traffic 41, difficulty 45; the top 20 is mostly games, with InSeason the only utility in the top 3), "hunting planner" and "hunt planner", and keeps "hunt regs" (43/14), the best ratio in the market.',
+      '"journal" moves to the keyword field, where it still forms "hunt journal" (25/30) and "hunting journal" with the subtitle and name. "log" forms "hunting log" (10/11).',
+      'Dropped "regulations" and "preference": Applyra shows both as unsearched on their own. "points" stays.',
+      'Dropped "fishing": difficulty 88 and owned by state agency apps; the app is for hunters first.',
+    ],
+  },
+  {
+    locale: 'es-MX',
+    store: 'Mexico, and the second listing the U.S. store searches',
+    status: 'new',
+    name: 'Licencias y Permisos de Caza',
+    subtitle: 'Temporadas, Sorteos y Diario',
+    keywords:
+      'hunting,whitetail,mule,pronghorn,antelope,pheasant,goose,dove,upland,archery,bow,muzzleloader,expiry',
+    promo:
+      'Licencias, permisos, sorteos y fechas límite en un solo lugar, con recordatorios antes de cada apertura y vencimiento. Gratis, sin cuenta. La app está en inglés.',
+    description: MX_DESCRIPTION,
+    whyItChanged: [
+      'The U.S. store also indexes the Spanish (Mexico) listing. Its name and subtitle are real Spanish, because Spanish-language iPhones in the U.S. display them.',
+      'Its keyword field carries English long-tail words that do not fit the U.S. field. Apple only combines words within one localization, so "hunting" is repeated here on purpose: it is what turns "pheasant", "bow" and "whitetail" into "pheasant hunting", "bow hunting" and "whitetail hunting".',
+      'The description says the app is in English and names the tabs by their English labels.',
+    ],
+  },
+  {
+    locale: 'en-CA',
+    store: 'Canada (English)',
+    status: 'new',
+    name: 'Hunt Journal, Tags, Licences',
+    subtitle: 'Seasons, Regulations & Logs',
+    keywords:
+      'hunting,license,ontario,fishing,elk,moose,bear,deer,duck,turkey,tracker,permit,draw,calendar,harvest',
+    promo:
+      'Licences, tags, seasons and a hunt journal in one place, with reminders before every opener and expiry. For hunters who are already licensed. Free, no account.',
+    description: CA_DESCRIPTION,
+    whyItChanged: [
+      'Unchanged from the research in docs/aso.md: Canadian search favours the journal and log terms over the administrative ones.',
+      'The description leads with "already licensed", because the top result for "ontario hunting licence" is an exam-prep app and the listing must not attract people studying for their accreditation.',
+    ],
+  },
+  {
+    locale: 'fr-CA',
+    store: 'Canada (French), searched alongside English (Canada)',
+    status: 'draft',
+    name: 'Permis de chasse et saisons',
+    subtitle: 'Carnet, tirages et règlements',
+    keywords:
+      'quebec,peche,orignal,chevreuil,ours,dindon,canard,oie,coupon,rappel,calendrier,recolte,pourvoirie',
+    promo:
+      'Permis, coupons, saisons et carnet de chasse au même endroit, avec un rappel avant chaque ouverture et expiration. Pour les chasseurs déjà titulaires d’un permis.',
+    description: FR_DESCRIPTION,
+    whyItChanged: [
+      'Canada searches two listings: English (Canada) and French (Canada). Without this one, Québec French searches find nothing.',
+      '"permis de chasse" is traffic 25, difficulty 25 (KEI 1.0), but its top three results are exam-prep apps. Like the Ontario listing, the copy says "already licensed".',
+      '"chasse" alone (54/59) is mostly games; "chasse quebec" and "chasse et peche" appear in autocomplete, so "quebec" and "peche" lead the keyword field.',
+      'DRAFT: have a Québécois speaker check every field before it ships, especially "coupon" (tag) and "pourvoirie".',
+    ],
+  },
+];
+
+/** Never in an indexed field: other companies' names (Apple can reject them). */
+export const TRADEMARKS = [
+  'onx',
+  'gohunt',
+  'huntstand',
+  'huntwise',
+  'basemap',
+  'spartan',
+  'fieldregs',
+  'inseason',
+  'tagz',
+  'venmo',
+];

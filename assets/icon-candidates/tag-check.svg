@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- B: the alternate for Product Page Optimization. Bright field, stands out on white results. -->
+  <rect width="1024" height="1024" fill="#F26B1D"/>
+  <g transform="translate(512 540) scale(1.15) translate(-512 -540) rotate(-14 512 540)">
+    <path d="M512 150 C 512 150, 500 210, 470 250" fill="none" stroke="#1E3A2F" stroke-width="22" stroke-linecap="round"/>
+    <path d="M352 300 L 452 230 L 572 230 L 672 300 L 672 830 Q 672 870 632 870 L 392 870 Q 352 870 352 830 Z" fill="#FFFFFF"/>
+    <circle cx="512" cy="312" r="40" fill="#F26B1D"/>
+    <circle cx="512" cy="312" r="40" fill="none" stroke="#1E3A2F" stroke-width="14"/>
+    <path d="M425 600 L 490 665 L 610 520" fill="none" stroke="#1E3A2F" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
