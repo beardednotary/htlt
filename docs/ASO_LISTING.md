@@ -179,8 +179,9 @@ object, only the colour changes, which is the variable worth testing.
 
 ## 7. Screenshots
 
-iPhone only (`supportsTablet: false`), so 6.9" at **1290×2796** is the only required set;
-there is no iPad set to make. Eight frames, built from real UI pulled out of simulator
+iPhone and iPad (`supportsTablet: true`: 1.0 shipped with iPad, and Apple rejects an update
+that drops a device family, ITMS-90101). The iPhone set is 6.9" at **1290×2796**; the iPad
+13" set is inherited from 1.0 until a new one is made. Eight frames, built from real UI pulled out of simulator
 captures. The story is in `scripts/screenshots/frames.mjs`:
 
 1. **Never miss a deadline**: Today's Needs Attention and Coming Up
