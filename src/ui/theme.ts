@@ -16,9 +16,11 @@ export const screenBackground = PlatformColor('systemGroupedBackground');
 /**
  * The accent.
  *
- * Derived from the icon rather than lifted from it — the icon's own greens are a
- * deep spruce (#293B39) and an olive (#3A3F2E), both far too dark and desaturated
- * to mark something as tappable. This keeps the family and earns its contrast:
+ * Derived from the icon's greens rather than lifted from them — the antler's olive
+ * (#3A3F2E) and the spruce of the 1.0 icon (#293B39) are both far too dark and
+ * desaturated to mark something as tappable. The icon's blaze orange is not used
+ * here either: about 3:1 on white, too weak for a control. This keeps the family and
+ * earns its contrast:
  * 6.0:1 on white, 7.7:1 on the dark background. Anything less and the controls
  * become decoration.
  *

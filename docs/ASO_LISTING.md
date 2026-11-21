@@ -123,13 +123,24 @@ shield with a tree. It is textured and dark-on-dark, and at 29 pt it is a brown 
 especially in dark mode. "Wallet" is also the one thing the product says it is not.
 
 **1.1 icon:** one cream license card with a single bold olive antler printed on it, on
-spruce. It keeps the 1.0 palette and warmth, and drops the wallet, the card stack and
-the shield. At 29 pt it is still a card with an antler on it, on light and on dark.
+blaze orange. It keeps the warmth of 1.0 and drops the wallet, the card stack and the
+shield. At 29 pt it is still a card with an antler on it, on light and on dark.
 
-Generated from the prompt below. `assets/icon-source.png` is the 1254 px original;
+**Why orange leads.** Every download in the last 30 days came from App Store search,
+and impression → page view sits at the floor of the healthy range, so the icon's job is
+to win the glance in a results list. On a white results page the orange stands out where
+the spruce version reads as one more dark square. Blaze orange says hunting to hunters
+without camo, a flag or an animal head, and 30 downloads is no brand equity to protect.
+This was a judgement call, not a measurement: competitor icons could not be fetched to
+compare, and the traffic is too low for a Product Page Optimization test.
+
+Both versions were generated from the prompt below, the orange one with the background
+changed to `#F26B1D`. `assets/icon-source.png` is the 1254 px orange original;
 `assets/icon.png` (1024, RGB, no alpha), `favicon.png` and the three Android adaptive
-layers are derived from it. The Android layers were previously Expo's template
-defaults.
+layers (background `#F66310`) are derived from it. The Android layers were previously
+Expo's template defaults. The spruce version is kept as `assets/icon-alt-green.png`. The
+in-app accent stays green: orange on white is about 3:1, too weak to mark a control as
+tappable.
 
 What did not work, so it is not tried again:
 
@@ -163,9 +174,8 @@ badges, trees, deer heads, full racks, guns, crosshairs, camouflage, flags, maps
 mountains, string, holes, price tags, text, numbers.
 ```
 
-For a Product Page Optimization alternate later, rerun the same prompt with a
-blaze-orange background (#F26B1D). That keeps the object and tests only the colour,
-which is the variable worth testing.
+For a Product Page Optimization test later, the spruce version is the alternate: same
+object, only the colour changes, which is the variable worth testing.
 
 ## 7. Screenshots
 

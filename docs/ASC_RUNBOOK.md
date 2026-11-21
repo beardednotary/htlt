@@ -71,8 +71,8 @@ API, or a CLI). Work through the phases in order.
 1. Create iOS version **1.1.0** if it does not exist.
 2. Attach the build from Phase 1. Confirm its version is 1.1.0 and its build number
    is higher than 1.0's.
-3. The app icon ships inside the build (new single license card icon); there is nothing
-   to upload for it.
+3. The app icon ships inside the build (the new license card on blaze orange); there is
+   nothing to upload for it.
 
 ## Phase 3 — Metadata
 
@@ -220,8 +220,8 @@ beyond what RevenueCat purchase handling already declares.
 | November 1 (back to default) | Tags, licenses, hunt regs and draw deadlines in one place, with reminders before every opener and expiry. Built for multi-state hunters. Free to start, no account. | 163/170 |
 
 - **Do not start a Product Page Optimization test yet.** At about 30 impressions a day a
-  test cannot reach significance in its 90 days. An orange alternate icon is saved at
-  `assets/icon-alt-orange.png`, but App Store icon tests need the alternate icon
+  test cannot reach significance in its 90 days. The spruce alternate icon is saved at
+  `assets/icon-alt-green.png`, but App Store icon tests need the alternate icon
   compiled into the binary, which takes a config plugin and a new build. That is a later
   release.
 
